@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role{
+  SERV
+  DIRET
+  SECRET
+  ADMIN
+}
+
+model User{
+  id String @id @default(uuid())
+  name String? @db.VarChar(254)
+  email String? @db.VarChar(254)
+  login String @db.VarChar(128) @unique
+  password String @db.VarChar(128)
+  cpf String @db.VarChar(14) @unique
+  phone String? @db.VarChar(15)
+  role Role @default(SERV)
+  is_active Boolean @default(true)
+  is_first_access Boolean @default(false)
+  created_at DateTime @default(now())
+  profile Image?
+  token Token?
+
+  @@map("users")
+}
+
+model Image{
+  id String @id @default(uuid())
+  name String @db.VarChar(200)
+  size Int @db.Integer()
+  url String @db.Text()
+  key String @unique @db.VarChar(200)
+  created_at DateTime @default(now())
+  user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String? @unique
+
+  @@map("images")
+}
+
+model Token{
+  id String @id @default(uuid())
+  token String @db.VarChar(200)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String @unique
+  created_at DateTime @default(now())
+
+  @@map("token")
+}

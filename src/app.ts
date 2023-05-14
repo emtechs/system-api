@@ -1,6 +1,7 @@
 import 'express-async-errors';
 import express from 'express';
 import { errorHandler } from './errors';
+import { passwordRouter, sessionRouter, userRouter } from './router';
 
 const app = express();
 
@@ -13,6 +14,10 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use('/users', userRouter);
+app.use('/login', sessionRouter);
+app.use('/password', passwordRouter);
 
 app.use(errorHandler);
 

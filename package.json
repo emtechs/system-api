@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "esbuild src/server.ts --bundle --platform=node --outfile=dist/server.js --external:express",
     "start": "node dist/server.js",
-    "vercel-build": "npx prisma db push"
+    "vercel-build": "npx prisma migrate dev"
   },
   "keywords": [],
   "author": "",
@@ -17,12 +21,14 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.36.4",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.18",
+    "esbuild": "^0.17.19",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.0",
+    "mailgen": "^2.0.27",
     "multer": "1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^6.9.2",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -30,7 +36,8 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
-    "@types/node": "^18.16.6",
+    "@types/node": "^18.16.9",
+    "@types/nodemailer": "^6.4.7",
     "@typescript-eslint/eslint-plugin": "^5.59.5",
     "@typescript-eslint/parser": "^5.59.5",
     "eslint": "^8.40.0",
