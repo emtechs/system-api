@@ -24,7 +24,6 @@ model User{
   login String @db.VarChar(128) @unique
   password String @db.VarChar(128)
   cpf String @db.VarChar(14) @unique
-  phone String? @db.VarChar(15)
   role Role @default(SERV)
   is_active Boolean @default(true)
   is_first_access Boolean @default(false)

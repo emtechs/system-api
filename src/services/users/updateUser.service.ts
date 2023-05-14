@@ -9,10 +9,8 @@ export const updateUserService = async (
   {
     name,
     email,
-    login,
     old_password,
     password,
-    phone,
     role,
     is_first_access,
     is_active,
@@ -40,13 +38,8 @@ export const updateUserService = async (
       }
       password = hashSync(password, 10);
     }
-  }
-
-  if (login) {
-    const user = await prisma.user.findUnique({ where: { login } });
-    if (user && user.id !== id) {
-      throw new AppError(`${login} already exists`, 409);
-    }
+  } else if (password) {
+    password = hashSync(password, 10);
   }
 
   try {
@@ -55,9 +48,7 @@ export const updateUserService = async (
       data: {
         name,
         email,
-        login,
         password,
-        phone,
         role,
         is_first_access,
         is_active,

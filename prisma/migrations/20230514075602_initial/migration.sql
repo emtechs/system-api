@@ -9,7 +9,6 @@ CREATE TABLE "users" (
     "login" VARCHAR(128) NOT NULL,
     "password" VARCHAR(128) NOT NULL,
     "cpf" VARCHAR(14) NOT NULL,
-    "phone" VARCHAR(15),
     "role" "Role" NOT NULL DEFAULT 'SERV',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "is_first_access" BOOLEAN NOT NULL DEFAULT false,

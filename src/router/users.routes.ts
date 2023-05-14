@@ -5,7 +5,6 @@ import {
   listUserController,
   profileUserController,
   retrieveUserController,
-  updatePasswordController,
   updateUserController,
 } from '../controllers';
 import {
@@ -13,11 +12,7 @@ import {
   verifyIsAdmin,
   verifyUserIsAuthenticated,
 } from '../middlewares';
-import {
-  PasswordUpdateSchema,
-  UserCreateSchema,
-  UserUpdateRequestSchema,
-} from '../schemas';
+import { UserCreateSchema, UserUpdateRequestSchema } from '../schemas';
 
 export const userRouter = Router();
 
@@ -37,13 +32,6 @@ userRouter.get(
 userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController);
 
 userRouter.get('/:id', verifyUserIsAuthenticated, retrieveUserController);
-
-userRouter.patch(
-  '/password',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(PasswordUpdateSchema),
-  updatePasswordController,
-);
 
 userRouter.patch(
   '/:id',
