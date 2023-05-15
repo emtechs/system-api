@@ -5,6 +5,10 @@ import { UserReturnSchema } from '../../schemas';
 export const retrieveUserService = async (id: string) => {
   const user = await prisma.user.findUnique({
     where: { id },
+    include: {
+      director_school: true,
+      work_school: { include: { school: true } },
+    },
   });
 
   if (!user) {

@@ -14,7 +14,7 @@ export const createUserController = async (req: Request, res: Response) => {
 };
 
 export const listUserController = async (req: Request, res: Response) => {
-  const users = await listUserService();
+  const users = await listUserService(req.query);
   return res.json(users);
 };
 
@@ -37,7 +37,7 @@ export const profileUserController = async (req: Request, res: Response) => {
 };
 
 export const updateUserController = async (req: Request, res: Response) => {
-  const user = await updateUserService(req.params.id, req.body, req.user.role);
+  const user = await updateUserService(req.params.id, req.body, req.user.dash);
   return res.json(user);
 };
 

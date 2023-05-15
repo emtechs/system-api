@@ -17,19 +17,29 @@ enum Role{
   ADMIN
 }
 
+enum Dash{
+  COMMON
+  SCHOOL
+  ORGAN
+  ADMIN
+}
+
 model User{
   id String @id @default(uuid())
-  name String? @db.VarChar(254)
+  name String @db.VarChar(254)
   email String? @db.VarChar(254)
   login String @db.VarChar(128) @unique
   password String @db.VarChar(128)
   cpf String @db.VarChar(14) @unique
   role Role @default(SERV)
+  dash Dash @default(COMMON)
   is_active Boolean @default(true)
   is_first_access Boolean @default(false)
   created_at DateTime @default(now())
   profile Image?
   token Token?
+  director_school School?
+  work_school SchoolServer[]
 
   @@map("users")
 }
@@ -41,8 +51,8 @@ model Image{
   url String @db.Text()
   key String @unique @db.VarChar(200)
   created_at DateTime @default(now())
-  user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id String? @unique
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String @unique
 
   @@map("images")
 }
@@ -56,3 +66,92 @@ model Token{
 
   @@map("token")
 }
+
+model School{
+  id String @id @default(uuid())
+  name String @db.VarChar(254)
+  is_active Boolean @default(true)
+  created_at DateTime @default(now())
+  director User @relation(fields: [director_id], references: [id], onDelete: Cascade)
+  director_id String @unique
+  servers SchoolServer[]
+  classes Class[]
+  students Student[]
+  frequencies FrequencyStudent[]
+
+  @@map("schools")
+}
+
+model SchoolServer{
+  id String @id @default(uuid())
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  server User @relation(fields: [server_id], references: [id], onDelete: Cascade)
+  server_id String
+  dash Dash @default(COMMON)
+
+  @@map("school_server")
+}
+
+model Class{
+  id String @id @default(uuid())
+  name String @db.VarChar(254)
+  is_active Boolean @default(true)
+  created_at DateTime @default(now())
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  frequencies Frequency[]
+  students Student[]
+
+  @@map("classes")
+}
+
+model Frequency{
+  id String @id @default(uuid())
+  date DateTime @db.Date
+  created_at DateTime @default(now())
+  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id String
+  students FrequencyStudent[]
+
+  @@map("frequencies")
+}
+
+model Student{
+  id String @id @default(uuid())
+  name String @db.VarChar(254)
+  registry String @db.VarChar(100) @unique
+  is_active Boolean @default(true)
+  created_at DateTime @default(now())
+  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id String
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  frequencies FrequencyStudent[]
+
+  @@map("students")
+}
+
+enum Status{
+  PRESENTED
+  MISSED
+  JUSTIFIED
+}
+
+model FrequencyStudent{
+  id String @id @default(uuid())
+  frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  frequency_id String
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String
+  status Status @default(PRESENTED)
+  justification String? @db.Text
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+
+  @@map("frequency_student")
+}
+
+
+
+

@@ -11,7 +11,9 @@ export const createSessionService = async ({
 }: ISessionRequest): Promise<{
   token: string;
 }> => {
-  const user = await prisma.user.findUnique({ where: { login } });
+  const user = await prisma.user.findUnique({
+    where: { login },
+  });
 
   if (!user) {
     throw new AppError('Login or password invalid', 403);

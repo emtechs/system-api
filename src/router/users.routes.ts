@@ -5,6 +5,7 @@ import {
   listUserController,
   profileUserController,
   retrieveUserController,
+  retrieveUserWithCpfController,
   updateUserController,
 } from '../controllers';
 import {
@@ -30,6 +31,12 @@ userRouter.get(
 );
 
 userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController);
+
+userRouter.get(
+  '/cpf/:cpf',
+  verifyUserIsAuthenticated,
+  retrieveUserWithCpfController,
+);
 
 userRouter.get('/:id', verifyUserIsAuthenticated, retrieveUserController);
 

@@ -1,6 +1,6 @@
 import { compareSync, hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
-import { IUserUpdateRequest } from '../../interfaces';
+import { IRole, IUserUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserReturnSchema } from '../../schemas';
 
@@ -12,14 +12,21 @@ export const updateUserService = async (
     old_password,
     password,
     role,
+    dash,
     is_first_access,
     is_active,
   }: IUserUpdateRequest,
-  role_user: string,
+  role_user: IRole,
 ) => {
   if (role) {
     if (role_user !== 'ADMIN') {
       throw new AppError('User is not allowed to change his role', 400);
+    }
+  }
+
+  if (dash) {
+    if (role_user !== 'ADMIN') {
+      throw new AppError('User is not allowed to change his dash', 400);
     }
   }
 
@@ -50,6 +57,7 @@ export const updateUserService = async (
         email,
         password,
         role,
+        dash,
         is_first_access,
         is_active,
       },

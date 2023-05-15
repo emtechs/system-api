@@ -1,7 +1,15 @@
 import 'express-async-errors';
 import express from 'express';
 import { errorHandler } from './errors';
-import { passwordRouter, sessionRouter, userRouter } from './router';
+import {
+  classRouter,
+  passwordRouter,
+  schoolRouter,
+  serverRouter,
+  sessionRouter,
+  studentRouter,
+  userRouter,
+} from './router';
 
 const app = express();
 
@@ -18,6 +26,10 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/login', sessionRouter);
 app.use('/password', passwordRouter);
+app.use('/schools', schoolRouter);
+app.use('/servers', serverRouter);
+app.use('/classes', classRouter);
+app.use('/students', studentRouter);
 
 app.use(errorHandler);
 
