@@ -7,7 +7,10 @@ export const retrieveFrequencyService = async (id: string) => {
     include: {
       school: true,
       class: true,
-      students: { include: { student: true } },
+      students: {
+        include: { student: true },
+        orderBy: { student: { name: 'asc' } },
+      },
     },
   });
 
