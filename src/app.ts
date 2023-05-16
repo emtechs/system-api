@@ -3,6 +3,7 @@ import express from 'express';
 import { errorHandler } from './errors';
 import {
   classRouter,
+  frequencyRouter,
   passwordRouter,
   schoolRouter,
   serverRouter,
@@ -30,6 +31,7 @@ app.use('/schools', schoolRouter);
 app.use('/servers', serverRouter);
 app.use('/classes', classRouter);
 app.use('/students', studentRouter);
+app.use('/frequencies', frequencyRouter);
 
 app.use(errorHandler);
 

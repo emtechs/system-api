@@ -1,14 +1,24 @@
 import prisma from '../../prisma';
 import { IFrequencyRequest } from '../../interfaces';
-import { UserReturnSchema } from '../../schemas';
+import { FrequencyReturnSchema } from '../../schemas';
 
 export const createFrequencyService = async (
-  { date }: IFrequencyRequest,
-  class_id: string,
+  { date, class_id, students }: IFrequencyRequest,
+  school_id: string,
 ) => {
   const frequency = await prisma.frequency.create({
-    data: { date, class_id },
+    data: {
+      date,
+      class_id,
+      school_id,
+      students: { createMany: { data: students } },
+    },
+    include: {
+      school: true,
+      class: true,
+      students: { include: { student: true } },
+    },
   });
 
-  return UserReturnSchema.parse(frequency);
+  return FrequencyReturnSchema.parse(frequency);
 };

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import {
   ClassCreateSchema,
-  FrequencyCreateSchema,
   FrequencyStudentCreateSchema,
+  FrequencyStudentUpdateSchema,
+  FrequencyUpdateSchema,
   SchoolCreateSchema,
   ServerCreateSchema,
   StudentCreateSchema,
@@ -16,8 +17,35 @@ export type IClassRequest = z.infer<typeof ClassCreateSchema>;
 
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
 
-export type IFrequencyRequest = z.infer<typeof FrequencyCreateSchema>;
+export type IStatusFrequency = 'OPENED' | 'CLOSED';
+
+export interface IFrequencyRequest {
+  date: string;
+  class_id: string;
+  students: {
+    student_id: string;
+  };
+}
+
+export type IFrequencyUpdateRequest = z.infer<typeof FrequencyUpdateSchema>;
+
+export type IStatusStudent = 'PRESENTED' | 'MISSED' | 'JUSTIFIED';
 
 export type IFrequencyStudentRequest = z.infer<
   typeof FrequencyStudentCreateSchema
 >;
+
+export type IFrequencyStudentUpdateRequest = z.infer<
+  typeof FrequencyStudentUpdateSchema
+>;
+
+export interface IFrequencyQuery {
+  status?: IStatusFrequency;
+  school_id?: string;
+  date?: string;
+  class_id?: string;
+}
+
+export interface IClassQuery {
+  school_id?: string;
+}

@@ -12,8 +12,12 @@ export const createUserService = async ({
   role,
 }: IUserRequest) => {
   let user = await prisma.user.findUnique({
-    where: { cpf },
+    where: { login },
   });
+
+  if (user) {
+    throw new AppError('user already exists', 409);
+  }
 
   let dash: IDash = 'COMMON';
 
@@ -29,10 +33,6 @@ export const createUserService = async ({
     break;
   }
 
-  if (user) {
-    throw new AppError('user already exists', 409);
-  }
-
   password = hashSync(password, 10);
 
   user = await prisma.user.create({
@@ -43,6 +43,23 @@ export const createUserService = async ({
       cpf,
       role,
       dash,
+    },
+    include: {
+      director_school: true,
+      work_school: {
+        include: {
+          school: {
+            include: {
+              frequencies: {
+                include: {
+                  class: true,
+                  students: { include: { student: true } },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

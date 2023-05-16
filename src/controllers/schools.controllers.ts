@@ -7,9 +7,14 @@ import {
   createServerService,
   createStudentService,
   listClassService,
+  listFrequencyService,
+  listFrequencyStudentService,
   listSchoolService,
   listStudentService,
+  retrieveFrequencyService,
   retrieveServerWithCpfService,
+  updateFrequencyService,
+  updateFrequencyStudentService,
 } from '../services';
 
 export const createSchoolController = async (req: Request, res: Response) => {
@@ -44,7 +49,7 @@ export const createClassController = async (req: Request, res: Response) => {
 };
 
 export const listClassController = async (req: Request, res: Response) => {
-  const classes = await listClassService();
+  const classes = await listClassService(req.query);
   return res.json(classes);
 };
 
@@ -66,42 +71,50 @@ export const createFrequencyController = async (
   return res.status(201).json(frequency);
 };
 
+export const listFrequencyController = async (req: Request, res: Response) => {
+  const frequencies = await listFrequencyService(req.query);
+  return res.json(frequencies);
+};
+
+export const updateFrequencyController = async (
+  req: Request,
+  res: Response,
+) => {
+  const frequency = await updateFrequencyService(req.body, req.params.id);
+  return res.json(frequency);
+};
+
+export const retrieveFrequencyController = async (
+  req: Request,
+  res: Response,
+) => {
+  const frequency = await retrieveFrequencyService(req.params.id);
+  return res.json(frequency);
+};
+
 export const createFrequencyStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await createFrequencyStudentService(
-    req.body,
-    req.params.frequency_id,
-    req.params.school_id,
-  );
+  const frequency = await createFrequencyStudentService(req.body);
   return res.status(201).json(frequency);
 };
 
-// export const retrieveUserController = async (req: Request, res: Response) => {
-//   const user = await retrieveUserService(req.params.id);
-//   return res.json(user);
-// };
+export const listFrequencyStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const frequencies = await listFrequencyStudentService();
+  return res.json(frequencies);
+};
 
-// export const retrieveUserWithCpfController = async (
-//   req: Request,
-//   res: Response,
-// ) => {
-//   const user = await retrieveUserWithCpfService(req.params.cpf);
-//   return res.json(user);
-// };
-
-// export const profileUserController = async (req: Request, res: Response) => {
-//   const user = await retrieveUserService(req.user.id);
-//   return res.json(user);
-// };
-
-// export const updateUserController = async (req: Request, res: Response) => {
-//   const user = await updateUserService(req.params.id, req.body, req.user.role);
-//   return res.json(user);
-// };
-
-// export const deleteUserController = async (req: Request, res: Response) => {
-//   await deleteUserService(req.params.id);
-//   return res.status(204).json({});
-// };
+export const updateFrequencyStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const frequency = await updateFrequencyStudentService(
+    req.body,
+    req.params.id,
+  );
+  return res.json(frequency);
+};

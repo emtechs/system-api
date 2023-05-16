@@ -77,7 +77,7 @@ model School{
   servers SchoolServer[]
   classes Class[]
   students Student[]
-  frequencies FrequencyStudent[]
+  frequencies Frequency[]
 
   @@map("schools")
 }
@@ -106,12 +106,20 @@ model Class{
   @@map("classes")
 }
 
+enum StatusFrequency{
+  OPENED
+  CLOSED
+}
+
 model Frequency{
   id String @id @default(uuid())
-  date DateTime @db.Date
+  date String @db.VarChar(100)
+  status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
   students FrequencyStudent[]
 
   @@map("frequencies")
@@ -132,7 +140,7 @@ model Student{
   @@map("students")
 }
 
-enum Status{
+enum StatusStudent{
   PRESENTED
   MISSED
   JUSTIFIED
@@ -144,10 +152,9 @@ model FrequencyStudent{
   frequency_id String
   student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id String
-  status Status @default(PRESENTED)
+  status StatusStudent @default(PRESENTED)
   justification String? @db.Text
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
+  updated_at String? @db.VarChar(200)
 
   @@map("frequency_student")
 }

@@ -1,13 +1,20 @@
 import { Router } from 'express';
 import {
   createClassController,
+  createFrequencyController,
+  createFrequencyStudentController,
   createSchoolController,
   createServerController,
   createStudentController,
   listClassController,
+  listFrequencyController,
+  listFrequencyStudentController,
   listSchoolController,
   listStudentController,
+  retrieveFrequencyController,
   retrieveServerWithCpfController,
+  updateFrequencyController,
+  updateFrequencyStudentController,
 } from '../controllers';
 import {
   validateSchemaMiddleware,
@@ -15,6 +22,10 @@ import {
 } from '../middlewares';
 import {
   ClassCreateSchema,
+  FrequencyCreateSchema,
+  FrequencyStudentCreateSchema,
+  FrequencyStudentUpdateSchema,
+  FrequencyUpdateSchema,
   SchoolCreateSchema,
   ServerCreateSchema,
   StudentCreateSchema,
@@ -66,4 +77,48 @@ serverRouter.get(
   '/:id/cpf/:cpf',
   verifyUserIsAuthenticated,
   retrieveServerWithCpfController,
+);
+
+export const frequencyRouter = Router();
+
+frequencyRouter.post(
+  '',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(FrequencyStudentCreateSchema),
+  createFrequencyStudentController,
+);
+
+frequencyRouter.post(
+  '/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(FrequencyCreateSchema),
+  createFrequencyController,
+);
+
+frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController);
+
+frequencyRouter.get(
+  '/:id',
+  verifyUserIsAuthenticated,
+  retrieveFrequencyController,
+);
+
+frequencyRouter.patch(
+  '/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(FrequencyUpdateSchema),
+  updateFrequencyController,
+);
+
+frequencyRouter.get(
+  '/student',
+  verifyUserIsAuthenticated,
+  listFrequencyStudentController,
+);
+
+frequencyRouter.patch(
+  '/student/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(FrequencyStudentUpdateSchema),
+  updateFrequencyStudentController,
 );

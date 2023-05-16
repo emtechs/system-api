@@ -10,7 +10,20 @@ export const listUserService = async ({
   let users = await prisma.user.findMany({
     include: {
       director_school: true,
-      work_school: { include: { school: true } },
+      work_school: {
+        include: {
+          school: {
+            include: {
+              frequencies: {
+                include: {
+                  class: true,
+                  students: { include: { student: true } },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

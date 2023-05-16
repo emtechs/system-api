@@ -61,6 +61,23 @@ export const updateUserService = async (
         is_first_access,
         is_active,
       },
+      include: {
+        director_school: true,
+        work_school: {
+          include: {
+            school: {
+              include: {
+                frequencies: {
+                  include: {
+                    class: true,
+                    students: { include: { student: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     return UserReturnSchema.parse(user);

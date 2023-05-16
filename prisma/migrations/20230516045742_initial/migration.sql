@@ -5,7 +5,10 @@ CREATE TYPE "Role" AS ENUM ('SERV', 'DIRET', 'SECRET', 'ADMIN');
 CREATE TYPE "Dash" AS ENUM ('COMMON', 'SCHOOL', 'ORGAN', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('PRESENTED', 'MISSED', 'JUSTIFIED');
+CREATE TYPE "StatusFrequency" AS ENUM ('OPENED', 'CLOSED');
+
+-- CreateEnum
+CREATE TYPE "StatusStudent" AS ENUM ('PRESENTED', 'MISSED', 'JUSTIFIED');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -82,9 +85,11 @@ CREATE TABLE "classes" (
 -- CreateTable
 CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
-    "date" DATE NOT NULL,
+    "date" VARCHAR(100) NOT NULL,
+    "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "class_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
 
     CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
 );
@@ -107,9 +112,9 @@ CREATE TABLE "frequency_student" (
     "id" TEXT NOT NULL,
     "frequency_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'PRESENTED',
+    "status" "StatusStudent" NOT NULL DEFAULT 'PRESENTED',
     "justification" TEXT,
-    "school_id" TEXT NOT NULL,
+    "updated_at" VARCHAR(200),
 
     CONSTRAINT "frequency_student_pkey" PRIMARY KEY ("id")
 );
@@ -157,6 +162,9 @@ ALTER TABLE "classes" ADD CONSTRAINT "classes_school_id_fkey" FOREIGN KEY ("scho
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "students" ADD CONSTRAINT "students_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -167,6 +175,3 @@ ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_f
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
