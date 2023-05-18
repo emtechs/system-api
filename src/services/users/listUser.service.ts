@@ -8,6 +8,7 @@ export const listUserService = async ({
   isNot_director_school,
 }: IUserQuery) => {
   let users = await prisma.user.findMany({
+    orderBy: { name: 'asc' },
     include: {
       director_school: true,
       work_school: {

@@ -5,11 +5,14 @@ import {
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   SchoolCreateSchema,
+  SchoolUpdateSchema,
   ServerCreateSchema,
   StudentCreateSchema,
 } from '../schemas';
 
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>;
+
+export type ISchoolUpdateRequest = z.infer<typeof SchoolUpdateSchema>;
 
 export type IServerRequest = z.infer<typeof ServerCreateSchema>;
 

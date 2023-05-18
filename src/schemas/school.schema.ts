@@ -5,6 +5,12 @@ export const SchoolCreateSchema = z.object({
   director_id: z.string().uuid(),
 });
 
+export const SchoolUpdateSchema = z
+  .object({
+    is_active: z.boolean(),
+  })
+  .partial();
+
 export const SchoolReturnSchema = SchoolCreateSchema.extend({
   id: z.string(),
   created_at: z.date(),

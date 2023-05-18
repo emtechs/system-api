@@ -15,6 +15,7 @@ import {
   retrieveServerWithCpfService,
   updateFrequencyService,
   updateFrequencyStudentService,
+  updateSchoolService,
 } from '../services';
 
 export const createSchoolController = async (req: Request, res: Response) => {
@@ -117,4 +118,9 @@ export const updateFrequencyStudentController = async (
     req.params.id,
   );
   return res.json(frequency);
+};
+
+export const updateSchoolController = async (req: Request, res: Response) => {
+  const school = await updateSchoolService(req.body, req.params.id);
+  return res.json(school);
 };

@@ -15,6 +15,7 @@ import {
   retrieveServerWithCpfController,
   updateFrequencyController,
   updateFrequencyStudentController,
+  updateSchoolController,
 } from '../controllers';
 import {
   validateSchemaMiddleware,
@@ -27,6 +28,7 @@ import {
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   SchoolCreateSchema,
+  SchoolUpdateSchema,
   ServerCreateSchema,
   StudentCreateSchema,
 } from '../schemas';
@@ -41,6 +43,13 @@ schoolRouter.post(
 );
 
 schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
+
+schoolRouter.patch(
+  '/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(SchoolUpdateSchema),
+  updateSchoolController,
+);
 
 export const classRouter = Router();
 
