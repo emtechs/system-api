@@ -6,7 +6,6 @@ import {
   frequencyRouter,
   passwordRouter,
   schoolRouter,
-  serverRouter,
   sessionRouter,
   studentRouter,
   userRouter,
@@ -28,7 +27,6 @@ app.use('/users', userRouter);
 app.use('/login', sessionRouter);
 app.use('/password', passwordRouter);
 app.use('/schools', schoolRouter);
-app.use('/servers', serverRouter);
 app.use('/classes', classRouter);
 app.use('/students', studentRouter);
 app.use('/frequencies', frequencyRouter);

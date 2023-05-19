@@ -4,7 +4,6 @@ import {
   createFrequencyController,
   createFrequencyStudentController,
   createSchoolController,
-  createServerController,
   createStudentController,
   listClassController,
   listFrequencyController,
@@ -12,7 +11,6 @@ import {
   listSchoolController,
   listStudentController,
   retrieveFrequencyController,
-  retrieveServerWithCpfController,
   updateFrequencyController,
   updateFrequencyStudentController,
   updateSchoolController,
@@ -29,7 +27,6 @@ import {
   FrequencyUpdateSchema,
   SchoolCreateSchema,
   SchoolUpdateSchema,
-  ServerCreateSchema,
   StudentCreateSchema,
 } from '../schemas';
 
@@ -72,21 +69,6 @@ studentRouter.post(
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);
-
-export const serverRouter = Router();
-
-serverRouter.post(
-  '/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(ServerCreateSchema),
-  createServerController,
-);
-
-serverRouter.get(
-  '/:id/cpf/:cpf',
-  verifyUserIsAuthenticated,
-  retrieveServerWithCpfController,
-);
 
 export const frequencyRouter = Router();
 

@@ -7,6 +7,7 @@ export const UserCreateSchema = z.object({
   password: z.string(),
   cpf: z.string(),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
+  dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).default('COMMON'),
 });
 
 export const UserReturnSchema = UserCreateSchema.extend({

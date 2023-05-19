@@ -9,7 +9,7 @@ import {
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
-  const user = await createUserService(req.body);
+  const user = await createUserService(req.body, req.query);
   return res.status(201).json(user);
 };
 
@@ -27,7 +27,7 @@ export const retrieveUserWithCpfController = async (
   req: Request,
   res: Response,
 ) => {
-  const user = await retrieveUserWithCpfService(req.params.cpf);
+  const user = await retrieveUserWithCpfService(req.params.cpf, req.query);
   return res.json(user);
 };
 

@@ -4,7 +4,6 @@ import {
   createFrequencyService,
   createFrequencyStudentService,
   createSchoolService,
-  createServerService,
   createStudentService,
   listClassService,
   listFrequencyService,
@@ -12,7 +11,6 @@ import {
   listSchoolService,
   listStudentService,
   retrieveFrequencyService,
-  retrieveServerWithCpfService,
   updateFrequencyService,
   updateFrequencyStudentService,
   updateSchoolService,
@@ -26,22 +24,6 @@ export const createSchoolController = async (req: Request, res: Response) => {
 export const listSchoolController = async (req: Request, res: Response) => {
   const schools = await listSchoolService();
   return res.json(schools);
-};
-
-export const createServerController = async (req: Request, res: Response) => {
-  const server = await createServerService(req.body, req.params.id);
-  return res.status(201).json(server);
-};
-
-export const retrieveServerWithCpfController = async (
-  req: Request,
-  res: Response,
-) => {
-  const server = await retrieveServerWithCpfService(
-    req.params.id,
-    req.params.cpf,
-  );
-  return res.json(server);
 };
 
 export const createClassController = async (req: Request, res: Response) => {

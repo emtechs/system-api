@@ -14,3 +14,12 @@ export interface IUserQuery {
   is_active?: boolean;
   isNot_director_school?: boolean;
 }
+
+export interface IUserCreateQuery {
+  school_id?: string;
+}
+
+export interface IUserCpfQuery {
+  school_id?: string;
+  isSecret?: boolean;
+}

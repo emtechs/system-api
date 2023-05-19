@@ -1,27 +1,29 @@
+import { IUserCpfQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { UserReturnSchema } from '../../schemas';
 
-export const retrieveUserWithCpfService = async (login: string) => {
+export const retrieveUserWithCpfService = async (
+  login: string,
+  { school_id, isSecret }: IUserCpfQuery,
+) => {
+  if (school_id) {
+    const server = await prisma.schoolServer.findFirst({
+      where: { AND: { server: { login }, school_id } },
+    });
+
+    return server;
+  }
+
+  if (isSecret) {
+    const user = await prisma.user.findFirst({
+      where: { AND: { login, role: { not: 'SERV' } } },
+    });
+
+    return user;
+  }
+
   const user = await prisma.user.findUnique({
     where: { login },
-    include: {
-      director_school: true,
-      work_school: {
-        include: {
-          school: {
-            include: {
-              frequencies: {
-                include: {
-                  class: true,
-                  students: { include: { student: true } },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
   });
 
-  return UserReturnSchema.parse(user);
+  return user;
 };

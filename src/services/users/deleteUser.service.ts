@@ -1,11 +1,10 @@
 import prisma from '../../prisma';
 import { AppError } from '../../errors';
 
-export const deleteUserService = async (id: string) => {
+export const deleteUserService = async (login: string) => {
   try {
-    await prisma.user.update({
-      where: { id },
-      data: { is_active: false },
+    await prisma.user.delete({
+      where: { login },
     });
   } catch {
     throw new AppError('user not found', 404);

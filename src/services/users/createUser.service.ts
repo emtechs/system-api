@@ -1,25 +1,45 @@
 import prisma from '../../prisma';
-import { IDash, IUserRequest } from '../../interfaces';
+import { IUserCreateQuery, IUserRequest } from '../../interfaces';
 import { hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
 import { UserReturnSchema } from '../../schemas';
 
-export const createUserService = async ({
-  login,
-  name,
-  password,
-  cpf,
-  role,
-}: IUserRequest) => {
+export const createUserService = async (
+  { login, name, password, cpf, role, dash }: IUserRequest,
+  { school_id }: IUserCreateQuery,
+) => {
   let user = await prisma.user.findUnique({
     where: { login },
   });
 
+  if (school_id) {
+    if (user) {
+      const server = await prisma.user.update({
+        where: { id: user.id },
+        data: { work_school: { create: { school_id, dash } } },
+      });
+      return UserReturnSchema.parse(server);
+    }
+
+    password = hashSync(password, 10);
+
+    const server = await prisma.user.create({
+      data: {
+        login,
+        name,
+        cpf,
+        dash,
+        password,
+        work_school: { create: { school_id, dash } },
+      },
+    });
+
+    return UserReturnSchema.parse(server);
+  }
+
   if (user) {
     throw new AppError('user already exists', 409);
   }
-
-  let dash: IDash = 'COMMON';
 
   switch (role) {
   case 'ADMIN':
