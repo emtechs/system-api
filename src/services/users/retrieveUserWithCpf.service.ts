@@ -3,7 +3,7 @@ import prisma from '../../prisma';
 
 export const retrieveUserWithCpfService = async (
   login: string,
-  { school_id, isSecret }: IUserCpfQuery,
+  { school_id, allNotServ }: IUserCpfQuery,
 ) => {
   if (school_id) {
     const server = await prisma.schoolServer.findFirst({
@@ -13,7 +13,7 @@ export const retrieveUserWithCpfService = async (
     return server;
   }
 
-  if (isSecret) {
+  if (allNotServ) {
     const user = await prisma.user.findFirst({
       where: { AND: { login, role: { not: 'SERV' } } },
     });

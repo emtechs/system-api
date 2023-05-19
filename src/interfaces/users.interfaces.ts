@@ -11,15 +11,16 @@ export type IUserUpdateRequest = z.infer<typeof UserUpdateRequestSchema>;
 
 export interface IUserQuery {
   role?: IRole;
-  is_active?: boolean;
-  isNot_director_school?: boolean;
+  is_active?: 'true' | 'false';
+  isNot_director_school?: 'true' | 'false';
 }
 
 export interface IUserCreateQuery {
   school_id?: string;
+  allNotServ?: 'true' | 'false';
 }
 
 export interface IUserCpfQuery {
   school_id?: string;
-  isSecret?: boolean;
+  allNotServ?: 'true' | 'false';
 }

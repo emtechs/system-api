@@ -6,7 +6,7 @@ import { UserReturnSchema } from '../../schemas';
 
 export const createUserService = async (
   { login, name, password, cpf, role, dash }: IUserRequest,
-  { school_id }: IUserCreateQuery,
+  { school_id, allNotServ }: IUserCreateQuery,
 ) => {
   let user = await prisma.user.findUnique({
     where: { login },
@@ -16,7 +16,24 @@ export const createUserService = async (
     if (user) {
       const server = await prisma.user.update({
         where: { id: user.id },
-        data: { work_school: { create: { school_id, dash } } },
+        data: { is_active: true, work_school: { create: { school_id, dash } } },
+        include: {
+          director_school: true,
+          work_school: {
+            include: {
+              school: {
+                include: {
+                  frequencies: {
+                    include: {
+                      class: true,
+                      students: { include: { student: true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
       return UserReturnSchema.parse(server);
     }
@@ -32,13 +49,26 @@ export const createUserService = async (
         password,
         work_school: { create: { school_id, dash } },
       },
+      include: {
+        director_school: true,
+        work_school: {
+          include: {
+            school: {
+              include: {
+                frequencies: {
+                  include: {
+                    class: true,
+                    students: { include: { student: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     return UserReturnSchema.parse(server);
-  }
-
-  if (user) {
-    throw new AppError('user already exists', 409);
   }
 
   switch (role) {
@@ -51,6 +81,69 @@ export const createUserService = async (
   case 'DIRET':
     dash = 'SCHOOL';
     break;
+  }
+
+  if (allNotServ) {
+    if (user) {
+      const server = await prisma.user.update({
+        where: { id: user.id },
+        data: { role, dash, is_active: true },
+        include: {
+          director_school: true,
+          work_school: {
+            include: {
+              school: {
+                include: {
+                  frequencies: {
+                    include: {
+                      class: true,
+                      students: { include: { student: true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      return UserReturnSchema.parse(server);
+    }
+
+    password = hashSync(password, 10);
+
+    const server = await prisma.user.create({
+      data: {
+        login,
+        name,
+        cpf,
+        role,
+        dash,
+        password,
+      },
+      include: {
+        director_school: true,
+        work_school: {
+          include: {
+            school: {
+              include: {
+                frequencies: {
+                  include: {
+                    class: true,
+                    students: { include: { student: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return UserReturnSchema.parse(server);
+  }
+
+  if (user) {
+    throw new AppError('user already exists', 409);
   }
 
   password = hashSync(password, 10);

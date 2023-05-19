@@ -28,11 +28,18 @@ export const listUserService = async ({
     },
   });
 
-  users = role ? users.filter((user) => role === user.role) : users;
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      users = users.filter((user) => user.is_active === true);
+      break;
+    case 'false':
+      users = users.filter((user) => user.is_active === false);
+      break;
+    }
+  }
 
-  users = is_active
-    ? users.filter((user) => user.is_active === is_active)
-    : users;
+  users = role ? users.filter((user) => role === user.role) : users;
 
   users = isNot_director_school
     ? users.filter((user) => !user.director_school)
