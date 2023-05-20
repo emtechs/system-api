@@ -30,7 +30,7 @@ import {
   SchoolUpdateSchema,
   StudentCreateSchema,
 } from '../schemas';
-import { upload } from '../utils';
+import { uploadCsv } from '../utils';
 
 export const schoolRouter = Router();
 
@@ -73,7 +73,7 @@ studentRouter.post(
 studentRouter.post(
   '/import/:class_id/:school_id',
   verifyUserIsAuthenticated,
-  upload.single('file'),
+  uploadCsv.single('file'),
   importStudentController,
 );
 

@@ -67,3 +67,16 @@ export const upload = process.env.APP_URL
     limits: { fileSize },
     fileFilter,
   });
+
+export const uploadCsv = process.env.APP_URL
+  ? multer({
+    dest: tmpfolder,
+    storage,
+    limits: { fileSize },
+    fileFilter,
+  })
+  : multer({
+    storage: multer.diskStorage({}),
+    limits: { fileSize },
+    fileFilter,
+  });
