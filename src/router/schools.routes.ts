@@ -5,6 +5,7 @@ import {
   createFrequencyStudentController,
   createSchoolController,
   createStudentController,
+  importStudentController,
   listClassController,
   listFrequencyController,
   listFrequencyStudentController,
@@ -29,6 +30,7 @@ import {
   SchoolUpdateSchema,
   StudentCreateSchema,
 } from '../schemas';
+import { upload } from '../utils';
 
 export const schoolRouter = Router();
 
@@ -66,6 +68,13 @@ studentRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentCreateSchema),
   createStudentController,
+);
+
+studentRouter.post(
+  '/import/:class_id/:school_id',
+  verifyUserIsAuthenticated,
+  upload.single('file'),
+  importStudentController,
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);

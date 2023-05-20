@@ -2,8 +2,9 @@ import { v2 as cloudinary } from 'cloudinary';
 import prisma from '../../prisma';
 import fs from 'node:fs';
 import { resolve } from 'node:path';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import { AppError } from '../../errors';
+import 'dotenv/config';
 
 export const deleteImageService = async (id: string) => {
   try {

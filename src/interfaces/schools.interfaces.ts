@@ -20,6 +20,13 @@ export type IClassRequest = z.infer<typeof ClassCreateSchema>;
 
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
 
+export interface IStudent {
+  registry: string;
+  name: string;
+  class_id: string;
+  school_id: string;
+}
+
 export type IStatusFrequency = 'OPENED' | 'CLOSED';
 
 export interface IFrequencyRequest {
@@ -41,6 +48,10 @@ export type IFrequencyStudentRequest = z.infer<
 export type IFrequencyStudentUpdateRequest = z.infer<
   typeof FrequencyStudentUpdateSchema
 >;
+
+export interface ISchoolQuery {
+  is_active?: 'true' | 'false';
+}
 
 export interface IFrequencyQuery {
   status?: IStatusFrequency;

@@ -34,6 +34,7 @@ export const updateUserService = async (
     if (role_user !== 'ADMIN') {
       throw new AppError('User is not allowed to change his is_active', 400);
     }
+    await prisma.schoolServer.deleteMany({ where: { server_id: id } });
   }
 
   if (old_password && password) {

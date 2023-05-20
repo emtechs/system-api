@@ -5,6 +5,7 @@ import {
   createFrequencyStudentService,
   createSchoolService,
   createStudentService,
+  importStudentService,
   listClassService,
   listFrequencyService,
   listFrequencyStudentService,
@@ -22,7 +23,7 @@ export const createSchoolController = async (req: Request, res: Response) => {
 };
 
 export const listSchoolController = async (req: Request, res: Response) => {
-  const schools = await listSchoolService();
+  const schools = await listSchoolService(req.query);
   return res.json(schools);
 };
 
@@ -39,6 +40,15 @@ export const listClassController = async (req: Request, res: Response) => {
 export const createStudentController = async (req: Request, res: Response) => {
   const student = await createStudentService(req.body, req.params.id);
   return res.status(201).json(student);
+};
+
+export const importStudentController = async (req: Request, res: Response) => {
+  const students = await importStudentService(
+    req.file,
+    req.params.class_id,
+    req.params.school_id,
+  );
+  return res.status(201).json(students);
 };
 
 export const listStudentController = async (req: Request, res: Response) => {

@@ -3,6 +3,7 @@ export * from './createFrequency.service';
 export * from './createFrequencyStudent.service';
 export * from './createSchool.service';
 export * from './createStudent.service';
+export * from './importStudent.service';
 export * from './listClass.service';
 export * from './listFrequency.service';
 export * from './listFrequencyStudent.service';

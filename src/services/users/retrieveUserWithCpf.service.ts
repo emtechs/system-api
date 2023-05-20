@@ -10,6 +10,14 @@ export const retrieveUserWithCpfService = async (
       where: { AND: { server: { login }, school_id } },
     });
 
+    if (!server && allNotServ) {
+      const user = await prisma.user.findFirst({
+        where: { AND: { login, role: { not: 'SERV' } } },
+      });
+
+      return user;
+    }
+
     return server;
   }
 
