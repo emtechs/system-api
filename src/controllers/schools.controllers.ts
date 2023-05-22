@@ -13,6 +13,7 @@ import {
   listSchoolService,
   listStudentService,
   retrieveFrequencyService,
+  retrieveStudentService,
   updateFrequencyService,
   updateFrequencyStudentService,
   updateSchoolService,
@@ -55,6 +56,14 @@ export const importStudentController = async (req: Request, res: Response) => {
 export const listStudentController = async (req: Request, res: Response) => {
   const students = await listStudentService();
   return res.json(students);
+};
+
+export const retrieveStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const student = await retrieveStudentService(req.params.id);
+  return res.json(student);
 };
 
 export const createFrequencyController = async (

@@ -61,10 +61,16 @@ export const parseFrequency = async (id: string) => {
   const total_frequencies = presented + justified + missed;
   const infrequency = (missed / total_frequencies) * 100;
 
-  console.log(presented, justified, missed, total_frequencies, infrequency);
-
   await prisma.student.update({
     where: { id },
     data: { presented, justified, missed, total_frequencies, infrequency },
   });
+
+  return {
+    presented,
+    justified,
+    missed,
+    total_frequencies,
+    infrequency,
+  };
 };

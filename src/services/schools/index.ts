@@ -11,6 +11,7 @@ export * from './listReport.service';
 export * from './listSchool.service';
 export * from './listStudent.service';
 export * from './retrieveFrequency.service';
+export * from './retrieveStudent.service';
 export * from './updateFrequency.service';
 export * from './updateFrequencyStudent.service';
 export * from './updateSchool.service';

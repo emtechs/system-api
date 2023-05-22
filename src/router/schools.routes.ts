@@ -13,6 +13,7 @@ import {
   listSchoolController,
   listStudentController,
   retrieveFrequencyController,
+  retrieveStudentController,
   updateFrequencyController,
   updateFrequencyStudentController,
   updateSchoolController,
@@ -79,6 +80,8 @@ studentRouter.post(
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);
+
+studentRouter.get('/:id', verifyUserIsAuthenticated, retrieveStudentController);
 
 export const frequencyRouter = Router();
 
