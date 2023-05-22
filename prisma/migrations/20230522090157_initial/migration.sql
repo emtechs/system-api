@@ -78,6 +78,7 @@ CREATE TABLE "classes" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "school_id" TEXT NOT NULL,
+    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
 );
@@ -88,6 +89,7 @@ CREATE TABLE "frequencies" (
     "date" VARCHAR(100) NOT NULL,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "finished_at" INTEGER,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
 
@@ -100,9 +102,15 @@ CREATE TABLE "students" (
     "name" VARCHAR(254) NOT NULL,
     "registry" VARCHAR(100) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "justify_disabled" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
+    "presented" INTEGER NOT NULL DEFAULT 0,
+    "justified" INTEGER NOT NULL DEFAULT 0,
+    "missed" INTEGER NOT NULL DEFAULT 0,
+    "total_frequencies" INTEGER NOT NULL DEFAULT 0,
+    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );

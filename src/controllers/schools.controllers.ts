@@ -9,6 +9,7 @@ import {
   listClassService,
   listFrequencyService,
   listFrequencyStudentService,
+  listReportService,
   listSchoolService,
   listStudentService,
   retrieveFrequencyService,
@@ -98,6 +99,11 @@ export const listFrequencyStudentController = async (
   res: Response,
 ) => {
   const frequencies = await listFrequencyStudentService();
+  return res.json(frequencies);
+};
+
+export const listReportController = async (req: Request, res: Response) => {
+  const frequencies = await listReportService(req.params.id);
   return res.json(frequencies);
 };
 

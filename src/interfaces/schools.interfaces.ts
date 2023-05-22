@@ -62,4 +62,5 @@ export interface IFrequencyQuery {
 
 export interface IClassQuery {
   school_id?: string;
+  is_active?: 'true' | 'false';
 }

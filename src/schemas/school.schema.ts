@@ -84,6 +84,7 @@ export const ClassReturnSchema = ClassCreateSchema.extend({
   students: z
     .object({ id: z.string(), name: z.string(), registry: z.string() })
     .array(),
+  _count: z.object({ students: z.number() }),
 });
 
 export const ClassArraySchema = ClassReturnSchema.array();

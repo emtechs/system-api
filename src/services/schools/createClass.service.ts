@@ -8,7 +8,7 @@ export const createClassService = async (
 ) => {
   const classData = await prisma.class.create({
     data: { name, school_id },
-    include: { school: true, students: true },
+    include: { _count: true, students: true, school: true },
   });
 
   return ClassReturnSchema.parse(classData);

@@ -9,6 +9,7 @@ import {
   listClassController,
   listFrequencyController,
   listFrequencyStudentController,
+  listReportController,
   listSchoolController,
   listStudentController,
   retrieveFrequencyController,
@@ -122,3 +123,7 @@ frequencyRouter.patch(
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
 );
+
+export const reportRouter = Router();
+
+reportRouter.get('/:id', listReportController);

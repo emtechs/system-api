@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"]
 }
 
 datasource db {
@@ -100,6 +101,7 @@ model Class{
   created_at DateTime @default(now())
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
+  infrequency Float @default(0)
   frequencies Frequency[]
   students Student[]
 
@@ -116,6 +118,7 @@ model Frequency{
   date String @db.VarChar(100)
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
+  finished_at Int? @db.Integer
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
@@ -130,11 +133,17 @@ model Student{
   name String @db.VarChar(254)
   registry String @db.VarChar(100) @unique
   is_active Boolean @default(true)
+  justify_disabled String? @db.Text
   created_at DateTime @default(now())
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
+  presented Int @default(0)
+  justified Int @default(0)
+  missed Int @default(0)
+  total_frequencies Int @default(0)
+  infrequency Float @default(0)
   frequencies FrequencyStudent[]
 
   @@map("students")
