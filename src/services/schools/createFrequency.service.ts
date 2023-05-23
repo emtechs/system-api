@@ -4,17 +4,17 @@ import { FrequencyReturnSchema } from '../../schemas';
 
 export const createFrequencyService = async (
   { date, class_id, students }: IFrequencyRequest,
-  school_id: string,
+  user_id: string,
 ) => {
   const frequency = await prisma.frequency.create({
     data: {
       date,
       class_id,
-      school_id,
+      user_id,
       students: { createMany: { data: students } },
     },
     include: {
-      school: true,
+      user: true,
       class: true,
       students: { include: { student: true } },
     },

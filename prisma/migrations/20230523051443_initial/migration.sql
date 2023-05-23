@@ -78,7 +78,6 @@ CREATE TABLE "classes" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "school_id" TEXT NOT NULL,
-    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
 );
@@ -89,9 +88,9 @@ CREATE TABLE "frequencies" (
     "date" VARCHAR(100) NOT NULL,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "finished_at" INTEGER,
+    "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "class_id" TEXT NOT NULL,
-    "school_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
 );
@@ -106,11 +105,6 @@ CREATE TABLE "students" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
-    "presented" INTEGER NOT NULL DEFAULT 0,
-    "justified" INTEGER NOT NULL DEFAULT 0,
-    "missed" INTEGER NOT NULL DEFAULT 0,
-    "total_frequencies" INTEGER NOT NULL DEFAULT 0,
-    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );
@@ -118,11 +112,11 @@ CREATE TABLE "students" (
 -- CreateTable
 CREATE TABLE "frequency_student" (
     "id" TEXT NOT NULL,
-    "frequency_id" TEXT NOT NULL,
-    "student_id" TEXT NOT NULL,
     "status" "StatusStudent" NOT NULL DEFAULT 'PRESENTED',
     "justification" TEXT,
     "updated_at" VARCHAR(200),
+    "frequency_id" TEXT NOT NULL,
+    "student_id" TEXT NOT NULL,
 
     CONSTRAINT "frequency_student_pkey" PRIMARY KEY ("id")
 );
@@ -170,7 +164,7 @@ ALTER TABLE "classes" ADD CONSTRAINT "classes_school_id_fkey" FOREIGN KEY ("scho
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "students" ADD CONSTRAINT "students_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -2,14 +2,12 @@ import { Router } from 'express';
 import {
   createClassController,
   createFrequencyController,
-  createFrequencyStudentController,
   createSchoolController,
   createStudentController,
   importStudentController,
   listClassController,
   listFrequencyController,
   listFrequencyStudentController,
-  listReportController,
   listSchoolController,
   listStudentController,
   retrieveFrequencyController,
@@ -25,7 +23,6 @@ import {
 import {
   ClassCreateSchema,
   FrequencyCreateSchema,
-  FrequencyStudentCreateSchema,
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   SchoolCreateSchema,
@@ -88,13 +85,6 @@ export const frequencyRouter = Router();
 frequencyRouter.post(
   '',
   verifyUserIsAuthenticated,
-  validateSchemaMiddleware(FrequencyStudentCreateSchema),
-  createFrequencyStudentController,
-);
-
-frequencyRouter.post(
-  '/:id',
-  verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyCreateSchema),
   createFrequencyController,
 );
@@ -126,7 +116,3 @@ frequencyRouter.patch(
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
 );
-
-export const reportRouter = Router();
-
-reportRouter.get('/:id', listReportController);

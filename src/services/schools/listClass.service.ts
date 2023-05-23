@@ -1,6 +1,6 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { ClassArraySchema } from '../../schemas';
+import { classParseFrequency } from '../../scripts';
 
 export const listClassService = async ({
   is_active,
@@ -12,12 +12,12 @@ export const listClassService = async ({
 
   if (is_active) {
     switch (is_active) {
-      case 'true':
-        classes = classes.filter((el) => el.is_active === true);
-        break;
-      case 'false':
-        classes = classes.filter((el) => el.is_active === false);
-        break;
+    case 'true':
+      classes = classes.filter((el) => el.is_active === true);
+      break;
+    case 'false':
+      classes = classes.filter((el) => el.is_active === false);
+      break;
     }
   }
 
@@ -25,7 +25,7 @@ export const listClassService = async ({
     ? classes.filter((el) => school_id === el.school_id)
     : classes;
 
-  return classes;
+  return classParseFrequency(classes);
 
   // return ClassArraySchema.parse(classes);
 };

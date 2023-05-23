@@ -7,9 +7,6 @@ export const listSchoolService = async ({ is_active }: ISchoolQuery) => {
     include: {
       director: true,
       servers: { include: { server: true } },
-      frequencies: {
-        include: { class: true, students: { include: { student: true } } },
-      },
     },
   });
 

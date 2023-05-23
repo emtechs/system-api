@@ -9,7 +9,6 @@ import {
   listClassService,
   listFrequencyService,
   listFrequencyStudentService,
-  listReportService,
   listSchoolService,
   listStudentService,
   retrieveFrequencyService,
@@ -70,7 +69,7 @@ export const createFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await createFrequencyService(req.body, req.params.id);
+  const frequency = await createFrequencyService(req.body, req.user.id);
   return res.status(201).json(frequency);
 };
 
@@ -108,11 +107,6 @@ export const listFrequencyStudentController = async (
   res: Response,
 ) => {
   const frequencies = await listFrequencyStudentService();
-  return res.json(frequencies);
-};
-
-export const listReportController = async (req: Request, res: Response) => {
-  const frequencies = await listReportService(req.params.id);
   return res.json(frequencies);
 };
 

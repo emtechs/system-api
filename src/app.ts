@@ -5,7 +5,6 @@ import {
   classRouter,
   frequencyRouter,
   passwordRouter,
-  reportRouter,
   schoolRouter,
   sessionRouter,
   studentRouter,
@@ -31,7 +30,6 @@ app.use('/schools', schoolRouter);
 app.use('/classes', classRouter);
 app.use('/students', studentRouter);
 app.use('/frequencies', frequencyRouter);
-app.use('/reports', reportRouter);
 
 app.use(errorHandler);
 

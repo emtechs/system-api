@@ -7,7 +7,6 @@ export * from './importStudent.service';
 export * from './listClass.service';
 export * from './listFrequency.service';
 export * from './listFrequencyStudent.service';
-export * from './listReport.service';
 export * from './listSchool.service';
 export * from './listStudent.service';
 export * from './retrieveFrequency.service';

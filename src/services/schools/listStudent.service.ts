@@ -1,7 +1,8 @@
 import prisma from '../../prisma';
-import { ClassArraySchema } from '../../schemas';
+import { studentsParseFrequency } from '../../scripts';
 
 export const listStudentService = async () => {
   const students = await prisma.student.findMany({});
-  return students;
+
+  return await studentsParseFrequency(students);
 };

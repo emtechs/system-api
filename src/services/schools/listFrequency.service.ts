@@ -3,29 +3,30 @@ import prisma from '../../prisma';
 import { FrequencyArraySchema } from '../../schemas';
 
 export const listFrequencyService = async ({
+  take,
   status,
-  school_id,
   date,
   class_id,
 }: IFrequencyQuery) => {
+  if (take) {
+    take = +take;
+  }
   let frequencies = await prisma.frequency.findMany({
+    take,
     include: {
-      school: true,
+      _count: true,
+      user: true,
       class: true,
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },
       },
     },
-    orderBy: { date: 'asc' },
+    orderBy: { finished_at: 'desc' },
   });
 
   frequencies = status
     ? frequencies.filter((frequency) => status === frequency.status)
-    : frequencies;
-
-  frequencies = school_id
-    ? frequencies.filter((frequency) => school_id === frequency.school_id)
     : frequencies;
 
   frequencies = date

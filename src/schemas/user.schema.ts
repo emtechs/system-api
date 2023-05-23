@@ -25,30 +25,6 @@ export const UserReturnSchema = UserCreateSchema.extend({
       school: z.object({
         id: z.string(),
         name: z.string(),
-        frequencies: z
-          .object({
-            id: z.string(),
-            date: z.string(),
-            status: z.enum(['OPENED', 'CLOSED']),
-            class: z.object({
-              id: z.string(),
-              name: z.string(),
-            }),
-            students: z
-              .object({
-                id: z.string(),
-                status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
-                justification: z.string().optional().nullable(),
-                updated_at: z.string().optional().nullable(),
-                student: z.object({
-                  id: z.string(),
-                  name: z.string(),
-                  registry: z.string(),
-                }),
-              })
-              .array(),
-          })
-          .array(),
       }),
     })
     .array()

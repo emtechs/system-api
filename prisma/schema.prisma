@@ -41,6 +41,7 @@ model User{
   token Token?
   director_school School?
   work_school SchoolServer[]
+  frequencies Frequency[]
 
   @@map("users")
 }
@@ -78,7 +79,6 @@ model School{
   servers SchoolServer[]
   classes Class[]
   students Student[]
-  frequencies Frequency[]
 
   @@map("schools")
 }
@@ -101,7 +101,6 @@ model Class{
   created_at DateTime @default(now())
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
-  infrequency Float @default(0)
   frequencies Frequency[]
   students Student[]
 
@@ -118,11 +117,11 @@ model Frequency{
   date String @db.VarChar(100)
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
-  finished_at Int? @db.Integer
+  finished_at Float @default(0)
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
   students FrequencyStudent[]
 
   @@map("frequencies")
@@ -139,11 +138,6 @@ model Student{
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
-  presented Int @default(0)
-  justified Int @default(0)
-  missed Int @default(0)
-  total_frequencies Int @default(0)
-  infrequency Float @default(0)
   frequencies FrequencyStudent[]
 
   @@map("students")
@@ -157,13 +151,13 @@ enum StatusStudent{
 
 model FrequencyStudent{
   id String @id @default(uuid())
+  status StatusStudent @default(PRESENTED)
+  justification String? @db.Text
+  updated_at String? @db.VarChar(200)
   frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
   frequency_id String
   student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id String
-  status StatusStudent @default(PRESENTED)
-  justification String? @db.Text
-  updated_at String? @db.VarChar(200)
 
   @@map("frequency_student")
 }

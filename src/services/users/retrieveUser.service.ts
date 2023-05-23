@@ -9,19 +9,7 @@ export const retrieveUserService = async (id: string) => {
       director_school: true,
       work_school: {
         include: {
-          school: {
-            include: {
-              frequencies: {
-                include: {
-                  class: true,
-                  students: {
-                    include: { student: true },
-                    orderBy: { student: { name: 'asc' } },
-                  },
-                },
-              },
-            },
-          },
+          school: true,
         },
       },
     },

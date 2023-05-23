@@ -54,8 +54,8 @@ export interface ISchoolQuery {
 }
 
 export interface IFrequencyQuery {
+  take?: number;
   status?: IStatusFrequency;
-  school_id?: string;
   date?: string;
   class_id?: string;
 }

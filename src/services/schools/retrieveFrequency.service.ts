@@ -5,7 +5,7 @@ export const retrieveFrequencyService = async (id: string) => {
   const frequencie = await prisma.frequency.findUnique({
     where: { id },
     include: {
-      school: true,
+      user: true,
       class: true,
       students: {
         include: { student: true },

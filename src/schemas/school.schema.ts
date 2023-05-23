@@ -37,27 +37,6 @@ export const SchoolArraySchema = z
       })
       .array()
       .optional(),
-    frequencies: z
-      .object({
-        id: z.string(),
-        date: z.string(),
-        status: z.string(),
-        class: z.object({ id: z.string(), name: z.string() }),
-        students: z
-          .object({
-            id: z.string(),
-            status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
-            justification: z.string().optional().nullable(),
-            updated_at: z.string().optional().nullable(),
-            student: z.object({
-              id: z.string(),
-              name: z.string(),
-              registry: z.string(),
-            }),
-          })
-          .array(),
-      })
-      .array(),
   })
   .array();
 
@@ -104,6 +83,7 @@ export const FrequencyCreateSchema = z.object({
 export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
+    finished_at: z.number(),
   })
   .partial();
 
@@ -112,10 +92,8 @@ export const FrequencyReturnSchema = z.object({
   date: z.string(),
   status: z.string(),
   created_at: z.date(),
-  school: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
+  finished_at: z.number().nullable(),
+  user: z.object({ id: z.string(), name: z.string(), cpf: z.string() }),
   class: z.object({ id: z.string(), name: z.string() }),
   students: z
     .object({
