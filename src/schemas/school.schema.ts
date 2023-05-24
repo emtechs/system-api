@@ -2,16 +2,16 @@ import { z } from 'zod';
 
 export const SchoolCreateSchema = z.object({
   name: z.string(),
+});
+
+export const SchoolUpdateSchema = SchoolCreateSchema.extend({
+  is_active: z.boolean(),
   login: z.string(),
   cpf: z.string(),
   name_diret: z.string(),
   password: z.string(),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-});
-
-export const SchoolUpdateSchema = SchoolCreateSchema.extend({
-  is_active: z.boolean(),
 }).partial();
 
 export const SchoolReturnSchema = z.object({
@@ -29,14 +29,15 @@ export const SchoolArraySchema = z
     name: z.string(),
     created_at: z.date(),
     is_active: z.boolean(),
-    director: z.object({ id: z.string(), name: z.string(), cpf: z.string() }),
+    director: z
+      .object({ id: z.string(), name: z.string(), cpf: z.string() })
+      .nullable(),
     servers: z
       .object({
         id: z.string(),
         server: ServerSchema,
       })
-      .array()
-      .optional(),
+      .array(),
   })
   .array();
 

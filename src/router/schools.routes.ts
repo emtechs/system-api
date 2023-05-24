@@ -4,6 +4,8 @@ import {
   createFrequencyController,
   createSchoolController,
   createStudentController,
+  importClassController,
+  importSchoolController,
   importStudentController,
   listClassController,
   listFrequencyController,
@@ -40,6 +42,13 @@ schoolRouter.post(
   createSchoolController,
 );
 
+schoolRouter.post(
+  '/import',
+  verifyUserIsAuthenticated,
+  uploadCsv.single('file'),
+  importSchoolController,
+);
+
 schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
 
 schoolRouter.patch(
@@ -56,6 +65,13 @@ classRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassCreateSchema),
   createClassController,
+);
+
+classRouter.post(
+  '/import/:id',
+  verifyUserIsAuthenticated,
+  uploadCsv.single('file'),
+  importClassController,
 );
 
 classRouter.get('', verifyUserIsAuthenticated, listClassController);

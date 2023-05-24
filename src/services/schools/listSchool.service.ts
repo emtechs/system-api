@@ -4,6 +4,7 @@ import { SchoolArraySchema } from '../../schemas';
 
 export const listSchoolService = async ({ is_active }: ISchoolQuery) => {
   let schools = await prisma.school.findMany({
+    orderBy: { name: 'asc' },
     include: {
       director: true,
       servers: { include: { server: true } },

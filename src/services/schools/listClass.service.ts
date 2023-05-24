@@ -7,6 +7,7 @@ export const listClassService = async ({
   school_id,
 }: IClassQuery) => {
   let classes = await prisma.class.findMany({
+    orderBy: { name: 'asc' },
     include: { _count: true, students: true, school: true },
   });
 

@@ -74,8 +74,8 @@ model School{
   name String @db.VarChar(254)
   is_active Boolean @default(true)
   created_at DateTime @default(now())
-  director User @relation(fields: [director_id], references: [id], onDelete: Cascade)
-  director_id String @unique
+  director User? @relation(fields: [director_id], references: [id], onDelete: Cascade)
+  director_id String? @unique
   servers SchoolServer[]
   classes Class[]
   students Student[]

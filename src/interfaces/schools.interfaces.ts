@@ -20,6 +20,15 @@ export type IClassRequest = z.infer<typeof ClassCreateSchema>;
 
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
 
+export interface ISchool {
+  name: string;
+}
+
+export interface IClass {
+  name: string;
+  school_id: string;
+}
+
 export interface IStudent {
   registry: string;
   name: string;
