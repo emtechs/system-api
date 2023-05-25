@@ -71,40 +71,48 @@ model Token{
 
 model School{
   id String @id @default(uuid())
-  name String @db.VarChar(254)
+  name String @db.VarChar(254) @unique
   is_active Boolean @default(true)
   created_at DateTime @default(now())
   director User? @relation(fields: [director_id], references: [id], onDelete: Cascade)
   director_id String? @unique
   servers SchoolServer[]
-  classes Class[]
-  students Student[]
+  classes ClassSchool[]
 
   @@map("schools")
 }
 
 model SchoolServer{
-  id String @id @default(uuid())
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
   server User @relation(fields: [server_id], references: [id], onDelete: Cascade)
   server_id String
   dash Dash @default(COMMON)
 
+  @@id([school_id, server_id])
   @@map("school_server")
 }
 
 model Class{
   id String @id @default(uuid())
-  name String @db.VarChar(254)
+  name String @db.VarChar(254) @unique
   is_active Boolean @default(true)
   created_at DateTime @default(now())
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
-  frequencies Frequency[]
-  students Student[]
+  schools ClassSchool[]
 
   @@map("classes")
+}
+
+model ClassSchool{
+  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id String
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  students Student[]
+  frequencies Frequency[]
+
+  @@id([class_id, school_id])
+  @@map("class_school")
 }
 
 enum StatusFrequency{
@@ -118,8 +126,9 @@ model Frequency{
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
-  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class ClassSchool @relation(fields: [class_id, school_id], references: [class_id, school_id], onDelete: Cascade)
   class_id String
+  school_id String
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
   students FrequencyStudent[]
@@ -134,10 +143,9 @@ model Student{
   is_active Boolean @default(true)
   justify_disabled String? @db.Text
   created_at DateTime @default(now())
-  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
-  class_id String
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
+  class ClassSchool? @relation(fields: [class_id, school_id], references: [class_id, school_id], onDelete: Cascade)
+  class_id String?
+  school_id String?
   frequencies FrequencyStudent[]
 
   @@map("students")

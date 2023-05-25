@@ -1,14 +1,9 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { classParseFrequency } from '../../scripts';
 
-export const listClassService = async ({
-  is_active,
-  school_id,
-}: IClassQuery) => {
+export const listClassService = async ({ is_active }: IClassQuery) => {
   let classes = await prisma.class.findMany({
     orderBy: { name: 'asc' },
-    include: { _count: true, students: true, school: true },
   });
 
   if (is_active) {
@@ -22,11 +17,5 @@ export const listClassService = async ({
     }
   }
 
-  classes = school_id
-    ? classes.filter((el) => school_id === el.school_id)
-    : classes;
-
-  return classParseFrequency(classes);
-
-  // return ClassArraySchema.parse(classes);
+  return classes;
 };

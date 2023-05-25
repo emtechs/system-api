@@ -1,4 +1,4 @@
-import { Class, Prisma, School, Student } from '@prisma/client';
+import { Class, ClassSchool, Student } from '@prisma/client';
 import prisma from '../prisma';
 
 export const parseFrequency = async (id: string) => {
@@ -113,10 +113,13 @@ const infrequencyClass = (
 };
 
 export const classParseFrequency = async (
-  classData: (Class & {
+  classData: (ClassSchool & {
+    class: Class;
     students: Student[];
-    school: School;
-    _count: Prisma.ClassCountOutputType;
+    _count: {
+      students: number;
+      frequencies: number;
+    };
   })[],
 ) => {
   const studentsData: Student[] = [];
@@ -129,8 +132,8 @@ export const classParseFrequency = async (
   const result = classData.map((el) => {
     return {
       ...el,
-      students: students.filter((student) => el.id === student.class_id),
-      infrequency: infrequencyClass(students, el.id, el._count.students),
+      students: students.filter((student) => el.class_id === student.class_id),
+      infrequency: infrequencyClass(students, el.class_id, el._count.students),
     };
   });
   return result;

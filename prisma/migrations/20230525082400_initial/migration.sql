@@ -63,12 +63,11 @@ CREATE TABLE "schools" (
 
 -- CreateTable
 CREATE TABLE "school_server" (
-    "id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "server_id" TEXT NOT NULL,
     "dash" "Dash" NOT NULL DEFAULT 'COMMON',
 
-    CONSTRAINT "school_server_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "school_server_pkey" PRIMARY KEY ("school_id","server_id")
 );
 
 -- CreateTable
@@ -77,9 +76,16 @@ CREATE TABLE "classes" (
     "name" VARCHAR(254) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "school_id" TEXT NOT NULL,
 
     CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "class_school" (
+    "class_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
+
+    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id")
 );
 
 -- CreateTable
@@ -90,6 +96,7 @@ CREATE TABLE "frequencies" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "class_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
@@ -103,8 +110,8 @@ CREATE TABLE "students" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "justify_disabled" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "class_id" TEXT NOT NULL,
-    "school_id" TEXT NOT NULL,
+    "class_id" TEXT,
+    "school_id" TEXT,
 
     CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );
@@ -137,7 +144,13 @@ CREATE UNIQUE INDEX "images_user_id_key" ON "images"("user_id");
 CREATE UNIQUE INDEX "token_user_id_key" ON "token"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "schools_director_id_key" ON "schools"("director_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "students_registry_key" ON "students"("registry");
@@ -158,19 +171,19 @@ ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIG
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_server_id_fkey" FOREIGN KEY ("server_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "classes" ADD CONSTRAINT "classes_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_fkey" FOREIGN KEY ("class_id", "school_id") REFERENCES "class_school"("class_id", "school_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "students" ADD CONSTRAINT "students_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "students" ADD CONSTRAINT "students_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "students" ADD CONSTRAINT "students_class_id_school_id_fkey" FOREIGN KEY ("class_id", "school_id") REFERENCES "class_school"("class_id", "school_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;

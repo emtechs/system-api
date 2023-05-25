@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import {
-  createClassService,
   createFrequencyService,
   createFrequencyStudentService,
   createSchoolService,
   createStudentService,
-  importClassService,
+  exportSchoolService,
   importSchoolService,
+  importStudentAllService,
   importStudentService,
-  listClassService,
   listFrequencyService,
   listFrequencyStudentService,
   listSchoolService,
@@ -30,24 +29,14 @@ export const importSchoolController = async (req: Request, res: Response) => {
   return res.status(201).json(schools);
 };
 
-export const listSchoolController = async (req: Request, res: Response) => {
-  const schools = await listSchoolService(req.query);
+export const exportSchoolController = async (req: Request, res: Response) => {
+  const schools = await exportSchoolService();
   return res.json(schools);
 };
 
-export const createClassController = async (req: Request, res: Response) => {
-  const classData = await createClassService(req.body, req.params.id);
-  return res.status(201).json(classData);
-};
-
-export const importClassController = async (req: Request, res: Response) => {
-  const classes = await importClassService(req.file, req.params.id);
-  return res.status(201).json(classes);
-};
-
-export const listClassController = async (req: Request, res: Response) => {
-  const classes = await listClassService(req.query);
-  return res.json(classes);
+export const listSchoolController = async (req: Request, res: Response) => {
+  const schools = await listSchoolService(req.query);
+  return res.json(schools);
 };
 
 export const createStudentController = async (req: Request, res: Response) => {
@@ -61,6 +50,14 @@ export const importStudentController = async (req: Request, res: Response) => {
     req.params.class_id,
     req.params.school_id,
   );
+  return res.status(201).json(students);
+};
+
+export const importStudentAllController = async (
+  req: Request,
+  res: Response,
+) => {
+  const students = await importStudentAllService(req.file);
   return res.status(201).json(students);
 };
 

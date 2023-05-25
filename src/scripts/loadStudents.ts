@@ -36,3 +36,35 @@ export const loadStudents = (
       });
   });
 };
+
+export const loadStudentsAll = (
+  file: Express.Multer.File,
+): Promise<IStudent[]> => {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(file.path);
+    const students: IStudent[] = [];
+    const parseFile = csvParse({ delimiter: ';' });
+    stream.pipe(parseFile);
+
+    parseFile
+      .on('data', async (line) => {
+        const [registry, name, school_id, class_id] = line;
+        students.push({
+          registry,
+          name,
+          school_id,
+          class_id,
+        });
+      })
+      .on('end', () => {
+        if (process.env.APP_URL) {
+          fs.promises.unlink(file.path);
+        }
+        delete students[0];
+        resolve(students);
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
+};

@@ -20,7 +20,6 @@ export const UserReturnSchema = UserCreateSchema.extend({
   director_school: SchoolReturnSchema.nullable().optional(),
   work_school: z
     .object({
-      id: z.string(),
       dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
       school: z.object({
         id: z.string(),

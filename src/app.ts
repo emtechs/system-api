@@ -4,6 +4,7 @@ import { errorHandler } from './errors';
 import {
   classRouter,
   frequencyRouter,
+  importRouter,
   passwordRouter,
   schoolRouter,
   sessionRouter,
@@ -30,6 +31,7 @@ app.use('/schools', schoolRouter);
 app.use('/classes', classRouter);
 app.use('/students', studentRouter);
 app.use('/frequencies', frequencyRouter);
+app.use('/imports', importRouter);
 
 app.use(errorHandler);
 

@@ -34,7 +34,6 @@ export const SchoolArraySchema = z
       .nullable(),
     servers: z
       .object({
-        id: z.string(),
         server: ServerSchema,
       })
       .array(),
@@ -78,6 +77,7 @@ export const StudentCreateSchema = z.object({
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
   class_id: z.string().uuid(),
+  school_id: z.string().uuid(),
   students: z.object({ student_id: z.string().uuid() }).array(),
 });
 
@@ -93,9 +93,9 @@ export const FrequencyReturnSchema = z.object({
   date: z.string(),
   status: z.string(),
   created_at: z.date(),
-  finished_at: z.number().nullable(),
+  finished_at: z.number(),
   user: z.object({ id: z.string(), name: z.string(), cpf: z.string() }),
-  class: z.object({ id: z.string(), name: z.string() }),
+  class: z.object({ class: z.object({ id: z.string(), name: z.string() }) }),
   students: z
     .object({
       id: z.string(),

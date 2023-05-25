@@ -26,14 +26,13 @@ export interface ISchool {
 
 export interface IClass {
   name: string;
-  school_id: string;
 }
 
 export interface IStudent {
   registry: string;
   name: string;
-  class_id: string;
   school_id: string;
+  class_id: string;
 }
 
 export type IStatusFrequency = 'OPENED' | 'CLOSED';
@@ -41,6 +40,7 @@ export type IStatusFrequency = 'OPENED' | 'CLOSED';
 export interface IFrequencyRequest {
   date: string;
   class_id: string;
+  school_id: string;
   students: {
     student_id: string;
   };

@@ -3,10 +3,7 @@ import { parse as csvParse } from 'csv-parse';
 import 'dotenv/config';
 import { IClass } from '../interfaces';
 
-export const loadClasses = (
-  file: Express.Multer.File,
-  school_id: string,
-): Promise<IClass[]> => {
+export const loadClasses = (file: Express.Multer.File): Promise<IClass[]> => {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(file.path);
     const classes: IClass[] = [];
@@ -18,7 +15,6 @@ export const loadClasses = (
         const [name] = line;
         classes.push({
           name,
-          school_id,
         });
       })
       .on('end', () => {

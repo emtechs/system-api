@@ -16,7 +16,7 @@ export const listFrequencyService = async ({
     include: {
       _count: true,
       user: true,
-      class: true,
+      class: { include: { class: true } },
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },

@@ -16,12 +16,14 @@ export const createUserService = async (
     if (user) {
       const server = await prisma.user.update({
         where: { id: user.id },
-        data: { is_active: true, work_school: { create: { school_id, dash } } },
-        include: {
-          director_school: true,
+        data: {
+          is_active: true,
+          dash,
           work_school: {
-            include: {
-              school: true,
+            upsert: {
+              where: { school_id_server_id: { school_id, server_id: user.id } },
+              create: { school_id, dash },
+              update: { dash },
             },
           },
         },
@@ -39,14 +41,6 @@ export const createUserService = async (
         dash,
         password,
         work_school: { create: { school_id, dash } },
-      },
-      include: {
-        director_school: true,
-        work_school: {
-          include: {
-            school: true,
-          },
-        },
       },
     });
 
@@ -70,14 +64,6 @@ export const createUserService = async (
       const server = await prisma.user.update({
         where: { id: user.id },
         data: { role, dash, is_active: true },
-        include: {
-          director_school: true,
-          work_school: {
-            include: {
-              school: true,
-            },
-          },
-        },
       });
       return UserReturnSchema.parse(server);
     }
@@ -92,14 +78,6 @@ export const createUserService = async (
         role,
         dash,
         password,
-      },
-      include: {
-        director_school: true,
-        work_school: {
-          include: {
-            school: true,
-          },
-        },
       },
     });
 
@@ -120,14 +98,6 @@ export const createUserService = async (
       cpf,
       role,
       dash,
-    },
-    include: {
-      director_school: true,
-      work_school: {
-        include: {
-          school: true,
-        },
-      },
     },
   });
 

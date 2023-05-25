@@ -6,7 +6,7 @@ export const retrieveFrequencyService = async (id: string) => {
     where: { id },
     include: {
       user: true,
-      class: true,
+      class: { include: { class: true } },
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },

@@ -1,13 +1,9 @@
 import { Router } from 'express';
 import {
-  createClassController,
   createFrequencyController,
   createSchoolController,
   createStudentController,
-  importClassController,
-  importSchoolController,
-  importStudentController,
-  listClassController,
+  exportSchoolController,
   listFrequencyController,
   listFrequencyStudentController,
   listSchoolController,
@@ -23,7 +19,6 @@ import {
   verifyUserIsAuthenticated,
 } from '../middlewares';
 import {
-  ClassCreateSchema,
   FrequencyCreateSchema,
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
@@ -31,7 +26,6 @@ import {
   SchoolUpdateSchema,
   StudentCreateSchema,
 } from '../schemas';
-import { uploadCsv } from '../utils';
 
 export const schoolRouter = Router();
 
@@ -42,14 +36,9 @@ schoolRouter.post(
   createSchoolController,
 );
 
-schoolRouter.post(
-  '/import',
-  verifyUserIsAuthenticated,
-  uploadCsv.single('file'),
-  importSchoolController,
-);
-
 schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
+
+schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
 
 schoolRouter.patch(
   '/:id',
@@ -58,24 +47,6 @@ schoolRouter.patch(
   updateSchoolController,
 );
 
-export const classRouter = Router();
-
-classRouter.post(
-  '/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(ClassCreateSchema),
-  createClassController,
-);
-
-classRouter.post(
-  '/import/:id',
-  verifyUserIsAuthenticated,
-  uploadCsv.single('file'),
-  importClassController,
-);
-
-classRouter.get('', verifyUserIsAuthenticated, listClassController);
-
 export const studentRouter = Router();
 
 studentRouter.post(
@@ -83,13 +54,6 @@ studentRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentCreateSchema),
   createStudentController,
-);
-
-studentRouter.post(
-  '/import/:class_id/:school_id',
-  verifyUserIsAuthenticated,
-  uploadCsv.single('file'),
-  importStudentController,
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);

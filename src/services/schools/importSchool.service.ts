@@ -1,12 +1,7 @@
-import prisma from '../../prisma';
-import { loadSchool } from '../../scripts';
+import { importSchool, loadSchool } from '../../scripts';
 
 export const importSchoolService = async (file: Express.Multer.File) => {
-  const data = await loadSchool(file);
+  const schools = await loadSchool(file);
 
-  const schools = await prisma.school.createMany({
-    data,
-  });
-
-  return schools;
+  return await importSchool(schools);
 };
