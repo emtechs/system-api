@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createClassController,
+  createClassStudentController,
   exportClassController,
   listClassController,
   listClassWithSchoolController,
@@ -9,7 +10,7 @@ import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
 } from '../middlewares';
-import { ClassCreateSchema } from '../schemas';
+import { ClassCreateSchema, ClassStudentCreateSchema } from '../schemas';
 
 export const classRouter = Router();
 
@@ -18,6 +19,13 @@ classRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassCreateSchema),
   createClassController,
+);
+
+classRouter.post(
+  '/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(ClassStudentCreateSchema),
+  createClassStudentController,
 );
 
 classRouter.get('', verifyUserIsAuthenticated, listClassController);

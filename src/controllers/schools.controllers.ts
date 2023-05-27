@@ -1,21 +1,13 @@
 import { Request, Response } from 'express';
 import {
-  createFrequencyService,
-  createFrequencyStudentService,
   createSchoolService,
-  createStudentService,
+  createSchoolYearService,
   exportSchoolService,
+  exportSchoolYearService,
   importSchoolService,
-  importStudentAllService,
-  importStudentService,
-  listFrequencyService,
-  listFrequencyStudentService,
   listSchoolService,
-  listStudentService,
-  retrieveFrequencyService,
-  retrieveStudentService,
-  updateFrequencyService,
-  updateFrequencyStudentService,
+  listSchoolYearService,
+  retrieveSchoolYearService,
   updateSchoolService,
 } from '../services';
 
@@ -39,95 +31,33 @@ export const listSchoolController = async (req: Request, res: Response) => {
   return res.json(schools);
 };
 
-export const createStudentController = async (req: Request, res: Response) => {
-  const student = await createStudentService(req.body, req.params.id);
-  return res.status(201).json(student);
-};
-
-export const importStudentController = async (req: Request, res: Response) => {
-  const students = await importStudentService(
-    req.file,
-    req.params.class_id,
-    req.params.school_id,
-  );
-  return res.status(201).json(students);
-};
-
-export const importStudentAllController = async (
+export const createSchoolYearController = async (
   req: Request,
   res: Response,
 ) => {
-  const students = await importStudentAllService(req.file);
-  return res.status(201).json(students);
+  const schoolYear = await createSchoolYearService(req.body);
+  return res.status(201).json(schoolYear);
 };
 
-export const listStudentController = async (req: Request, res: Response) => {
-  const students = await listStudentService();
-  return res.json(students);
+export const listSchoolYearController = async (req: Request, res: Response) => {
+  const schoolYears = await listSchoolYearService();
+  return res.json(schoolYears);
 };
 
-export const retrieveStudentController = async (
+export const retrieveSchoolYearController = async (
   req: Request,
   res: Response,
 ) => {
-  const student = await retrieveStudentService(req.params.id);
-  return res.json(student);
+  const schoolYear = await retrieveSchoolYearService(req.params.year);
+  return res.json(schoolYear);
 };
 
-export const createFrequencyController = async (
+export const exportSchoolYearController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await createFrequencyService(req.body, req.user.id);
-  return res.status(201).json(frequency);
-};
-
-export const listFrequencyController = async (req: Request, res: Response) => {
-  const frequencies = await listFrequencyService(req.query);
-  return res.json(frequencies);
-};
-
-export const updateFrequencyController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await updateFrequencyService(req.body, req.params.id);
-  return res.json(frequency);
-};
-
-export const retrieveFrequencyController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await retrieveFrequencyService(req.params.id);
-  return res.json(frequency);
-};
-
-export const createFrequencyStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await createFrequencyStudentService(req.body);
-  return res.status(201).json(frequency);
-};
-
-export const listFrequencyStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequencies = await listFrequencyStudentService();
-  return res.json(frequencies);
-};
-
-export const updateFrequencyStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await updateFrequencyStudentService(
-    req.body,
-    req.params.id,
-  );
-  return res.json(frequency);
+  const schoolYears = await exportSchoolYearService();
+  return res.json(schoolYears);
 };
 
 export const updateSchoolController = async (req: Request, res: Response) => {

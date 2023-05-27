@@ -1,6 +1,7 @@
 import { IFrequencyQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { FrequencyArraySchema } from '../../schemas';
+import { freqArrParseFrequency } from '../../scripts';
 
 export const listFrequencyService = async ({
   take,
@@ -16,7 +17,7 @@ export const listFrequencyService = async ({
     include: {
       _count: true,
       user: true,
-      class: { include: { class: true } },
+      class: { include: { school: true, school_year: true, class: true } },
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },
@@ -37,5 +38,7 @@ export const listFrequencyService = async ({
     ? frequencies.filter((frequency) => class_id === frequency.class_id)
     : frequencies;
 
-  return FrequencyArraySchema.parse(frequencies);
+  const frequenciesReturn = await freqArrParseFrequency(frequencies);
+
+  return FrequencyArraySchema.parse(frequenciesReturn);
 };

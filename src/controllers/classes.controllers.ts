@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   createClassService,
+  createClassStudentService,
   exportClassService,
   importClassService,
   listClassService,
@@ -10,6 +11,14 @@ import {
 export const createClassController = async (req: Request, res: Response) => {
   const classData = await createClassService(req.body);
   return res.status(201).json(classData);
+};
+
+export const createClassStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classStudent = await createClassStudentService(req.body, req.params.id);
+  return res.status(201).json(classStudent);
 };
 
 export const importClassController = async (req: Request, res: Response) => {

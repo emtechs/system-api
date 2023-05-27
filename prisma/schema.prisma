@@ -93,6 +93,12 @@ model SchoolServer{
   @@map("school_server")
 }
 
+model SchoolYear{
+  id String @id @default(uuid())
+  year String @db.VarChar(10) @unique
+  classes ClassSchool[]
+}
+
 model Class{
   id String @id @default(uuid())
   name String @db.VarChar(254) @unique
@@ -108,10 +114,12 @@ model ClassSchool{
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
-  students Student[]
+  school_year SchoolYear @relation(fields: [school_year_id], references: [id], onDelete: Cascade)
+  school_year_id String
+  students ClassStudent[]
   frequencies Frequency[]
 
-  @@id([class_id, school_id])
+  @@id([class_id, school_id, school_year_id])
   @@map("class_school")
 }
 
@@ -122,13 +130,14 @@ enum StatusFrequency{
 
 model Frequency{
   id String @id @default(uuid())
-  date String @db.VarChar(100)
+  date String @db.VarChar(50)
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
-  class ClassSchool @relation(fields: [class_id, school_id], references: [class_id, school_id], onDelete: Cascade)
+  class ClassSchool @relation(fields: [class_id, school_id, school_year_id], references: [class_id, school_id, school_year_id], onDelete: Cascade)
   class_id String
   school_id String
+  school_year_id String
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
   students FrequencyStudent[]
@@ -139,16 +148,26 @@ model Frequency{
 model Student{
   id String @id @default(uuid())
   name String @db.VarChar(254)
-  registry String @db.VarChar(100) @unique
+  registry String @db.VarChar(50) @unique
   is_active Boolean @default(true)
   justify_disabled String? @db.Text
   created_at DateTime @default(now())
-  class ClassSchool? @relation(fields: [class_id, school_id], references: [class_id, school_id], onDelete: Cascade)
-  class_id String?
-  school_id String?
+  classes ClassStudent[]
   frequencies FrequencyStudent[]
 
   @@map("students")
+}
+
+model ClassStudent{
+  class ClassSchool @relation(fields: [class_id, school_id, school_year_id], references: [class_id, school_id, school_year_id], onDelete: Cascade)
+  class_id String
+  school_id String
+  school_year_id String
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String
+
+  @@id([class_id, school_id, school_year_id, student_id])
+  @@map("class_student")
 }
 
 enum StatusStudent{

@@ -1,25 +1,16 @@
-import { IStudent } from '../interfaces';
-import prisma from '../prisma';
+import prisma from '../../prisma';
+import { IStudentWithClassRequest } from '../../interfaces';
 
-const verifyStudent = async ({
-  name,
-  registry,
-  class_id,
-  school_id,
-  school_year_id,
-}: IStudent) => {
-  let student = await prisma.student.findUnique({
-    where: { registry },
+export const createStudentWithClassService = async (
+  { name, registry, class_id, school_id }: IStudentWithClassRequest,
+  school_year_id: string,
+) => {
+  const student = await prisma.student.create({
+    data: {
+      name,
+      registry,
+    },
   });
-
-  if (!student) {
-    student = await prisma.student.create({
-      data: {
-        name,
-        registry,
-      },
-    });
-  }
 
   await prisma.student.update({
     where: { registry },
@@ -54,13 +45,4 @@ const verifyStudent = async ({
   });
 
   return student;
-};
-
-export const importStudent = async (students: IStudent[]) => {
-  const studentsVerifyParse = students.map((el) => {
-    return verifyStudent(el);
-  });
-  return Promise.all(studentsVerifyParse).then((student) => {
-    return student;
-  });
 };

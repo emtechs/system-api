@@ -71,6 +71,14 @@ CREATE TABLE "school_server" (
 );
 
 -- CreateTable
+CREATE TABLE "SchoolYear" (
+    "id" TEXT NOT NULL,
+    "year" VARCHAR(10) NOT NULL,
+
+    CONSTRAINT "SchoolYear_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "classes" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
@@ -84,19 +92,21 @@ CREATE TABLE "classes" (
 CREATE TABLE "class_school" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
+    "school_year_id" TEXT NOT NULL,
 
-    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id")
+    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","school_year_id")
 );
 
 -- CreateTable
 CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
-    "date" VARCHAR(100) NOT NULL,
+    "date" VARCHAR(50) NOT NULL,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
+    "school_year_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
@@ -106,14 +116,22 @@ CREATE TABLE "frequencies" (
 CREATE TABLE "students" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
-    "registry" VARCHAR(100) NOT NULL,
+    "registry" VARCHAR(50) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "justify_disabled" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "class_id" TEXT,
-    "school_id" TEXT,
 
     CONSTRAINT "students_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "class_student" (
+    "class_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
+    "school_year_id" TEXT NOT NULL,
+    "student_id" TEXT NOT NULL,
+
+    CONSTRAINT "class_student_pkey" PRIMARY KEY ("class_id","school_id","school_year_id","student_id")
 );
 
 -- CreateTable
@@ -150,6 +168,9 @@ CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 CREATE UNIQUE INDEX "schools_director_id_key" ON "schools"("director_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "SchoolYear_year_key" ON "SchoolYear"("year");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
 
 -- CreateIndex
@@ -177,13 +198,19 @@ ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN K
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_fkey" FOREIGN KEY ("class_id", "school_id") REFERENCES "class_school"("class_id", "school_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_year_id_fkey" FOREIGN KEY ("school_year_id") REFERENCES "SchoolYear"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_school_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "school_year_id") REFERENCES "class_school"("class_id", "school_id", "school_year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "students" ADD CONSTRAINT "students_class_id_school_id_fkey" FOREIGN KEY ("class_id", "school_id") REFERENCES "class_school"("class_id", "school_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_school_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "school_year_id") REFERENCES "class_school"("class_id", "school_id", "school_year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;

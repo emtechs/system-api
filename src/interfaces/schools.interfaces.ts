@@ -1,38 +1,21 @@
 import { z } from 'zod';
 import {
-  ClassCreateSchema,
   FrequencyStudentCreateSchema,
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   SchoolCreateSchema,
   SchoolUpdateSchema,
-  ServerCreateSchema,
-  StudentCreateSchema,
+  SchoolYearCreateSchema,
 } from '../schemas';
 
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>;
 
 export type ISchoolUpdateRequest = z.infer<typeof SchoolUpdateSchema>;
 
-export type IServerRequest = z.infer<typeof ServerCreateSchema>;
-
-export type IClassRequest = z.infer<typeof ClassCreateSchema>;
-
-export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
+export type ISchoolYearRequest = z.infer<typeof SchoolYearCreateSchema>;
 
 export interface ISchool {
   name: string;
-}
-
-export interface IClass {
-  name: string;
-}
-
-export interface IStudent {
-  registry: string;
-  name: string;
-  school_id: string;
-  class_id: string;
 }
 
 export type IStatusFrequency = 'OPENED' | 'CLOSED';
@@ -41,9 +24,10 @@ export interface IFrequencyRequest {
   date: string;
   class_id: string;
   school_id: string;
+  school_year_id: string;
   students: {
     student_id: string;
-  };
+  }[];
 }
 
 export type IFrequencyUpdateRequest = z.infer<typeof FrequencyUpdateSchema>;
@@ -67,9 +51,5 @@ export interface IFrequencyQuery {
   status?: IStatusFrequency;
   date?: string;
   class_id?: string;
-}
-
-export interface IClassQuery {
-  school_id?: string;
-  is_active?: 'true' | 'false';
+  school_year_id?: string;
 }
