@@ -21,37 +21,38 @@ const verifyStudent = async ({
     });
   }
 
-  await prisma.student.update({
-    where: { registry },
-    data: {
-      classes: {
-        connectOrCreate: {
-          where: {
-            class_id_school_id_school_year_id_student_id: {
-              class_id,
-              school_id,
-              school_year_id,
-              student_id: student.id,
-            },
-          },
-          create: {
-            class: {
-              connectOrCreate: {
-                where: {
-                  class_id_school_id_school_year_id: {
-                    class_id,
-                    school_id,
-                    school_year_id,
-                  },
-                },
-                create: { class_id, school_id, school_year_id },
-              },
-            },
-          },
-        },
+  const classSchool = await prisma.classSchool.findUnique({
+    where: {
+      class_id_school_id_school_year_id: {
+        class_id,
+        school_id,
+        school_year_id,
       },
     },
   });
+
+  if (!classSchool) {
+    await prisma.classSchool.create({
+      data: { class_id, school_id, school_year_id },
+    });
+  }
+
+  const classStudent = await prisma.classStudent.findUnique({
+    where: {
+      class_id_school_id_school_year_id_student_id: {
+        class_id,
+        school_id,
+        school_year_id,
+        student_id: student.id,
+      },
+    },
+  });
+
+  if (!classStudent) {
+    await prisma.classStudent.create({
+      data: { class_id, school_id, school_year_id, student_id: student.id },
+    });
+  }
 
   return student;
 };

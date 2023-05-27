@@ -44,6 +44,8 @@ export type IFrequencyStudentUpdateRequest = z.infer<
 
 export interface ISchoolQuery {
   is_active?: 'true' | 'false';
+  school_year_id?: string;
+  take?: number;
 }
 
 export interface IFrequencyQuery {

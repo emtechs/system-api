@@ -6,4 +6,5 @@ export * from './loadSchool';
 export * from './loadStudents';
 export * from './parseFrequency';
 export * from './parseFrequencyClass';
+export * from './parseFrequencySchool';
 export * from './parseFrequencyStudent';
