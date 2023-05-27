@@ -1,19 +1,19 @@
 import fs from 'node:fs';
 import { parse as csvParse } from 'csv-parse';
 import 'dotenv/config';
-import { ISchool } from '../interfaces';
+import { IClass } from '../../interfaces';
 
-export const loadSchool = (file: Express.Multer.File): Promise<ISchool[]> => {
+export const loadClasses = (file: Express.Multer.File): Promise<IClass[]> => {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(file.path);
-    const schools: ISchool[] = [];
+    const classes: IClass[] = [];
     const parseFile = csvParse({ delimiter: ';' });
     stream.pipe(parseFile);
 
     parseFile
       .on('data', async (line) => {
         const [name] = line;
-        schools.push({
+        classes.push({
           name,
         });
       })
@@ -21,8 +21,8 @@ export const loadSchool = (file: Express.Multer.File): Promise<ISchool[]> => {
         if (process.env.APP_URL) {
           fs.promises.unlink(file.path);
         }
-        delete schools[0];
-        resolve(schools);
+        delete classes[0];
+        resolve(classes);
       })
       .on('error', (error) => {
         reject(error);

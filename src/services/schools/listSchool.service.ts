@@ -13,17 +13,18 @@ export const listSchoolService = async ({
     include: {
       director: true,
       servers: { include: { server: true } },
+      classes: { include: { class: true } },
     },
   });
 
   if (is_active) {
     switch (is_active) {
-    case 'true':
-      schools = schools.filter((school) => school.is_active === true);
-      break;
-    case 'false':
-      schools = schools.filter((school) => school.is_active === false);
-      break;
+      case 'true':
+        schools = schools.filter((school) => school.is_active === true);
+        break;
+      case 'false':
+        schools = schools.filter((school) => school.is_active === false);
+        break;
     }
   }
 
@@ -37,9 +38,7 @@ export const listSchoolService = async ({
       include: {
         director: true,
         classes: {
-          include: {
-            students: { include: { student: true } },
-          },
+          include: { class: true, students: { include: { student: true } } },
         },
       },
     });

@@ -1,10 +1,17 @@
-import { ClassSchool, ClassStudent, School, Student } from '@prisma/client';
-import prisma from '../prisma';
+import {
+  Class,
+  ClassSchool,
+  ClassStudent,
+  School,
+  SchoolYear,
+  Student,
+} from '@prisma/client';
+import prisma from '../../prisma';
 
-const parseFrequencySchool = async (
+const parseFrequencyClass = async (
   id: string,
   school_year_id: string,
-  school_id: string,
+  class_id: string,
 ) => {
   const user = await prisma.student.findUnique({ where: { id } });
 
@@ -17,7 +24,7 @@ const parseFrequencySchool = async (
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'PRESENTED',
             },
           },
@@ -35,7 +42,7 @@ const parseFrequencySchool = async (
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'JUSTIFIED',
             },
           },
@@ -53,7 +60,7 @@ const parseFrequencySchool = async (
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'MISSED',
             },
           },
@@ -76,18 +83,18 @@ const parseFrequencySchool = async (
     missed,
     total_frequencies,
     infrequency: Number(infrequency.toFixed(2)),
-    school_id,
+    class_id,
   };
 };
 
-const studentsSchoolParseFrequency = async (
+const studentsClassParseFrequency = async (
   students: (ClassStudent & {
     student: Student;
   })[],
   school_year_id: string,
 ) => {
   const studentsWithFrequency = students.map((el) => {
-    return parseFrequencySchool(el.student_id, school_year_id, el.school_id);
+    return parseFrequencyClass(el.student_id, school_year_id, el.class_id);
   });
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
@@ -102,7 +109,7 @@ const infrequencyClass = (
     missed: number;
     total_frequencies: number;
     infrequency: number;
-    school_id: string;
+    class_id: string;
     id: string;
     name: string;
     registry: string;
@@ -110,92 +117,55 @@ const infrequencyClass = (
     justify_disabled: string;
     created_at: Date;
   }[],
-  school_id: string,
-  total_students: number,
+  class_id: string,
+  count_students: number,
 ) => {
   let some = 0;
   students.forEach((student) => {
-    if (student.school_id === school_id) {
+    if (student.class_id === class_id) {
       some += student.infrequency;
     }
   });
-  return some / total_students;
+  return some / count_students;
 };
 
-export const schoolParseFrequency = async (
-  school: School & {
-    classes: (ClassSchool & {
-      students: (ClassStudent & {
-        student: Student;
-      })[];
+export const classParseRetrieveFrequency = async (
+  classData: ClassSchool & {
+    class: Class;
+    school: School;
+    school_year: SchoolYear;
+    students: (ClassStudent & {
+      student: Student;
     })[];
+    _count: {
+      students: number;
+      frequencies: number;
+    };
   },
   school_year_id: string,
 ) => {
   const studentsData: (ClassStudent & {
     student: Student;
   })[] = [];
-  school.classes.forEach((classes) => {
-    classes.students.forEach((student) => studentsData.push(student));
-  });
+  classData.students.forEach((student) => studentsData.push(student));
 
-  const students = await studentsSchoolParseFrequency(
+  const students = await studentsClassParseFrequency(
     studentsData,
     school_year_id,
   );
-
-  const total_students = students.filter(
-    (student) => school.id === student.school_id,
-  ).length;
 
   const result = {
-    ...school,
-    students: students.filter((student) => school.id === student.school_id),
-    infrequency: Number(
-      infrequencyClass(students, school.id, total_students).toFixed(2),
+    ...classData,
+    students: students.filter(
+      (student) => classData.class_id === student.class_id,
     ),
-    total_students,
+    infrequency: Number(
+      infrequencyClass(
+        students,
+        classData.class_id,
+        classData._count.students,
+      ).toFixed(2),
+    ),
   };
-
-  return result;
-};
-
-export const schoolArrParseFrequency = async (
-  schools: (School & {
-    classes: (ClassSchool & {
-      students: (ClassStudent & {
-        student: Student;
-      })[];
-    })[];
-  })[],
-  school_year_id: string,
-) => {
-  const studentsData: (ClassStudent & {
-    student: Student;
-  })[] = [];
-  schools.forEach((el) => {
-    el.classes.forEach((classes) => {
-      classes.students.forEach((student) => studentsData.push(student));
-    });
-  });
-
-  const students = await studentsSchoolParseFrequency(
-    studentsData,
-    school_year_id,
-  );
-
-  const result = schools.map((el) => {
-    const total_students = students.filter(
-      (student) => el.id === student.school_id,
-    ).length;
-    return {
-      ...el,
-      students: students.filter((student) => el.id === student.school_id),
-      infrequency: Number(
-        infrequencyClass(students, el.id, total_students).toFixed(2),
-      ),
-      total_students,
-    };
-  });
   return result;
 };

@@ -57,6 +57,7 @@ CREATE TABLE "schools" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "director_id" TEXT,
+    "school_infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "schools_pkey" PRIMARY KEY ("id")
 );
@@ -93,6 +94,7 @@ CREATE TABLE "class_school" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "school_year_id" TEXT NOT NULL,
+    "class_infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","school_year_id")
 );

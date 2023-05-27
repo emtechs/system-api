@@ -1,5 +1,5 @@
 import { Student } from '@prisma/client';
-import prisma from '../prisma';
+import prisma from '../../prisma';
 
 const parseFrequency = async (id: string, school_year_id: string) => {
   const user = await prisma.student.findUnique({ where: { id } });
@@ -62,7 +62,8 @@ const parseFrequency = async (id: string, school_year_id: string) => {
   const justified = justifiedCount._count.frequencies;
   const missed = missedCount._count.frequencies;
   const total_frequencies = presented + justified + missed;
-  const infrequency = (missed / total_frequencies) * 100;
+  const infrequency =
+    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
 
   return {
     ...user,
@@ -70,7 +71,7 @@ const parseFrequency = async (id: string, school_year_id: string) => {
     justified,
     missed,
     total_frequencies,
-    infrequency,
+    infrequency: Number(infrequency.toFixed(2)),
   };
 };
 

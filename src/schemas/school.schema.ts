@@ -40,9 +40,16 @@ export const SchoolArraySchema = z
     director: z
       .object({ id: z.string(), name: z.string(), cpf: z.string() })
       .nullable(),
+    school_infreq: z.number(),
     servers: z
       .object({
         server: ServerSchema,
+      })
+      .array(),
+    classes: z
+      .object({
+        class: z.object({ id: z.string(), name: z.string() }),
+        class_infreq: z.number(),
       })
       .array(),
   })
@@ -55,6 +62,7 @@ export const SchoolFreqArraySchema = z
     director: z
       .object({ id: z.string(), name: z.string(), cpf: z.string() })
       .nullable(),
+    school_infreq: z.number(),
     students: z
       .object({
         id: z.string(),
@@ -69,5 +77,11 @@ export const SchoolFreqArraySchema = z
       .array(),
     infrequency: z.number(),
     total_students: z.number(),
+    classes: z
+      .object({
+        class: z.object({ id: z.string(), name: z.string() }),
+        class_infreq: z.number(),
+      })
+      .array(),
   })
   .array();

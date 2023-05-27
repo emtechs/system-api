@@ -1,5 +1,5 @@
-import { IStudent } from '../interfaces';
-import prisma from '../prisma';
+import { IStudent } from '../../interfaces';
+import prisma from '../../prisma';
 
 const verifyStudent = async ({
   name,

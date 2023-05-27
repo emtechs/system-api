@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { parse as csvParse } from 'csv-parse';
 import 'dotenv/config';
-import { IStudent } from '../interfaces';
+import { IStudent } from '../../interfaces';
 
 export const loadStudents = (
   file: Express.Multer.File,

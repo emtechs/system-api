@@ -6,6 +6,7 @@ import {
   importClassService,
   listClassService,
   listClassWithSchoolService,
+  updateClassSchoolService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -42,4 +43,12 @@ export const listClassWithSchoolController = async (
 ) => {
   const classes = await listClassWithSchoolService(req.params.id, req.query);
   return res.json(classes);
+};
+
+export const updateClassSchoolController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classSchool = await updateClassSchoolService(req.body);
+  return res.json(classSchool);
 };

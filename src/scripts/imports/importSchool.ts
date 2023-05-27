@@ -1,5 +1,5 @@
-import { ISchool } from '../interfaces';
-import prisma from '../prisma';
+import { ISchool } from '../../interfaces';
+import prisma from '../../prisma';
 
 const verifySchool = async ({ name }: ISchool) => {
   const schoolData = await prisma.school.findFirst({ where: { name } });

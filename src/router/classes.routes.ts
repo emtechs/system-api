@@ -5,12 +5,17 @@ import {
   exportClassController,
   listClassController,
   listClassWithSchoolController,
+  updateClassSchoolController,
 } from '../controllers';
 import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
 } from '../middlewares';
-import { ClassCreateSchema, ClassStudentCreateSchema } from '../schemas';
+import {
+  ClassCreateSchema,
+  ClassSchoolUpdateSchema,
+  ClassStudentCreateSchema,
+} from '../schemas';
 
 export const classRouter = Router();
 
@@ -36,4 +41,11 @@ classRouter.get(
   '/:id',
   verifyUserIsAuthenticated,
   listClassWithSchoolController,
+);
+
+classRouter.patch(
+  '',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(ClassSchoolUpdateSchema),
+  updateClassSchoolController,
 );

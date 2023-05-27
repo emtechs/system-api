@@ -49,6 +49,8 @@ export const FrequencyReturnSchema = z.object({
   students: StudentSchema.array(),
   _count: z.object({ students: z.number() }),
   infrequency: z.number(),
+  class_infreq: z.number().optional(),
+  school_infreq: z.number().optional(),
 });
 
 export const FrequencyArraySchema = FrequencyReturnSchema.array();

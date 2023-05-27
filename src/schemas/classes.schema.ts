@@ -10,6 +10,14 @@ export const ClassStudentCreateSchema = z.object({
   student_id: z.string().uuid(),
 });
 
+export const ClassSchoolUpdateSchema = z.object({
+  class_id: z.string().uuid(),
+  school_id: z.string().uuid(),
+  school_year_id: z.string().uuid(),
+  class_infreq: z.number(),
+  school_infreq: z.number(),
+});
+
 export const ClassReturnSchema = ClassCreateSchema.extend({
   id: z.string(),
   is_active: z.boolean(),
@@ -28,6 +36,7 @@ export const ClassArraySchema = ClassReturnSchema.array();
 
 export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
+  class_infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
   school_year: z.object({ id: z.string(), year: z.string() }),
   students: z
@@ -46,6 +55,7 @@ export const ClassSchoolArraySchema = ClassSchoolReturnSchema.array();
 
 export const ClassSchoolFrequencyReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
+  class_infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
   school_year: z.object({ id: z.string(), year: z.string() }),
   students: z

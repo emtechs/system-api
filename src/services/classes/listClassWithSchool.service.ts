@@ -4,14 +4,19 @@ import {
   ClassSchoolArraySchema,
   ClassSchoolFrequencyArraySchema,
 } from '../../schemas';
-import { classParseFrequency } from '../../scripts';
+import { classArrParseFrequency } from '../../scripts';
 
 export const listClassWithSchoolService = async (
   school_id: string,
-  { is_active, school_year_id }: IClassQuery,
+  { is_active, school_year_id, class_infreq }: IClassQuery,
 ) => {
   let classes = await prisma.classSchool.findMany({
-    where: { school_id },
+    where: {
+      AND: {
+        school_id,
+        class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+      },
+    },
     orderBy: { class: { name: 'asc' } },
     include: {
       school: true,
@@ -24,7 +29,13 @@ export const listClassWithSchoolService = async (
 
   if (school_year_id) {
     classes = await prisma.classSchool.findMany({
-      where: { AND: { school_id, school_year_id } },
+      where: {
+        AND: {
+          school_id,
+          school_year_id,
+          class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+        },
+      },
       orderBy: { class: { name: 'asc' } },
       include: {
         school: true,
@@ -40,7 +51,13 @@ export const listClassWithSchoolService = async (
     switch (is_active) {
     case 'true':
       classes = await prisma.classSchool.findMany({
-        where: { AND: { school_id, class: { is_active: true } } },
+        where: {
+          AND: {
+            school_id,
+            class: { is_active: true },
+            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+          },
+        },
         orderBy: { class: { name: 'asc' } },
         include: {
           school: true,
@@ -53,7 +70,13 @@ export const listClassWithSchoolService = async (
       break;
     case 'false':
       classes = await prisma.classSchool.findMany({
-        where: { AND: { school_id, class: { is_active: true } } },
+        where: {
+          AND: {
+            school_id,
+            class: { is_active: true },
+            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+          },
+        },
         orderBy: { class: { name: 'asc' } },
         include: {
           school: true,
@@ -68,7 +91,7 @@ export const listClassWithSchoolService = async (
   }
 
   if (school_year_id) {
-    const classesReturn = await classParseFrequency(classes, school_year_id);
+    const classesReturn = await classArrParseFrequency(classes, school_year_id);
 
     return ClassSchoolFrequencyArraySchema.parse(classesReturn);
   }
