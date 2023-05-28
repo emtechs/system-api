@@ -1,5 +1,6 @@
 import { IUserCpfQuery } from '../../interfaces';
 import prisma from '../../prisma';
+import { UserReturnSchema } from '../../schemas';
 
 export const retrieveUserWithCpfService = async (
   login: string,
@@ -15,10 +16,10 @@ export const retrieveUserWithCpfService = async (
         where: { AND: { login, role: { not: 'SERV' } } },
       });
 
-      return user;
+      return UserReturnSchema.parse(user);
     }
 
-    return server;
+    return UserReturnSchema.parse(server);
   }
 
   if (allNotServ) {
@@ -26,12 +27,12 @@ export const retrieveUserWithCpfService = async (
       where: { AND: { login, role: { not: 'SERV' } } },
     });
 
-    return user;
+    return UserReturnSchema.parse(user);
   }
 
   const user = await prisma.user.findUnique({
     where: { login },
   });
 
-  return user;
+  return UserReturnSchema.parse(user);
 };
