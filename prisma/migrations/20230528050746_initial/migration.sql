@@ -72,11 +72,11 @@ CREATE TABLE "school_server" (
 );
 
 -- CreateTable
-CREATE TABLE "SchoolYear" (
+CREATE TABLE "school_year" (
     "id" TEXT NOT NULL,
     "year" VARCHAR(10) NOT NULL,
 
-    CONSTRAINT "SchoolYear_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "school_year_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -170,7 +170,7 @@ CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 CREATE UNIQUE INDEX "schools_director_id_key" ON "schools"("director_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SchoolYear_year_key" ON "SchoolYear"("year");
+CREATE UNIQUE INDEX "school_year_year_key" ON "school_year"("year");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
@@ -200,7 +200,7 @@ ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN K
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_year_id_fkey" FOREIGN KEY ("school_year_id") REFERENCES "SchoolYear"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_year_id_fkey" FOREIGN KEY ("school_year_id") REFERENCES "school_year"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_school_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "school_year_id") REFERENCES "class_school"("class_id", "school_id", "school_year_id") ON DELETE CASCADE ON UPDATE CASCADE;

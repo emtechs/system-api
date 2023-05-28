@@ -7,7 +7,6 @@ import {
   Prisma,
   School,
   SchoolYear,
-  StatusStudent,
   Student,
   User,
 } from '@prisma/client';
@@ -15,11 +14,7 @@ import prisma from '../../prisma';
 import { classParseRetrieveFrequency } from './parseRetrieveFrequencyClass';
 import { schoolParseRetrieveFrequency } from './parseRetrieveFrequencySchool';
 
-const parseFrequencyFreq = async (
-  id: string,
-  frequencyStudent_id: string,
-  frequency_id: string,
-) => {
+const parseFrequencyFreq = async (id: string, frequencyStudent_id: string) => {
   const user = await prisma.student.findUnique({ where: { id } });
 
   const frequency = await prisma.frequencyStudent.findUnique({
@@ -38,7 +33,6 @@ const parseFrequencyFreq = async (
     justification,
     updated_at,
     infrequency: Number(infrequency.toFixed(2)),
-    frequency_id,
     frequencyStudent_id,
   };
 };
@@ -49,39 +43,12 @@ const studentsFreqParseFrequency = async (
   })[],
 ) => {
   const studentsWithFrequency = students.map((el) => {
-    return parseFrequencyFreq(el.student_id, el.id, el.frequency_id);
+    return parseFrequencyFreq(el.student_id, el.id);
   });
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
     return studentFrequency;
   });
-};
-
-const infrequencyFreq = (
-  students: {
-    status: StatusStudent;
-    justification: string;
-    updated_at: string;
-    infrequency: number;
-    frequency_id: string;
-    frequencyStudent_id: string;
-    id: string;
-    name: string;
-    registry: string;
-    is_active: boolean;
-    justify_disabled: string;
-    created_at: Date;
-  }[],
-  frequency_id: string,
-  count_students: number,
-) => {
-  let some = 0;
-  students.forEach((student) => {
-    if (student.frequency_id === frequency_id) {
-      some += student.infrequency;
-    }
-  });
-  return some / count_students;
 };
 
 export const freqParseRetrieveFrequency = async (
@@ -112,7 +79,11 @@ export const freqParseRetrieveFrequency = async (
   },
   school_year_id: string,
 ) => {
-  const students = await studentsFreqParseFrequency(frequency.students);
+  const studentsData = frequency.students.filter(
+    (student) => frequency.id === student.frequency_id,
+  );
+
+  const students = await studentsFreqParseFrequency(studentsData);
 
   const classData = await classParseRetrieveFrequency(
     frequency.class,
@@ -124,18 +95,15 @@ export const freqParseRetrieveFrequency = async (
     school_year_id,
   );
 
+  let some = 0;
+  students.forEach((student) => (some += student.infrequency));
+  const infrequency =
+    frequency._count.students === 0 ? 0 : some / frequency._count.students;
+
   const result = {
     ...frequency,
-    students: students.filter(
-      (student) => frequency.id === student.frequency_id,
-    ),
-    infrequency: Number(
-      infrequencyFreq(
-        students,
-        frequency.id,
-        frequency._count.students,
-      ).toFixed(2),
-    ),
+    students,
+    infrequency: Number(infrequency.toFixed(2)),
     class_infreq: classData.infrequency,
     school_infreq: school.infrequency,
   };

@@ -136,7 +136,11 @@ export const schoolParseFrequency = async (
     student: Student;
   })[] = [];
   school.classes.forEach((classes) => {
-    classes.students.forEach((student) => studentsData.push(student));
+    classes.students.forEach((student) => {
+      if (student.school_id === school.id) {
+        studentsData.push(student);
+      }
+    });
   });
 
   const students = await studentsSchoolParseFrequency(
@@ -144,16 +148,16 @@ export const schoolParseFrequency = async (
     school_year_id,
   );
 
-  const total_students = students.filter(
-    (student) => school.id === student.school_id,
-  ).length;
+  const total_students = studentsData.length;
+
+  let some = 0;
+  students.forEach((student) => (some += student.infrequency));
+  const infrequency = total_students === 0 ? 0 : some / total_students;
 
   const result = {
     ...school,
     students: students.filter((student) => school.id === student.school_id),
-    infrequency: Number(
-      infrequencySchool(students, school.id, total_students).toFixed(2),
-    ),
+    infrequency: Number(infrequency.toFixed(2)),
     total_students,
   };
 

@@ -8,11 +8,7 @@ import {
 } from '@prisma/client';
 import prisma from '../../prisma';
 
-const parseFrequencyClass = async (
-  id: string,
-  school_year_id: string,
-  class_id: string,
-) => {
+const parseFrequencyClass = async (id: string, school_year_id: string) => {
   const user = await prisma.student.findUnique({ where: { id } });
 
   const presentedCount = await prisma.student.findUnique({
@@ -83,7 +79,6 @@ const parseFrequencyClass = async (
     missed,
     total_frequencies,
     infrequency: Number(infrequency.toFixed(2)),
-    class_id,
   };
 };
 
@@ -94,39 +89,12 @@ const studentsClassParseFrequency = async (
   school_year_id: string,
 ) => {
   const studentsWithFrequency = students.map((el) => {
-    return parseFrequencyClass(el.student_id, school_year_id, el.class_id);
+    return parseFrequencyClass(el.student_id, school_year_id);
   });
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
     return studentFrequency;
   });
-};
-
-const infrequencyClass = (
-  students: {
-    presented: number;
-    justified: number;
-    missed: number;
-    total_frequencies: number;
-    infrequency: number;
-    class_id: string;
-    id: string;
-    name: string;
-    registry: string;
-    is_active: boolean;
-    justify_disabled: string;
-    created_at: Date;
-  }[],
-  class_id: string,
-  count_students: number,
-) => {
-  let some = 0;
-  students.forEach((student) => {
-    if (student.class_id === class_id) {
-      some += student.infrequency;
-    }
-  });
-  return some / count_students;
 };
 
 export const classParseRetrieveFrequency = async (
@@ -144,28 +112,24 @@ export const classParseRetrieveFrequency = async (
   },
   school_year_id: string,
 ) => {
-  const studentsData: (ClassStudent & {
-    student: Student;
-  })[] = [];
-  classData.students.forEach((student) => studentsData.push(student));
+  const studentsData = classData.students.filter(
+    (student) => classData.class_id === student.class_id,
+  );
 
   const students = await studentsClassParseFrequency(
     studentsData,
     school_year_id,
   );
 
+  let some = 0;
+  students.forEach((student) => (some += student.infrequency));
+  const infrequency =
+    classData._count.students === 0 ? 0 : some / classData._count.students;
+
   const result = {
     ...classData,
-    students: students.filter(
-      (student) => classData.class_id === student.class_id,
-    ),
-    infrequency: Number(
-      infrequencyClass(
-        students,
-        classData.class_id,
-        classData._count.students,
-      ).toFixed(2),
-    ),
+    students,
+    infrequency: Number(infrequency.toFixed(2)),
   };
   return result;
 };

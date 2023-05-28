@@ -98,6 +98,8 @@ model SchoolYear{
   id String @id @default(uuid())
   year String @db.VarChar(10) @unique
   classes ClassSchool[]
+
+  @@map("school_year")
 }
 
 model Class{

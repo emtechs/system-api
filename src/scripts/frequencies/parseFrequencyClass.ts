@@ -144,28 +144,24 @@ export const classParseFrequency = async (
   },
   school_year_id: string,
 ) => {
-  const studentsData: (ClassStudent & {
-    student: Student;
-  })[] = [];
-  classData.students.forEach((student) => studentsData.push(student));
+  const studentsData = classData.students.filter(
+    (student) => classData.class_id === student.class_id,
+  );
 
   const students = await studentsClassParseFrequency(
     studentsData,
     school_year_id,
   );
 
+  let some = 0;
+  students.forEach((student) => (some += student.infrequency));
+  const infrequency =
+    classData._count.students === 0 ? 0 : some / classData._count.students;
+
   const result = {
     ...classData,
-    students: students.filter(
-      (student) => classData.class_id === student.class_id,
-    ),
-    infrequency: Number(
-      infrequencyClass(
-        students,
-        classData.class_id,
-        classData._count.students,
-      ).toFixed(2),
-    ),
+    students,
+    infrequency: Number(infrequency.toFixed(2)),
   };
   return result;
 };
