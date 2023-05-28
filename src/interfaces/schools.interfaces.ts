@@ -7,6 +7,7 @@ import {
   SchoolUpdateSchema,
   SchoolYearCreateSchema,
 } from '../schemas';
+import { IQuery } from './global.interfaces';
 
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>;
 
@@ -42,14 +43,13 @@ export type IFrequencyStudentUpdateRequest = z.infer<
   typeof FrequencyStudentUpdateSchema
 >;
 
-export interface ISchoolQuery {
+export interface ISchoolQuery extends IQuery {
   is_active?: 'true' | 'false';
+  is_dash?: string;
   school_year_id?: string;
-  take?: number;
 }
 
-export interface IFrequencyQuery {
-  take?: number;
+export interface IFrequencyQuery extends IQuery {
   status?: IStatusFrequency;
   date?: string;
   class_id?: string;

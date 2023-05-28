@@ -18,70 +18,45 @@ export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
 }).partial();
 
-export const SchoolReturnSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  created_at: z.date(),
-  is_active: z.boolean(),
-});
-
-const ServerSchema = z.object({
+const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
   cpf: z.string(),
 });
 
-export const SchoolArraySchema = z
-  .object({
-    id: z.string(),
-    name: z.string(),
-    created_at: z.date(),
-    is_active: z.boolean(),
-    director: z
-      .object({ id: z.string(), name: z.string(), cpf: z.string() })
-      .nullable(),
-    school_infreq: z.number(),
-    servers: z
-      .object({
-        server: ServerSchema,
-      })
-      .array(),
-    classes: z
-      .object({
-        class: z.object({ id: z.string(), name: z.string() }),
-        class_infreq: z.number(),
-      })
-      .array(),
-  })
-  .array();
+const ClassSchema = z.object({
+  class: UserSchema.omit({ cpf: true }),
+  class_infreq: z.number(),
+});
 
-export const SchoolFreqArraySchema = z
-  .object({
-    id: z.string(),
-    name: z.string(),
-    director: z
-      .object({ id: z.string(), name: z.string(), cpf: z.string() })
-      .nullable(),
-    school_infreq: z.number(),
-    students: z
-      .object({
-        id: z.string(),
-        name: z.string(),
-        registry: z.string(),
-        presented: z.number(),
-        justified: z.number(),
-        missed: z.number(),
-        total_frequencies: z.number(),
-        infrequency: z.number(),
-      })
-      .array(),
-    infrequency: z.number(),
-    total_students: z.number(),
-    classes: z
-      .object({
-        class: z.object({ id: z.string(), name: z.string() }),
-        class_infreq: z.number(),
-      })
-      .array(),
-  })
-  .array();
+const StudentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  registry: z.string(),
+  presented: z.number(),
+  justified: z.number(),
+  missed: z.number(),
+  total_frequencies: z.number(),
+  infrequency: z.number(),
+});
+
+export const SchoolReturnSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  is_active: z.boolean(),
+  created_at: z.date(),
+  school_infreq: z.number(),
+  director: UserSchema.nullable().optional(),
+  servers: z
+    .object({
+      server: UserSchema,
+    })
+    .array()
+    .optional(),
+  classes: ClassSchema.array().optional(),
+  students: StudentSchema.array().optional(),
+  infrequency: z.number().optional(),
+  total_students: z.number().optional(),
+});
+
+export const SchoolArraySchema = SchoolReturnSchema.array();

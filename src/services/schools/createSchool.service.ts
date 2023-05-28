@@ -9,7 +9,5 @@ export const createSchoolService = async ({ name }: ISchoolRequest) => {
     },
   });
 
-  return school;
-
-  // return SchoolReturnSchema.parse(school);
+  return SchoolReturnSchema.parse(school);
 };

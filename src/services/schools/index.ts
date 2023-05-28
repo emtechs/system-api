@@ -1,5 +1,6 @@
 export * from './createSchool.service';
 export * from './createSchoolYear.service';
+export * from './deleteSchool.service';
 export * from './exportSchool.service';
 export * from './exportSchoolYear.service';
 export * from './importSchool.service';

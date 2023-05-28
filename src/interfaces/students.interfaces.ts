@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { StudentCreateSchema, StudentCreateWithClassSchema } from '../schemas';
+import { IQuery } from './global.interfaces';
 
 export interface IStudent {
   registry: string;
@@ -15,6 +16,6 @@ export type IStudentWithClassRequest = z.infer<
   typeof StudentCreateWithClassSchema
 >;
 
-export interface IStudentQuery {
+export interface IStudentQuery extends IQuery {
   school_year_id?: string;
 }

@@ -1,14 +1,19 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { SchoolArraySchema, SchoolFreqArraySchema } from '../../schemas';
+import { SchoolArraySchema } from '../../schemas';
 import { schoolArrParseFrequency } from '../../scripts';
 
 export const listSchoolService = async ({
   is_active,
   school_year_id,
   take,
+  is_dash,
 }: ISchoolQuery) => {
+  if (take) {
+    take = +take;
+  }
   let schools = await prisma.school.findMany({
+    take,
     orderBy: { name: 'asc' },
     include: {
       director: true,
@@ -17,21 +22,37 @@ export const listSchoolService = async ({
     },
   });
 
+  if (is_dash) {
+    const schoolFreq = await prisma.school.findMany({
+      take,
+      where: { is_active: true },
+      orderBy: { school_infreq: 'desc' },
+      include: {
+        director: true,
+        classes: {
+          include: { class: true, students: { include: { student: true } } },
+        },
+      },
+    });
+    const schoolsReturn = await schoolArrParseFrequency(
+      schoolFreq,
+      school_year_id,
+    );
+    return SchoolArraySchema.parse(schoolsReturn);
+  }
+
   if (is_active) {
     switch (is_active) {
-      case 'true':
-        schools = schools.filter((school) => school.is_active === true);
-        break;
-      case 'false':
-        schools = schools.filter((school) => school.is_active === false);
-        break;
+    case 'true':
+      schools = schools.filter((school) => school.is_active === true);
+      break;
+    case 'false':
+      schools = schools.filter((school) => school.is_active === false);
+      break;
     }
   }
 
   if (school_year_id) {
-    if (take) {
-      take = +take;
-    }
     const schoolFreq = await prisma.school.findMany({
       take,
       orderBy: { name: 'asc' },
@@ -46,7 +67,7 @@ export const listSchoolService = async ({
       schoolFreq,
       school_year_id,
     );
-    return SchoolFreqArraySchema.parse(schoolsReturn);
+    return SchoolArraySchema.parse(schoolsReturn);
   }
 
   return SchoolArraySchema.parse(schools);
