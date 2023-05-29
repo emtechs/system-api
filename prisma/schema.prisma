@@ -156,6 +156,7 @@ model Student{
   is_active Boolean @default(true)
   justify_disabled String? @db.Text
   created_at DateTime @default(now())
+  infreq Float @default(0)
   classes ClassStudent[]
   frequencies FrequencyStudent[]
 

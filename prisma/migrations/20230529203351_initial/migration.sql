@@ -21,7 +21,7 @@ CREATE TABLE "users" (
     "role" "Role" NOT NULL DEFAULT 'SERV',
     "dash" "Dash" NOT NULL DEFAULT 'COMMON',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "is_first_access" BOOLEAN NOT NULL DEFAULT false,
+    "is_first_access" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
@@ -122,6 +122,7 @@ CREATE TABLE "students" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "justify_disabled" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );

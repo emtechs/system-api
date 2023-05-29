@@ -65,6 +65,8 @@ const parseFrequency = async (id: string, school_year_id: string) => {
   const infrequency =
     total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
 
+  await prisma.student.update({ where: { id }, data: { infreq: infrequency } });
+
   return {
     ...user,
     presented,
