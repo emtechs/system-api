@@ -6,6 +6,7 @@ import {
   importStudentService,
   listStudentService,
   retrieveStudentService,
+  updateStudentService,
 } from '../services';
 
 export const createStudentController = async (req: Request, res: Response) => {
@@ -26,6 +27,7 @@ export const importStudentController = async (req: Request, res: Response) => {
     req.file,
     req.params.class_id,
     req.params.school_id,
+    req.params.school_year_id,
   );
   return res.status(201).json(students);
 };
@@ -48,5 +50,10 @@ export const retrieveStudentController = async (
   res: Response,
 ) => {
   const student = await retrieveStudentService(req.params.id);
+  return res.json(student);
+};
+
+export const updateStudentController = async (req: Request, res: Response) => {
+  const student = await updateStudentService(req.body, req.params.id);
   return res.json(student);
 };

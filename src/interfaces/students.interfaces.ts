@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { StudentCreateSchema, StudentCreateWithClassSchema } from '../schemas';
+import {
+  StudentCreateSchema,
+  StudentCreateWithClassSchema,
+  StudentUpdateSchema,
+} from '../schemas';
 import { IQuery } from './global.interfaces';
 
 export interface IStudent {
@@ -11,6 +15,8 @@ export interface IStudent {
 }
 
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
+
+export type IStudentUpdateRequest = z.infer<typeof StudentUpdateSchema>;
 
 export type IStudentWithClassRequest = z.infer<
   typeof StudentCreateWithClassSchema
