@@ -35,7 +35,7 @@ model User{
   role Role @default(SERV)
   dash Dash @default(COMMON)
   is_active Boolean @default(true)
-  is_first_access Boolean @default(false)
+  is_first_access Boolean @default(true)
   created_at DateTime @default(now())
   profile Image?
   token Token?
