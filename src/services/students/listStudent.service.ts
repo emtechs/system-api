@@ -23,6 +23,11 @@ export const listStudentService = async ({
   }
 
   if (school_year_id) {
+    students = await prisma.student.findMany({
+      take,
+      where: { classes: { every: { school_id } } },
+      orderBy: { infreq: 'desc' },
+    });
     return await studentsParseFrequency(students, school_year_id);
   }
 
