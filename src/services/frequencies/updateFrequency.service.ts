@@ -1,7 +1,6 @@
 import { IFrequencyUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
 import { FrequencyReturnSchema } from '../../schemas';
-import { freqParseFrequency } from '../../scripts';
 
 export const updateFrequencyService = async (
   { status, finished_at }: IFrequencyUpdateRequest,
@@ -21,7 +20,5 @@ export const updateFrequencyService = async (
     },
   });
 
-  const frequencyReturn = await freqParseFrequency(frequency);
-
-  return FrequencyReturnSchema.parse(frequencyReturn);
+  return FrequencyReturnSchema.parse(frequency);
 };

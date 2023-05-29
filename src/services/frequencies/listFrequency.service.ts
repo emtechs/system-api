@@ -1,6 +1,9 @@
 import { IFrequencyQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { FrequencyArraySchema } from '../../schemas';
+import {
+  FrequencyArraySchema,
+  FrequencyInfreqArraySchema,
+} from '../../schemas';
 import { freqArrParseFrequency } from '../../scripts';
 
 export const listFrequencyService = async ({
@@ -8,10 +11,12 @@ export const listFrequencyService = async ({
   status,
   date,
   class_id,
+  is_infreq,
 }: IFrequencyQuery) => {
   if (take) {
     take = +take;
   }
+
   let frequencies = await prisma.frequency.findMany({
     take,
     include: {
@@ -38,7 +43,10 @@ export const listFrequencyService = async ({
     ? frequencies.filter((frequency) => class_id === frequency.class_id)
     : frequencies;
 
-  const frequenciesReturn = await freqArrParseFrequency(frequencies);
+  if (is_infreq) {
+    const frequenciesReturn = await freqArrParseFrequency(frequencies);
+    return FrequencyInfreqArraySchema.parse(frequenciesReturn);
+  }
 
-  return FrequencyArraySchema.parse(frequenciesReturn);
+  return FrequencyArraySchema.parse(frequencies);
 };

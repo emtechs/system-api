@@ -1,12 +1,28 @@
 import prisma from '../../prisma';
 import { IFrequencyRequest } from '../../interfaces';
 import { FrequencyReturnSchema } from '../../schemas';
-import { freqParseFrequency } from '../../scripts';
 
 export const createFrequencyService = async (
   { date, class_id, school_id, school_year_id, students }: IFrequencyRequest,
   user_id: string,
 ) => {
+  const frequencyData = await prisma.frequency.findFirst({
+    where: { date, class_id, school_id, school_year_id },
+    include: {
+      _count: true,
+      user: true,
+      class: { include: { school: true, school_year: true, class: true } },
+      students: {
+        include: { student: true },
+        orderBy: { student: { name: 'asc' } },
+      },
+    },
+  });
+
+  if (frequencyData) {
+    return FrequencyReturnSchema.parse(frequencyData);
+  }
+
   const frequency = await prisma.frequency.create({
     data: {
       date,
@@ -36,7 +52,5 @@ export const createFrequencyService = async (
     },
   });
 
-  const frequencyReturn = await freqParseFrequency(frequency);
-
-  return FrequencyReturnSchema.parse(frequencyReturn);
+  return FrequencyReturnSchema.parse(frequency);
 };

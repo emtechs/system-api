@@ -29,13 +29,10 @@ const ClassSchema = z.object({
 
 const StudentSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  registry: z.string(),
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  infrequency: z.number(),
-  frequencyStudent_id: z.string(),
+  student: z.object({ id: z.string(), name: z.string(), registry: z.string() }),
 });
 
 export const FrequencyReturnSchema = z.object({
@@ -48,12 +45,37 @@ export const FrequencyReturnSchema = z.object({
   class: ClassSchema,
   students: StudentSchema.array(),
   _count: z.object({ students: z.number() }),
+});
+
+export const FrequencyArraySchema = FrequencyReturnSchema.array();
+
+const StudentInfreqSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  registry: z.string(),
+  status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
+  justification: z.string().optional().nullable(),
+  updated_at: z.string().optional().nullable(),
+  infrequency: z.number(),
+  frequencyStudent_id: z.string(),
+});
+
+export const FrequencyInfreqReturnSchema = z.object({
+  id: z.string(),
+  date: z.string(),
+  status: z.string(),
+  created_at: z.date(),
+  finished_at: z.number(),
+  user: UserSchema,
+  class: ClassSchema,
+  students: StudentInfreqSchema.array(),
+  _count: z.object({ students: z.number() }),
   infrequency: z.number(),
   class_infreq: z.number().optional(),
   school_infreq: z.number().optional(),
 });
 
-export const FrequencyArraySchema = FrequencyReturnSchema.array();
+export const FrequencyInfreqArraySchema = FrequencyInfreqReturnSchema.array();
 
 export const FrequencyStudentCreateSchema = z.object({
   student_id: z.string().uuid(),

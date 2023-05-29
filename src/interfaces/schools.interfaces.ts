@@ -54,4 +54,5 @@ export interface IFrequencyQuery extends IQuery {
   date?: string;
   class_id?: string;
   school_year_id?: string;
+  is_infreq?: boolean;
 }

@@ -1,7 +1,10 @@
 import { IFrequencyQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { FrequencyReturnSchema } from '../../schemas';
-import { freqParseFrequency, freqParseRetrieveFrequency } from '../../scripts';
+import {
+  FrequencyInfreqReturnSchema,
+  FrequencyReturnSchema,
+} from '../../schemas';
+import { freqParseRetrieveFrequency } from '../../scripts';
 
 export const retrieveFrequencyService = async (
   id: string,
@@ -42,10 +45,8 @@ export const retrieveFrequencyService = async (
       school_year_id,
     );
 
-    return FrequencyReturnSchema.parse(frequencyReturn);
+    return FrequencyInfreqReturnSchema.parse(frequencyReturn);
   }
 
-  const frequencyReturn = await freqParseFrequency(frequency);
-
-  return FrequencyReturnSchema.parse(frequencyReturn);
+  return FrequencyReturnSchema.parse(frequency);
 };

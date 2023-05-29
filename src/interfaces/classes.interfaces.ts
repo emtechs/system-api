@@ -23,4 +23,6 @@ export interface IClassQuery extends IQuery {
   school_year_id?: string;
   is_active?: 'true' | 'false';
   class_infreq?: number;
+  is_dash?: string;
+  date?: string;
 }
