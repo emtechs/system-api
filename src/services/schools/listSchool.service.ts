@@ -25,12 +25,22 @@ export const listSchoolService = async ({
   if (is_dash) {
     const schoolFreq = await prisma.school.findMany({
       take,
-      where: { AND: { is_active: true, school_infreq: { gt: 0 } } },
+      where: {
+        AND: {
+          is_active: true,
+          school_infreq: { gt: 0 },
+          classes: { every: { school_year_id } },
+        },
+      },
       orderBy: { school_infreq: 'desc' },
       include: {
         director: true,
         classes: {
-          include: { class: true, students: { include: { student: true } } },
+          include: {
+            _count: { select: { students: { where: { school_year_id } } } },
+            class: true,
+            students: { include: { student: true } },
+          },
           orderBy: { class_infreq: 'desc' },
         },
       },
@@ -39,6 +49,7 @@ export const listSchoolService = async ({
       schoolFreq,
       school_year_id,
     );
+
     return SchoolArraySchema.parse(schoolsReturn);
   }
 

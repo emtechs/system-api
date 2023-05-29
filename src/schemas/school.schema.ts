@@ -27,6 +27,7 @@ const UserSchema = z.object({
 const ClassSchema = z.object({
   class: UserSchema.omit({ cpf: true }),
   class_infreq: z.number(),
+  _count: z.object({ students: z.number() }).optional(),
 });
 
 const StudentSchema = z.object({
