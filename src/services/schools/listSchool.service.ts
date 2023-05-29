@@ -25,12 +25,13 @@ export const listSchoolService = async ({
   if (is_dash) {
     const schoolFreq = await prisma.school.findMany({
       take,
-      where: { is_active: true },
+      where: { AND: { is_active: true, school_infreq: { gt: 0 } } },
       orderBy: { school_infreq: 'desc' },
       include: {
         director: true,
         classes: {
           include: { class: true, students: { include: { student: true } } },
+          orderBy: { class_infreq: 'desc' },
         },
       },
     });
