@@ -1,6 +1,6 @@
 import { IStudentQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { studentsParseFrequency } from '../../scripts';
+import { studentsParseRetrieveFrequency } from '../../scripts';
 
 export const listStudentService = async ({
   school_year_id,
@@ -23,7 +23,7 @@ export const listStudentService = async ({
   }
 
   if (school_year_id) {
-    await studentsParseFrequency(students, school_year_id);
+    await studentsParseRetrieveFrequency(students, school_year_id);
     students = await prisma.student.findMany({
       take,
       orderBy: { infreq: 'desc' },

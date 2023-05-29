@@ -13,7 +13,7 @@ const parseFrequency = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'PRESENTED',
             },
           },
@@ -31,7 +31,7 @@ const parseFrequency = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'JUSTIFIED',
             },
           },
@@ -49,7 +49,7 @@ const parseFrequency = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { AND: { status: 'CLOSED', school_year_id } },
+              frequency: { school_year_id },
               status: 'MISSED',
             },
           },
@@ -65,6 +65,8 @@ const parseFrequency = async (id: string, school_year_id: string) => {
   const infrequency =
     total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
 
+  await prisma.student.update({ where: { id }, data: { infreq: infrequency } });
+
   return {
     ...user,
     presented,
@@ -75,7 +77,7 @@ const parseFrequency = async (id: string, school_year_id: string) => {
   };
 };
 
-export const studentsParseFrequency = async (
+export const studentsParseRetrieveFrequency = async (
   students: Student[],
   school_year_id: string,
 ) => {
