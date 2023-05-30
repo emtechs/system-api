@@ -1,5 +1,6 @@
 import prisma from '../../prisma';
-import { ClassSchoolReturnSchema } from '../../schemas';
+import { ClassSchoolFrequencyReturnSchema } from '../../schemas';
+import { classParseFrequency } from '../../scripts';
 
 export const retrieveClassSchoolService = async (
   class_id: string,
@@ -18,10 +19,15 @@ export const retrieveClassSchoolService = async (
       school: true,
       school_year: true,
       class: true,
-      students: { include: { student: true } },
+      students: {
+        include: { student: true },
+        orderBy: { student: { name: 'asc' } },
+      },
       _count: { select: { frequencies: true, students: true } },
     },
   });
 
-  return ClassSchoolReturnSchema.parse(classShool);
+  const classRetun = await classParseFrequency(classShool, school_year_id);
+
+  return ClassSchoolFrequencyReturnSchema.parse(classRetun);
 };
