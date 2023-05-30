@@ -14,8 +14,73 @@ import prisma from '../../prisma';
 import { classParseRetrieveFrequency } from './parseRetrieveFrequencyClass';
 import { schoolParseRetrieveFrequency } from './parseRetrieveFrequencySchool';
 
-const parseFrequencyFreq = async (id: string, frequencyStudent_id: string) => {
+const parseFrequencyFreq = async (
+  id: string,
+  frequencyStudent_id: string,
+  school_year_id: string,
+) => {
   const user = await prisma.student.findUnique({ where: { id } });
+
+  const presentedCount = await prisma.student.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      _count: {
+        select: {
+          frequencies: {
+            where: {
+              frequency: { school_year_id },
+              status: 'PRESENTED',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const justifiedCount = await prisma.student.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      _count: {
+        select: {
+          frequencies: {
+            where: {
+              frequency: { school_year_id },
+              status: 'JUSTIFIED',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const missedCount = await prisma.student.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      _count: {
+        select: {
+          frequencies: {
+            where: {
+              frequency: { school_year_id },
+              status: 'MISSED',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const presented = presentedCount._count.frequencies;
+  const justified = justifiedCount._count.frequencies;
+  const missed = missedCount._count.frequencies;
+  const total_frequencies = presented + justified + missed;
+  const infrequency =
+    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
 
   const frequency = await prisma.frequencyStudent.findUnique({
     where: {
@@ -25,15 +90,16 @@ const parseFrequencyFreq = async (id: string, frequencyStudent_id: string) => {
   });
 
   const { justification, status, updated_at } = frequency;
-  const infrequency = status === 'MISSED' ? 100 : 0;
+  const infreq_stu = status === 'MISSED' ? 100 : 0;
 
   return {
     ...user,
     status,
     justification,
     updated_at,
-    infrequency: Number(infrequency.toFixed(2)),
+    infreq_stu: Number(infreq_stu.toFixed(2)),
     frequencyStudent_id,
+    infrequency: Number(infrequency.toFixed(2)),
   };
 };
 
@@ -41,9 +107,10 @@ const studentsFreqParseFrequency = async (
   students: (FrequencyStudent & {
     student: Student;
   })[],
+  school_year_id: string,
 ) => {
   const studentsWithFrequency = students.map((el) => {
-    return parseFrequencyFreq(el.student_id, el.id);
+    return parseFrequencyFreq(el.student_id, el.id, school_year_id);
   });
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
@@ -83,7 +150,10 @@ export const freqParseRetrieveFrequency = async (
     (student) => frequency.id === student.frequency_id,
   );
 
-  const students = await studentsFreqParseFrequency(studentsData);
+  const students = await studentsFreqParseFrequency(
+    studentsData,
+    school_year_id,
+  );
 
   const classData = await classParseRetrieveFrequency(
     frequency.class,
@@ -96,7 +166,7 @@ export const freqParseRetrieveFrequency = async (
   );
 
   let some = 0;
-  students.forEach((student) => (some += student.infrequency));
+  students.forEach((student) => (some += student.infreq_stu));
   const infrequency =
     frequency._count.students === 0 ? 0 : some / frequency._count.students;
 
