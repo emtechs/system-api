@@ -25,7 +25,7 @@ export const listStudentService = async ({
   if (school_year_id) {
     students = await prisma.student.findMany({
       take,
-      where: { classes: { every: { school_id } } },
+      where: { AND: { classes: { every: { school_id } }, infreq: { gt: 0 } } },
       orderBy: { infreq: 'desc' },
     });
     return await studentsParseFrequency(students, school_year_id);

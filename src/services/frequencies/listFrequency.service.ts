@@ -13,9 +13,28 @@ export const listFrequencyService = async ({
   class_id,
   is_infreq,
   is_dash,
+  school_id,
 }: IFrequencyQuery) => {
   if (take) {
     take = +take;
+  }
+
+  if (school_id) {
+    const frequencies = await prisma.frequency.findMany({
+      take,
+      where: { AND: { status: 'OPENED', school_id } },
+      include: {
+        _count: true,
+        user: true,
+        class: { include: { school: true, school_year: true, class: true } },
+        students: {
+          include: { student: true },
+          orderBy: { student: { name: 'asc' } },
+        },
+      },
+      orderBy: { created_at: 'desc' },
+    });
+    return FrequencyArraySchema.parse(frequencies);
   }
 
   if (is_dash) {
