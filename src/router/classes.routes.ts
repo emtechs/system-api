@@ -4,7 +4,8 @@ import {
   createClassStudentController,
   exportClassController,
   listClassController,
-  listClassWithSchoolController,
+  listClassSchoolController,
+  retrieveClassSchoolController,
   updateClassSchoolController,
 } from '../controllers';
 import {
@@ -37,10 +38,12 @@ classRouter.get('', verifyUserIsAuthenticated, listClassController);
 
 classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
 
+classRouter.get('/:id', verifyUserIsAuthenticated, listClassSchoolController);
+
 classRouter.get(
-  '/:id',
+  '/:class_id/:school_id/:school_year_id',
   verifyUserIsAuthenticated,
-  listClassWithSchoolController,
+  retrieveClassSchoolController,
 );
 
 classRouter.patch(

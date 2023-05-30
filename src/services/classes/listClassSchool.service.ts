@@ -6,7 +6,7 @@ import {
 } from '../../schemas';
 import { classArrParseFrequency } from '../../scripts';
 
-export const listClassWithSchoolService = async (
+export const listClassSchoolService = async (
   school_id: string,
   { is_active, school_year_id, class_infreq, is_dash, date, take }: IClassQuery,
 ) => {
