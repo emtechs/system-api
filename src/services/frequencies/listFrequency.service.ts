@@ -34,7 +34,8 @@ export const listFrequencyService = async ({
       },
       orderBy: { created_at: 'desc' },
     });
-    return FrequencyArraySchema.parse(frequencies);
+    const frequenciesReturn = await freqArrParseFrequency(frequencies);
+    return FrequencyInfreqArraySchema.parse(frequenciesReturn);
   }
 
   if (is_dash) {
