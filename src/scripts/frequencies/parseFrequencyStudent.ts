@@ -2,7 +2,10 @@ import { Student } from '@prisma/client';
 import prisma from '../../prisma';
 
 const parseFrequency = async (id: string, school_year_id: string) => {
-  const user = await prisma.student.findUnique({ where: { id } });
+  const user = await prisma.student.findUnique({
+    where: { id },
+    include: { classes: { include: { class: { include: { class: true } } } } },
+  });
 
   const presentedCount = await prisma.student.findUnique({
     where: {
