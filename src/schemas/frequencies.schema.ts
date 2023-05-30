@@ -46,6 +46,7 @@ const StudentSchema = z.object({
 export const FrequencyReturnSchema = z.object({
   id: z.string(),
   date: z.string(),
+  month: z.number(),
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
@@ -72,6 +73,7 @@ const StudentInfreqSchema = z.object({
 export const FrequencyInfreqReturnSchema = z.object({
   id: z.string(),
   date: z.string(),
+  month: z.number(),
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
