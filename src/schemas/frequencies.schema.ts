@@ -33,7 +33,12 @@ const StudentSchema = z.object({
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  student: z.object({ id: z.string(), name: z.string(), registry: z.string() }),
+  student: z.object({
+    id: z.string(),
+    name: z.string(),
+    registry: z.string(),
+    infreq: z.number(),
+  }),
 });
 
 export const FrequencyReturnSchema = z.object({
@@ -54,6 +59,7 @@ const StudentInfreqSchema = z.object({
   id: z.string(),
   name: z.string(),
   registry: z.string(),
+  infreq: z.number(),
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
