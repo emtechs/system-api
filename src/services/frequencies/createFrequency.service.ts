@@ -3,11 +3,18 @@ import { IFrequencyRequest } from '../../interfaces';
 import { FrequencyReturnSchema } from '../../schemas';
 
 export const createFrequencyService = async (
-  { date, class_id, school_id, school_year_id, students }: IFrequencyRequest,
+  {
+    date,
+    month,
+    class_id,
+    school_id,
+    school_year_id,
+    students,
+  }: IFrequencyRequest,
   user_id: string,
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
-    where: { date, class_id, school_id, school_year_id },
+    where: { date, month, class_id, school_id, school_year_id },
     include: {
       _count: true,
       user: true,

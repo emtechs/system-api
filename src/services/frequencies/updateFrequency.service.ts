@@ -3,12 +3,12 @@ import prisma from '../../prisma';
 import { FrequencyReturnSchema } from '../../schemas';
 
 export const updateFrequencyService = async (
-  { status, finished_at }: IFrequencyUpdateRequest,
+  { status, month, finished_at }: IFrequencyUpdateRequest,
   id: string,
 ) => {
   const frequency = await prisma.frequency.update({
     where: { id },
-    data: { status, finished_at },
+    data: { status, month, finished_at },
     include: {
       _count: true,
       user: true,

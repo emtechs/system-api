@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
+  month: z.number(),
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
   school_year_id: z.string().uuid(),
@@ -12,6 +13,7 @@ export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
+    month: z.number(),
   })
   .partial();
 
