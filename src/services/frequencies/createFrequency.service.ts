@@ -14,7 +14,7 @@ export const createFrequencyService = async (
   user_id: string,
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
-    where: { date, month, class_id, school_id, school_year_id },
+    where: { date, class_id, school_id, school_year_id },
     include: {
       _count: true,
       user: true,
@@ -33,6 +33,7 @@ export const createFrequencyService = async (
   const frequency = await prisma.frequency.create({
     data: {
       date,
+      month: +month,
       user: { connect: { id: user_id } },
       class: {
         connectOrCreate: {
