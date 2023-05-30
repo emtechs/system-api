@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   createFrequencyService,
   createFrequencyStudentService,
+  deleteFrequencyService,
   listFrequencyService,
   listFrequencyStudentService,
   retrieveFrequencyService,
@@ -63,4 +64,12 @@ export const updateFrequencyStudentController = async (
     req.params.id,
   );
   return res.json(frequency);
+};
+
+export const deleteFrequencyController = async (
+  req: Request,
+  res: Response,
+) => {
+  await deleteFrequencyService(req.params.id);
+  return res.status(204).json({});
 };

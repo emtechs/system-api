@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createFrequencyController,
+  deleteFrequencyController,
   listFrequencyController,
   listFrequencyStudentController,
   retrieveFrequencyController,
@@ -52,4 +53,10 @@ frequencyRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
+);
+
+frequencyRouter.delete(
+  '/:id',
+  verifyUserIsAuthenticated,
+  deleteFrequencyController,
 );
