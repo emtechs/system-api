@@ -17,6 +17,9 @@ export const StudentUpdateSchema = z
     name: z.string().optional(),
     is_active: z.boolean().optional(),
     justify_disabled: z.string().optional(),
-    infreq: z.number().optional(),
   })
   .partial();
+
+export const StudentUpdateManySchema = z.object({
+  students: z.object({ id: z.string().uuid(), infreq: z.number() }).array(),
+});

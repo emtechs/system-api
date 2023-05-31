@@ -25,4 +25,5 @@ export interface IClassQuery extends IQuery {
   class_infreq?: number;
   is_dash?: string;
   date?: string;
+  is_infreq?: string;
 }

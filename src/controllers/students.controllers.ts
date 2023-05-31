@@ -6,6 +6,7 @@ import {
   importStudentService,
   listStudentService,
   retrieveStudentService,
+  updateManyStudentService,
   updateStudentService,
 } from '../services';
 
@@ -50,6 +51,14 @@ export const retrieveStudentController = async (
   res: Response,
 ) => {
   const student = await retrieveStudentService(req.params.id);
+  return res.json(student);
+};
+
+export const updateManyStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const student = await updateManyStudentService(req.body);
   return res.json(student);
 };
 

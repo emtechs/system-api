@@ -30,7 +30,7 @@ const parseFrequencyFreq = async (
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'PRESENTED',
             },
           },
@@ -48,7 +48,7 @@ const parseFrequencyFreq = async (
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'JUSTIFIED',
             },
           },
@@ -66,7 +66,7 @@ const parseFrequencyFreq = async (
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'MISSED',
             },
           },

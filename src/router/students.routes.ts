@@ -4,6 +4,7 @@ import {
   createStudentWithClassController,
   listStudentController,
   retrieveStudentController,
+  updateManyStudentController,
   updateStudentController,
 } from '../controllers';
 import {
@@ -13,6 +14,7 @@ import {
 import {
   StudentCreateSchema,
   StudentCreateWithClassSchema,
+  StudentUpdateManySchema,
   StudentUpdateSchema,
 } from '../schemas';
 
@@ -35,6 +37,13 @@ studentRouter.post(
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);
 
 studentRouter.get('/:id', verifyUserIsAuthenticated, retrieveStudentController);
+
+studentRouter.patch(
+  '',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(StudentUpdateManySchema),
+  updateManyStudentController,
+);
 
 studentRouter.patch(
   '/:id',

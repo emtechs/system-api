@@ -14,6 +14,7 @@ export const FrequencyUpdateSchema = z
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
     month: z.number(),
+    school_year_id: z.string().uuid(),
   })
   .partial();
 

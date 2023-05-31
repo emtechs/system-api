@@ -13,7 +13,7 @@ const parseFrequencySchool = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'PRESENTED',
             },
           },
@@ -31,7 +31,7 @@ const parseFrequencySchool = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'JUSTIFIED',
             },
           },
@@ -49,7 +49,7 @@ const parseFrequencySchool = async (id: string, school_year_id: string) => {
         select: {
           frequencies: {
             where: {
-              frequency: { school_year_id },
+              frequency: { AND: { status: 'CLOSED', school_year_id } },
               status: 'MISSED',
             },
           },

@@ -1,9 +1,10 @@
 import { IFrequencyUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
-import { FrequencyReturnSchema } from '../../schemas';
+import { FrequencyInfreqReturnSchema } from '../../schemas';
+import { freqParseRetrieveFrequency } from '../../scripts';
 
 export const updateFrequencyService = async (
-  { status, month, finished_at }: IFrequencyUpdateRequest,
+  { status, month, finished_at, school_year_id }: IFrequencyUpdateRequest,
   id: string,
 ) => {
   const frequency = await prisma.frequency.update({
@@ -12,7 +13,23 @@ export const updateFrequencyService = async (
     include: {
       _count: true,
       user: true,
-      class: { include: { school: true, school_year: true, class: true } },
+      class: {
+        include: {
+          _count: { select: { frequencies: true, students: true } },
+          students: { include: { student: true } },
+          school: {
+            include: {
+              classes: {
+                include: {
+                  students: { include: { student: true } },
+                },
+              },
+            },
+          },
+          school_year: true,
+          class: true,
+        },
+      },
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },
@@ -20,5 +37,10 @@ export const updateFrequencyService = async (
     },
   });
 
-  return FrequencyReturnSchema.parse(frequency);
+  const frequencyReturn = await freqParseRetrieveFrequency(
+    frequency,
+    school_year_id,
+  );
+
+  return FrequencyInfreqReturnSchema.parse(frequencyReturn);
 };

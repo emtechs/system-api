@@ -54,6 +54,7 @@ export const retrieveClassSchoolController = async (
     req.params.class_id,
     req.params.school_id,
     req.params.school_year_id,
+    req.query,
   );
   return res.json(classes);
 };
