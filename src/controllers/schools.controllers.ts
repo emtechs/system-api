@@ -8,6 +8,7 @@ import {
   importSchoolService,
   listSchoolService,
   listSchoolYearService,
+  retrieveSchoolService,
   retrieveSchoolYearService,
   updateSchoolService,
 } from '../services';
@@ -43,6 +44,11 @@ export const createSchoolYearController = async (
 export const listSchoolYearController = async (req: Request, res: Response) => {
   const schoolYears = await listSchoolYearService();
   return res.json(schoolYears);
+};
+
+export const retrieveSchoolController = async (req: Request, res: Response) => {
+  const school = await retrieveSchoolService(req.params.id, req.query);
+  return res.json(school);
 };
 
 export const retrieveSchoolYearController = async (

@@ -7,6 +7,7 @@ import {
   exportSchoolYearController,
   listSchoolController,
   listSchoolYearController,
+  retrieveSchoolController,
   retrieveSchoolYearController,
   updateSchoolController,
 } from '../controllers';
@@ -53,6 +54,8 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   exportSchoolYearController,
 );
+
+schoolRouter.get('/:id', verifyUserIsAuthenticated, retrieveSchoolController);
 
 schoolRouter.patch(
   '/:id',

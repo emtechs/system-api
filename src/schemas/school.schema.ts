@@ -39,6 +39,7 @@ const StudentSchema = z.object({
   missed: z.number(),
   total_frequencies: z.number(),
   infrequency: z.number(),
+  class: UserSchema.omit({ cpf: true }).optional(),
 });
 
 export const SchoolReturnSchema = z.object({
