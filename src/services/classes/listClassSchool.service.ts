@@ -30,7 +30,12 @@ export const listClassSchoolService = async (
         school_year: true,
         class: true,
         students: { include: { student: true } },
-        _count: { select: { frequencies: true, students: true } },
+        _count: {
+          select: {
+            frequencies: { where: { status: 'CLOSED' } },
+            students: true,
+          },
+        },
       },
     });
     return ClassSchoolArraySchema.parse(classes);
@@ -50,7 +55,12 @@ export const listClassSchoolService = async (
       school_year: true,
       class: true,
       students: { include: { student: true } },
-      _count: { select: { frequencies: true, students: true } },
+      _count: {
+        select: {
+          frequencies: { where: { status: 'CLOSED' } },
+          students: true,
+        },
+      },
     },
   });
 
@@ -70,7 +80,12 @@ export const listClassSchoolService = async (
         school_year: true,
         class: true,
         students: { include: { student: true } },
-        _count: { select: { frequencies: true, students: true } },
+        _count: {
+          select: {
+            frequencies: { where: { status: 'CLOSED' } },
+            students: true,
+          },
+        },
       },
     });
   }
@@ -93,7 +108,12 @@ export const listClassSchoolService = async (
           school_year: true,
           class: true,
           students: { include: { student: true } },
-          _count: { select: { frequencies: true, students: true } },
+          _count: {
+            select: {
+              frequencies: { where: { status: 'CLOSED' } },
+              students: true,
+            },
+          },
         },
       });
       break;
@@ -113,7 +133,12 @@ export const listClassSchoolService = async (
           school_year: true,
           class: true,
           students: { include: { student: true } },
-          _count: { select: { frequencies: true, students: true } },
+          _count: {
+            select: {
+              frequencies: { where: { status: 'CLOSED' } },
+              students: true,
+            },
+          },
         },
       });
       break;
