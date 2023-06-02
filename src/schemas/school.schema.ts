@@ -71,6 +71,12 @@ export const SchoolListReturnSchema = z.object({
   created_at: z.date(),
   school_infreq: z.number(),
   director: UserSchema.nullable().optional(),
+  servers: z
+    .object({
+      server: UserSchema,
+    })
+    .array()
+    .optional(),
   num_students: z.number(),
   num_frequencies: z.number(),
   num_classes: z.number(),

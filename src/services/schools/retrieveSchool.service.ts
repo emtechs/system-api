@@ -12,6 +12,7 @@ export const retrieveSchoolService = async (
       where: { id },
       include: {
         director: true,
+        servers: { include: { server: true } },
         classes: {
           where: { school_year_id },
           include: {
