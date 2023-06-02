@@ -103,6 +103,7 @@ CREATE TABLE "class_school" (
 CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
     "date" VARCHAR(50) NOT NULL,
+    "month" INTEGER NOT NULL DEFAULT 0,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
