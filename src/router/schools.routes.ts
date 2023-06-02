@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createSchoolController,
   createSchoolYearController,
+  deleteDirectorSchoolController,
   deleteSchoolController,
   exportSchoolController,
   exportSchoolYearController,
@@ -65,3 +66,9 @@ schoolRouter.patch(
 );
 
 schoolRouter.delete('/:id', verifyUserIsAuthenticated, deleteSchoolController);
+
+schoolRouter.delete(
+  '/:id/director',
+  verifyUserIsAuthenticated,
+  deleteDirectorSchoolController,
+);
