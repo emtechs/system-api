@@ -66,7 +66,7 @@ export const listSchoolService = async ({
   }
 
   if (is_listSchool) {
-    const schoolList = await prisma.school.findMany({
+    let schoolList = await prisma.school.findMany({
       take,
       orderBy: { name: 'asc' },
       include: {
@@ -80,6 +80,19 @@ export const listSchoolService = async ({
         _count: { select: { classes: { where: { school_year_id } } } },
       },
     });
+
+    if (is_active) {
+      switch (is_active) {
+      case 'true':
+        schoolList = schoolList.filter((school) => school.is_active === true);
+        break;
+      case 'false':
+        schoolList = schoolList.filter(
+          (school) => school.is_active === false,
+        );
+        break;
+      }
+    }
 
     const schoolsReturn = schoolList.map((el) => {
       let num_students = 0;
