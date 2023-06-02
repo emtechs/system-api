@@ -59,6 +59,21 @@ export const SchoolReturnSchema = z.object({
   students: StudentSchema.array().optional(),
   infrequency: z.number().optional(),
   total_students: z.number().optional(),
+  _count: z.object({ classes: z.number() }).optional(),
 });
 
 export const SchoolArraySchema = SchoolReturnSchema.array();
+
+const SchoolListReturnSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  is_active: z.boolean(),
+  created_at: z.date(),
+  school_infreq: z.number(),
+  director: UserSchema.nullable().optional(),
+  num_students: z.number(),
+  num_frequencies: z.number(),
+  num_classes: z.number(),
+});
+
+export const SchoolListArraySchema = SchoolListReturnSchema.array();
