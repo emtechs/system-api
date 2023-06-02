@@ -1,13 +1,23 @@
 import prisma from '../../prisma';
-import { AppError } from '../../errors';
 
 export const deleteDirectorSchoolService = async (id: string) => {
-  try {
-    await prisma.school.update({
-      where: { id },
-      data: { director: { disconnect: true } },
-    });
-  } catch {
-    throw new AppError('school not found', 404);
-  }
+  const school = await prisma.school.findUnique({ where: { id } });
+  await prisma.school.update({
+    where: { id },
+    data: {
+      director: {
+        update: {
+          work_school: {
+            disconnect: {
+              school_id_server_id: {
+                school_id: id,
+                server_id: school.director_id,
+              },
+            },
+          },
+        },
+        disconnect: true,
+      },
+    },
+  });
 };
