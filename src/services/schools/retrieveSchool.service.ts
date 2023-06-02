@@ -1,12 +1,43 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { SchoolReturnSchema } from '../../schemas';
+import { SchoolListReturnSchema, SchoolReturnSchema } from '../../schemas';
 import { schoolClassParseFrequency } from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
-  { school_year_id }: ISchoolQuery,
+  { school_year_id, is_listSchool }: ISchoolQuery,
 ) => {
+  if (is_listSchool) {
+    const schoolList = await prisma.school.findUnique({
+      where: { id },
+      include: {
+        director: true,
+        classes: {
+          where: { school_year_id },
+          include: {
+            _count: true,
+          },
+        },
+        _count: { select: { classes: { where: { school_year_id } } } },
+      },
+    });
+
+    let num_students = 0;
+    let num_frequencies = 0;
+    schoolList.classes.forEach((el) => {
+      num_students += el._count.students;
+      num_frequencies += el._count.frequencies;
+    });
+    const schoolsReturn = {
+      ...schoolList,
+      num_students,
+      num_frequencies,
+      num_classes: schoolList._count.classes,
+    };
+
+    return SchoolListReturnSchema.parse(schoolsReturn);
+  }
+
   if (school_year_id) {
     const schoolFreq = await prisma.school.findUnique({
       where: {

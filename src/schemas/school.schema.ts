@@ -64,7 +64,7 @@ export const SchoolReturnSchema = z.object({
 
 export const SchoolArraySchema = SchoolReturnSchema.array();
 
-const SchoolListReturnSchema = z.object({
+export const SchoolListReturnSchema = z.object({
   id: z.string(),
   name: z.string(),
   is_active: z.boolean(),
