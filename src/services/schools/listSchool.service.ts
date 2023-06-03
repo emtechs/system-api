@@ -17,7 +17,7 @@ export const listSchoolService = async ({
 
   if (is_director) {
     const schools = await prisma.school.findMany({
-      where: { AND: { is_active: true, director_id: { contains: null } } },
+      where: { AND: { is_active: true, director_id: { equals: null } } },
       orderBy: { name: 'asc' },
       include: {
         director: true,
