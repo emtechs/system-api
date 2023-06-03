@@ -23,13 +23,6 @@ export interface IUserQuery extends IQuery {
   role?: IRole;
   is_active?: 'true' | 'false';
   isNot_director_school?: 'true' | 'false';
-}
-
-export interface IUserCreateQuery {
-  allNotServ?: 'true' | 'false';
-}
-
-export interface IUserCpfQuery {
   school_id?: string;
   allNotServ?: 'true' | 'false';
 }

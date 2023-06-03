@@ -1,10 +1,10 @@
-import { IUserCpfQuery } from '../../interfaces';
+import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserReturnSchema } from '../../schemas';
 
 export const retrieveUserWithCpfService = async (
   login: string,
-  { school_id, allNotServ }: IUserCpfQuery,
+  { school_id, allNotServ }: IUserQuery,
 ) => {
   if (school_id) {
     const server = await prisma.schoolServer.findFirst({

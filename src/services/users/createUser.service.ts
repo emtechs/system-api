@@ -1,5 +1,5 @@
 import prisma from '../../prisma';
-import { IUserCreateQuery, IUserRequest } from '../../interfaces';
+import { IUserQuery, IUserRequest } from '../../interfaces';
 import { hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
 import { UserReturnSchema } from '../../schemas';
@@ -7,7 +7,7 @@ import { updateSchool } from '../../scripts';
 
 export const createUserService = async (
   { login, name, password, cpf, role, dash, schools }: IUserRequest,
-  { allNotServ }: IUserCreateQuery,
+  { allNotServ, school_id }: IUserQuery,
 ) => {
   let user = await prisma.user.findUnique({
     where: { login },
@@ -29,6 +29,40 @@ export const createUserService = async (
     }
 
     await updateSchool(schools, user.id);
+
+    return UserReturnSchema.parse(user);
+  }
+
+  if (school_id) {
+    if (!user) {
+      password = hashSync(password, 10);
+      user = await prisma.user.create({
+        data: {
+          login,
+          name,
+          password,
+          cpf,
+          role,
+          dash,
+        },
+      });
+    }
+
+    await prisma.school.update({
+      where: { id: school_id },
+      data: {
+        director_id: user.id,
+        servers: {
+          upsert: {
+            where: {
+              school_id_server_id: { school_id, server_id: user.id },
+            },
+            create: { server_id: user.id, dash, role },
+            update: { dash, role },
+          },
+        },
+      },
+    });
 
     return UserReturnSchema.parse(user);
   }
