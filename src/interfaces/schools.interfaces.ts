@@ -19,6 +19,10 @@ export interface ISchool {
   name: string;
 }
 
+export interface ISchoolUpdate {
+  school_id?: string;
+}
+
 export type IStatusFrequency = 'OPENED' | 'CLOSED';
 
 export interface IFrequencyRequest {

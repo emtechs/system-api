@@ -44,7 +44,7 @@ export const updateSchoolService = async (
             where: {
               school_id_server_id: { school_id: id, server_id: user.id },
             },
-            create: { server_id: user.id, dash },
+            create: { server_id: user.id, dash, role },
           },
         },
       },

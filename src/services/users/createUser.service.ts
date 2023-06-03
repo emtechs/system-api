@@ -3,48 +3,34 @@ import { IUserCreateQuery, IUserRequest } from '../../interfaces';
 import { hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
 import { UserReturnSchema } from '../../schemas';
+import { updateSchool } from '../../scripts';
 
 export const createUserService = async (
-  { login, name, password, cpf, role, dash }: IUserRequest,
-  { school_id, allNotServ }: IUserCreateQuery,
+  { login, name, password, cpf, role, dash, schools }: IUserRequest,
+  { allNotServ }: IUserCreateQuery,
 ) => {
   let user = await prisma.user.findUnique({
     where: { login },
   });
 
-  if (school_id) {
-    if (user) {
-      const server = await prisma.user.update({
-        where: { id: user.id },
+  if (schools) {
+    if (!user) {
+      password = hashSync(password, 10);
+      user = await prisma.user.create({
         data: {
-          is_active: true,
+          login,
+          name,
+          password,
+          cpf,
+          role,
           dash,
-          work_school: {
-            upsert: {
-              where: { school_id_server_id: { school_id, server_id: user.id } },
-              create: { school_id, dash },
-              update: { dash },
-            },
-          },
         },
       });
-      return UserReturnSchema.parse(server);
     }
 
-    password = hashSync(password, 10);
+    await updateSchool(schools, user.id);
 
-    const server = await prisma.user.create({
-      data: {
-        login,
-        name,
-        cpf,
-        dash,
-        password,
-        work_school: { create: { school_id, dash } },
-      },
-    });
-
-    return UserReturnSchema.parse(server);
+    return UserReturnSchema.parse(user);
   }
 
   switch (role) {

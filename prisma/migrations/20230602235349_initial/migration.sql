@@ -66,6 +66,7 @@ CREATE TABLE "schools" (
 CREATE TABLE "school_server" (
     "school_id" TEXT NOT NULL,
     "server_id" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'SERV',
     "dash" "Dash" NOT NULL DEFAULT 'COMMON',
 
     CONSTRAINT "school_server_pkey" PRIMARY KEY ("school_id","server_id")

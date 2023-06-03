@@ -6,6 +6,8 @@ import {
   updateUserService,
   deleteUserService,
   retrieveUserWithCpfService,
+  exportUserService,
+  importUserService,
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -34,6 +36,16 @@ export const retrieveUserWithCpfController = async (
 export const profileUserController = async (req: Request, res: Response) => {
   const user = await retrieveUserService(req.user.id);
   return res.json(user);
+};
+
+export const importUserController = async (req: Request, res: Response) => {
+  const users = await importUserService(req.file);
+  return res.status(201).json(users);
+};
+
+export const exportUserController = async (req: Request, res: Response) => {
+  const users = await exportUserService();
+  return res.json(users);
 };
 
 export const updateUserController = async (req: Request, res: Response) => {

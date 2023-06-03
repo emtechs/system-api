@@ -4,11 +4,19 @@ import {
   importSchoolController,
   importStudentAllController,
   importStudentController,
+  importUserController,
 } from '../controllers';
 import { verifyUserIsAuthenticated } from '../middlewares';
 import { uploadCsv } from '../utils';
 
 export const importRouter = Router();
+
+importRouter.post(
+  '/user',
+  verifyUserIsAuthenticated,
+  uploadCsv.single('file'),
+  importUserController,
+);
 
 importRouter.post(
   '/school',

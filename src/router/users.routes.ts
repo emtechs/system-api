@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createUserController,
   deleteUserController,
+  exportUserController,
   listUserController,
   profileUserController,
   retrieveUserController,
@@ -31,6 +32,8 @@ userRouter.get(
 );
 
 userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController);
+
+userRouter.get('/export', verifyUserIsAuthenticated, exportUserController);
 
 userRouter.get(
   '/cpf/:cpf',

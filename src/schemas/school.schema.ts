@@ -51,6 +51,8 @@ export const SchoolReturnSchema = z.object({
   director: UserSchema.nullable().optional(),
   servers: z
     .object({
+      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
+      dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
       server: UserSchema,
     })
     .array()
@@ -73,6 +75,7 @@ export const SchoolListReturnSchema = z.object({
   director: UserSchema.nullable().optional(),
   servers: z
     .object({
+      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
       server: UserSchema,
     })
     .array()

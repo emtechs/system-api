@@ -8,6 +8,7 @@ export const UserCreateSchema = z.object({
   cpf: z.string(),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).default('COMMON'),
+  schools: z.object({ school_id: z.string().uuid() }).array().optional(),
 });
 
 export const UserReturnSchema = UserCreateSchema.extend({
@@ -17,9 +18,10 @@ export const UserReturnSchema = UserCreateSchema.extend({
   is_active: z.boolean(),
   is_first_access: z.boolean(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-  director_school: SchoolReturnSchema.nullable().optional(),
+  director_school: SchoolReturnSchema.array().optional(),
   work_school: z
     .object({
+      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
       dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
       school: z.object({
         id: z.string(),
