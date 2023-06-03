@@ -8,7 +8,7 @@ export const UserCreateSchema = z.object({
   cpf: z.string(),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).default('COMMON'),
-  schools: z.object({ school_id: z.string().uuid() }).array().optional(),
+  schools: z.object({ id: z.string().uuid() }).array().optional(),
 });
 
 export const UserReturnSchema = UserCreateSchema.extend({

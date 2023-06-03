@@ -1,18 +1,15 @@
 import { ISchoolUpdate } from '../interfaces';
 import prisma from '../prisma';
 
-const verifySchool = async (
-  { school_id }: ISchoolUpdate,
-  director_id: string,
-) => {
+const verifySchool = async ({ id }: ISchoolUpdate, director_id: string) => {
   const school = await prisma.school.update({
-    where: { id: school_id },
+    where: { id },
     data: {
       director_id,
       servers: {
         upsert: {
           where: {
-            school_id_server_id: { school_id, server_id: director_id },
+            school_id_server_id: { school_id: id, server_id: director_id },
           },
           create: { server_id: director_id, dash: 'SCHOOL', role: 'DIRET' },
           update: { dash: 'SCHOOL', role: 'DIRET' },

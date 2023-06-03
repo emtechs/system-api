@@ -20,7 +20,7 @@ export interface ISchool {
 }
 
 export interface ISchoolUpdate {
-  school_id?: string;
+  id?: string;
 }
 
 export type IStatusFrequency = 'OPENED' | 'CLOSED';
