@@ -75,7 +75,7 @@ model School{
   is_active Boolean @default(true)
   created_at DateTime @default(now())
   director User? @relation(fields: [director_id], references: [id], onDelete: Cascade)
-  director_id String? @unique
+  director_id String?
   school_infreq Float @default(0)
   servers SchoolServer[]
   classes ClassSchool[]
