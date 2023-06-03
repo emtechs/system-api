@@ -9,10 +9,25 @@ export const listSchoolService = async ({
   take,
   is_dash,
   is_listSchool,
+  is_director,
 }: ISchoolQuery) => {
   if (take) {
     take = +take;
   }
+
+  if (is_director) {
+    const schools = await prisma.school.findMany({
+      where: { AND: { is_active: true, director_id: { contains: null } } },
+      orderBy: { name: 'asc' },
+      include: {
+        director: true,
+        servers: { include: { server: true } },
+        classes: { include: { class: true } },
+      },
+    });
+    return SchoolArraySchema.parse(schools);
+  }
+
   let schools = await prisma.school.findMany({
     take,
     orderBy: { name: 'asc' },

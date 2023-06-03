@@ -53,6 +53,7 @@ export interface ISchoolQuery extends IQuery {
   is_dash?: string;
   school_year_id?: string;
   is_listSchool?: string;
+  is_director?: string;
 }
 
 export interface IFrequencyQuery extends IQuery {
