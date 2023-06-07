@@ -50,6 +50,33 @@ export const updateUserService = async (
     password = hashSync(password, 10);
   }
 
+  if (role === 'SERV') {
+    try {
+      const user = await prisma.user.update({
+        where: { id },
+        data: {
+          role,
+          is_active,
+          work_school: { deleteMany: { server_id: id } },
+        },
+        include: { director_school: true },
+      });
+
+      if (user.director_school) {
+        user.director_school.forEach(async (el) => {
+          await prisma.school.update({
+            where: { id: el.id },
+            data: { director: { disconnect: true } },
+          });
+        });
+      }
+
+      return UserReturnSchema.parse(user);
+    } catch {
+      throw new AppError('user not found', 404);
+    }
+  }
+
   try {
     const user = await prisma.user.update({
       where: { id },

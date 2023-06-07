@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   createSchoolService,
   deleteDirectorSchoolService,
+  deleteSchoolServerService,
   deleteSchoolService,
   exportSchoolService,
   importSchoolService,
@@ -50,5 +51,13 @@ export const deleteDirectorSchoolController = async (
 
 export const deleteSchoolController = async (req: Request, res: Response) => {
   await deleteSchoolService(req.params.id);
+  return res.status(204).json({});
+};
+
+export const deleteSchoolServerController = async (
+  req: Request,
+  res: Response,
+) => {
+  await deleteSchoolServerService(req.params.school_id, req.params.server_id);
   return res.status(204).json({});
 };

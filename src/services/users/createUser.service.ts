@@ -26,6 +26,11 @@ export const createUserService = async (
           dash,
         },
       });
+    } else {
+      await prisma.user.update({
+        where: { login },
+        data: { is_active: true, dash: 'SCHOOL', role: 'DIRET' },
+      });
     }
 
     await updateSchool(schools, user.id);

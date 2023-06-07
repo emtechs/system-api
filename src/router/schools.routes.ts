@@ -3,6 +3,7 @@ import {
   createSchoolController,
   deleteDirectorSchoolController,
   deleteSchoolController,
+  deleteSchoolServerController,
   exportSchoolController,
   listSchoolController,
   retrieveSchoolController,
@@ -42,4 +43,10 @@ schoolRouter.delete(
   '/:id/director',
   verifyUserIsAuthenticated,
   deleteDirectorSchoolController,
+);
+
+schoolRouter.delete(
+  '/:school_id/server/:server_id',
+  verifyUserIsAuthenticated,
+  deleteSchoolServerController,
 );
