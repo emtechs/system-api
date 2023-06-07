@@ -9,25 +9,30 @@ export const retrieveUserWithCpfService = async (
   if (school_id) {
     const server = await prisma.schoolServer.findFirst({
       where: { AND: { server: { login }, school_id } },
+      include: { server: true },
     });
 
     if (!server && allNotServ) {
-      const user = await prisma.user.findFirst({
-        where: { AND: { login, role: { not: 'SERV' } } },
-      });
+      const user = await prisma.user.findUnique({ where: { login } });
 
-      return UserReturnSchema.parse(user);
+      if (user.role === 'ADMIN' || user.role === 'SECRET') {
+        return UserReturnSchema.parse(user);
+      }
+
+      return {};
     }
 
-    return UserReturnSchema.parse(server);
+    return UserReturnSchema.parse(server.server);
   }
 
   if (allNotServ) {
-    const user = await prisma.user.findFirst({
-      where: { AND: { login, role: { not: 'SERV' } } },
-    });
+    const user = await prisma.user.findUnique({ where: { login } });
 
-    return UserReturnSchema.parse(user);
+    if (user.role === 'ADMIN' || user.role === 'SECRET') {
+      return UserReturnSchema.parse(user);
+    }
+
+    return {};
   }
 
   const user = await prisma.user.findUnique({
