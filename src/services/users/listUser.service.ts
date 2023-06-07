@@ -2,17 +2,16 @@ import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
 
-export const listUserService = async ({
-  role,
-  is_active,
-  isNot_director_school,
-  take,
-}: IUserQuery) => {
+export const listUserService = async (
+  { role, is_active, isNot_director_school, take }: IUserQuery,
+  id: string,
+) => {
   if (take) {
     take = +take;
   }
   let users = await prisma.user.findMany({
     take,
+    where: { NOT: { id } },
     orderBy: { name: 'asc' },
     include: {
       director_school: true,

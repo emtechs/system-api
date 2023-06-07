@@ -16,7 +16,7 @@ export const createUserController = async (req: Request, res: Response) => {
 };
 
 export const listUserController = async (req: Request, res: Response) => {
-  const users = await listUserService(req.query);
+  const users = await listUserService(req.query, req.user.id);
   return res.json(users);
 };
 
