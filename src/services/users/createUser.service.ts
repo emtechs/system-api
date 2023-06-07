@@ -51,7 +51,6 @@ export const createUserService = async (
     await prisma.school.update({
       where: { id: school_id },
       data: {
-        director_id: user.id,
         servers: {
           upsert: {
             where: {
