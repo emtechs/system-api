@@ -3,6 +3,7 @@ import {
   createMonthService,
   createYearService,
   exportYearService,
+  importMonthService,
   listMonthService,
   listYearService,
   retrieveYearService,
@@ -16,6 +17,11 @@ export const createYearController = async (req: Request, res: Response) => {
 export const createMonthController = async (req: Request, res: Response) => {
   const month = await createMonthService(req.body);
   return res.status(201).json(month);
+};
+
+export const importMonthController = async (req: Request, res: Response) => {
+  const months = await importMonthService(req.file);
+  return res.status(201).json(months);
 };
 
 export const listYearController = async (req: Request, res: Response) => {
