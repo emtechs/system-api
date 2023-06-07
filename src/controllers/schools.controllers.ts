@@ -1,16 +1,12 @@
 import { Request, Response } from 'express';
 import {
   createSchoolService,
-  createSchoolYearService,
   deleteDirectorSchoolService,
   deleteSchoolService,
   exportSchoolService,
-  exportSchoolYearService,
   importSchoolService,
   listSchoolService,
-  listSchoolYearService,
   retrieveSchoolService,
-  retrieveSchoolYearService,
   updateSchoolService,
 } from '../services';
 
@@ -34,38 +30,9 @@ export const listSchoolController = async (req: Request, res: Response) => {
   return res.json(schools);
 };
 
-export const createSchoolYearController = async (
-  req: Request,
-  res: Response,
-) => {
-  const schoolYear = await createSchoolYearService(req.body);
-  return res.status(201).json(schoolYear);
-};
-
-export const listSchoolYearController = async (req: Request, res: Response) => {
-  const schoolYears = await listSchoolYearService();
-  return res.json(schoolYears);
-};
-
 export const retrieveSchoolController = async (req: Request, res: Response) => {
   const school = await retrieveSchoolService(req.params.id, req.query);
   return res.json(school);
-};
-
-export const retrieveSchoolYearController = async (
-  req: Request,
-  res: Response,
-) => {
-  const schoolYear = await retrieveSchoolYearService(req.params.year);
-  return res.json(schoolYear);
-};
-
-export const exportSchoolYearController = async (
-  req: Request,
-  res: Response,
-) => {
-  const schoolYears = await exportSchoolYearService();
-  return res.json(schoolYears);
 };
 
 export const updateSchoolController = async (req: Request, res: Response) => {

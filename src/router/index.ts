@@ -1,4 +1,5 @@
 export * from './auth.routes';
+export * from './calendar.routes';
 export * from './classes.routes';
 export * from './frequencies.routes';
 export * from './images.routes';

@@ -35,7 +35,7 @@ export const retrieveFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await retrieveFrequencyService(req.params.id, req.query);
+  const frequency = await retrieveFrequencyService(req.params.id);
   return res.json(frequency);
 };
 

@@ -128,6 +128,23 @@ model ClassSchool{
   @@map("class_school")
 }
 
+model Month{
+  id String @id @default(uuid())
+  month Int @db.Integer() @unique
+  name String @db.VarChar(50) @unique
+  frequencies Frequency[]
+
+  @@map("months")
+}
+
+model Day{
+  id String @id @default(uuid())
+  day Int @db.Integer() @unique
+  frequencies Frequency[]
+
+  @@map("days")
+}
+
 enum StatusFrequency{
   OPENED
   CLOSED
@@ -136,10 +153,13 @@ enum StatusFrequency{
 model Frequency{
   id String @id @default(uuid())
   date String @db.VarChar(50)
-  month Int @default(0)
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
+  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id String
+  day Day @relation(fields: [day_id], references: [id], onDelete: Cascade)
+  day_id String
   class ClassSchool @relation(fields: [class_id, school_id, school_year_id], references: [class_id, school_id, school_year_id], onDelete: Cascade)
   class_id String
   school_id String

@@ -2,7 +2,7 @@ import { IClass } from '../../interfaces';
 import prisma from '../../prisma';
 
 const verifyClass = async ({ name }: IClass) => {
-  const classData = await prisma.class.findFirst({ where: { name } });
+  const classData = await prisma.class.findUnique({ where: { name } });
   let elem = classData;
   if (!classData) {
     elem = await prisma.class.create({ data: { name } });

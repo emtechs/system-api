@@ -3,7 +3,7 @@ import { stringify } from 'csv-stringify';
 import prisma from '../../prisma';
 import 'dotenv/config';
 
-export const exportSchoolYearService = async () => {
+export const exportYearService = async () => {
   const schoolYears = await prisma.schoolYear.findMany({
     select: { year: true, id: true },
   });

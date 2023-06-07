@@ -6,6 +6,7 @@ export const createFrequencyService = async (
   {
     date,
     month,
+    day,
     class_id,
     school_id,
     school_year_id,
@@ -15,25 +16,20 @@ export const createFrequencyService = async (
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
     where: { date, class_id, school_id, school_year_id },
-    include: {
-      _count: true,
-      user: true,
-      class: { include: { school: true, school_year: true, class: true } },
-      students: {
-        include: { student: true },
-        orderBy: { student: { name: 'asc' } },
-      },
-    },
   });
 
   if (frequencyData) {
     return FrequencyReturnSchema.parse(frequencyData);
   }
 
+  month = +month;
+  day = +day;
+
   const frequency = await prisma.frequency.create({
     data: {
       date,
-      month: +month,
+      month: { connect: { month } },
+      day: { connectOrCreate: { where: { day }, create: { day } } },
       user: { connect: { id: user_id } },
       class: {
         connectOrCreate: {
@@ -48,15 +44,6 @@ export const createFrequencyService = async (
         },
       },
       students: { createMany: { data: students } },
-    },
-    include: {
-      _count: true,
-      user: true,
-      class: { include: { school: true, school_year: true, class: true } },
-      students: {
-        include: { student: true },
-        orderBy: { student: { name: 'asc' } },
-      },
     },
   });
 

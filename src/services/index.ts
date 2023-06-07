@@ -1,4 +1,5 @@
 export * from './auth';
+export * from './calendar';
 export * from './classes';
 export * from './frequencies';
 export * from './images';

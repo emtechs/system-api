@@ -2,7 +2,7 @@ import { ISchool } from '../../interfaces';
 import prisma from '../../prisma';
 
 const verifySchool = async ({ name }: ISchool) => {
-  const schoolData = await prisma.school.findFirst({ where: { name } });
+  const schoolData = await prisma.school.findUnique({ where: { name } });
   let school = schoolData;
   if (!schoolData) {
     school = await prisma.school.create({ data: { name } });

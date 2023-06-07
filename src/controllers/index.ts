@@ -1,4 +1,5 @@
 export * from './auth.controllers';
+export * from './calendar.controllers';
 export * from './classes.controllers';
 export * from './frequencies.controllers';
 export * from './images.controllers';

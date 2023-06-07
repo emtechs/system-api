@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
+export const MonthCreateSchema = z.object({
+  month: z.number(),
+  name: z.string(),
+});
+
+export const MonthArraySchema = MonthCreateSchema.array();
+
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
   month: z.number(),
+  day: z.number(),
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
   school_year_id: z.string().uuid(),
@@ -13,7 +21,6 @@ export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
-    month: z.number(),
     school_year_id: z.string().uuid(),
   })
   .partial();
@@ -44,17 +51,22 @@ const StudentSchema = z.object({
   }),
 });
 
+const DaySchema = z.object({
+  day: z.number(),
+});
+
 export const FrequencyReturnSchema = z.object({
   id: z.string(),
   date: z.string(),
-  month: z.number(),
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
-  user: UserSchema,
-  class: ClassSchema,
-  students: StudentSchema.array(),
-  _count: z.object({ students: z.number() }),
+  month: MonthCreateSchema.optional(),
+  day: DaySchema.optional(),
+  user: UserSchema.optional(),
+  class: ClassSchema.optional(),
+  students: StudentSchema.array().optional(),
+  _count: z.object({ students: z.number() }).optional(),
 });
 
 export const FrequencyArraySchema = FrequencyReturnSchema.array();
@@ -71,17 +83,8 @@ const StudentInfreqSchema = z.object({
   frequencyStudent_id: z.string(),
 });
 
-export const FrequencyInfreqReturnSchema = z.object({
-  id: z.string(),
-  date: z.string(),
-  month: z.number(),
-  status: z.string(),
-  created_at: z.date(),
-  finished_at: z.number(),
-  user: UserSchema,
-  class: ClassSchema,
+export const FrequencyInfreqReturnSchema = FrequencyReturnSchema.extend({
   students: StudentInfreqSchema.array(),
-  _count: z.object({ students: z.number() }),
   infrequency: z.number(),
   class_infreq: z.number().optional(),
   school_infreq: z.number().optional(),
