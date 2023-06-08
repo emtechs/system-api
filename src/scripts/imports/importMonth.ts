@@ -1,12 +1,12 @@
 import { IMonth } from '../../interfaces';
 import prisma from '../../prisma';
 
-const verifyMonth = async ({ month, name }: IMonth) => {
+const verifyMonth = async ({ month, name, date }: IMonth) => {
   month = +month;
   const monthData = await prisma.month.findUnique({ where: { month } });
   let elem = monthData;
   if (!monthData) {
-    elem = await prisma.month.create({ data: { month, name } });
+    elem = await prisma.month.create({ data: { month, name, date } });
   }
   return elem;
 };

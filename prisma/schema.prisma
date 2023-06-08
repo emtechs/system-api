@@ -107,6 +107,7 @@ model Month{
   id String @id @default(uuid())
   month Int @db.Integer() @unique
   name String @db.VarChar(50) @unique
+  date String? @db.VarChar(50)
   frequencies Frequency[]
 
   @@map("months")

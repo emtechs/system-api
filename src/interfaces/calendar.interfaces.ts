@@ -8,4 +8,5 @@ export type IMonthRequest = z.infer<typeof MonthCreateSchema>;
 export interface IMonth {
   month: number;
   name: string;
+  date: string;
 }

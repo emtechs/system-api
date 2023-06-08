@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const MonthCreateSchema = z.object({
   month: z.number(),
   name: z.string(),
+  date: z.string(),
 });
 
 export const MonthArraySchema = MonthCreateSchema.array();

@@ -12,10 +12,11 @@ export const loadMonth = (file: Express.Multer.File): Promise<IMonth[]> => {
 
     parseFile
       .on('data', async (line) => {
-        const [month, name] = line;
+        const [month, name, date] = line;
         months.push({
           month,
           name,
+          date,
         });
       })
       .on('end', () => {
