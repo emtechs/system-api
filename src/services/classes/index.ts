@@ -6,3 +6,4 @@ export * from './listClass.service';
 export * from './listClassSchool.service';
 export * from './retrieveClassSchool.service';
 export * from './updateClassSchool.service';
+export * from './updateClassStudent.service';

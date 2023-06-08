@@ -107,7 +107,10 @@ export const listClassSchoolService = async (
           school: true,
           year: true,
           class: true,
-          students: { include: { student: true } },
+          students: {
+            where: { is_active: true },
+            include: { student: true },
+          },
           _count: {
             select: {
               frequencies: { where: { status: 'CLOSED' } },

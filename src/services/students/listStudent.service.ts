@@ -6,9 +6,26 @@ export const listStudentService = async ({
   year_id,
   school_id,
   take,
+  is_active,
 }: IStudentQuery) => {
   if (take) {
     take = +take;
+  }
+
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      return await prisma.student.findMany({
+        take,
+        where: { classes: { every: { is_active: true } } },
+      });
+
+    case 'false':
+      return await prisma.student.findMany({
+        take,
+        where: { classes: { every: { is_active: false } } },
+      });
+    }
   }
 
   let students = await prisma.student.findMany({

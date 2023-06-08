@@ -86,7 +86,12 @@ export const listSchoolService = async ({
         classes: {
           where: { year_id },
           include: {
-            _count: true,
+            _count: {
+              select: {
+                students: { where: { is_active: true } },
+                frequencies: true,
+              },
+            },
           },
         },
         _count: { select: { classes: { where: { year_id } } } },
@@ -131,14 +136,17 @@ export const listSchoolService = async ({
       include: {
         director: true,
         classes: {
-          include: { class: true, students: { include: { student: true } } },
+          include: {
+            class: true,
+            students: {
+              where: { is_active: true },
+              include: { student: true },
+            },
+          },
         },
       },
     });
-    const schoolsReturn = await schoolArrParseFrequency(
-      schoolFreq,
-      year_id,
-    );
+    const schoolsReturn = await schoolArrParseFrequency(schoolFreq, year_id);
     return SchoolArraySchema.parse(schoolsReturn);
   }
 

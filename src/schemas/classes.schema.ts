@@ -10,6 +10,15 @@ export const ClassStudentCreateSchema = z.object({
   student_id: z.string().uuid(),
 });
 
+export const ClassStudentUpdateSchema = z.object({
+  school_id: z.string().uuid(),
+  year_id: z.string().uuid(),
+  student_id: z.string().uuid(),
+  is_active: z.boolean().optional(),
+  justify_disabled: z.string().optional(),
+  finished_at: z.number().optional(),
+});
+
 export const ClassSchoolUpdateSchema = z.object({
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
