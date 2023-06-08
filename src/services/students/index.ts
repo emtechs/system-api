@@ -1,5 +1,6 @@
 export * from './createStudent.service';
 export * from './createStudentWithClass.service';
+export * from './exportStudent.service';
 export * from './importStudent.service';
 export * from './importStudentAll.service';
 export * from './listStudent.service';

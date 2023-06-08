@@ -14,7 +14,7 @@ export interface IFrequencyRequest {
   day: number;
   class_id: string;
   school_id: string;
-  school_year_id: string;
+  year_id: string;
   students: {
     student_id: string;
   }[];
@@ -36,7 +36,7 @@ export interface IFrequencyQuery extends IQuery {
   status?: IStatusFrequency;
   date?: string;
   class_id?: string;
-  school_year_id?: string;
+  year_id?: string;
   is_infreq?: boolean;
   is_dash?: string;
   school_id?: string;

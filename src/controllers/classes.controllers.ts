@@ -53,7 +53,7 @@ export const retrieveClassSchoolController = async (
   const classes = await retrieveClassSchoolService(
     req.params.class_id,
     req.params.school_id,
-    req.params.school_year_id,
+    req.params.year_id,
     req.query,
   );
   return res.json(classes);

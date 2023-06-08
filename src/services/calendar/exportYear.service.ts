@@ -4,7 +4,7 @@ import prisma from '../../prisma';
 import 'dotenv/config';
 
 export const exportYearService = async () => {
-  const schoolYears = await prisma.schoolYear.findMany({
+  const years = await prisma.year.findMany({
     select: { year: true, id: true },
   });
 
@@ -14,11 +14,11 @@ export const exportYearService = async () => {
       header: true,
       columns: ['year', 'id'],
     });
-    schoolYears.map((year) => {
+    years.map((year) => {
       stringifier.write(Object.values(year));
     });
     stringifier.pipe(writeStream);
   }
 
-  return schoolYears;
+  return years;
 };

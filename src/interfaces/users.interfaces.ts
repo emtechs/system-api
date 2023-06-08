@@ -12,7 +12,6 @@ export interface IUser {
   cpf: string;
   role: IRole;
   dash: IDash;
-  school_id: string;
 }
 
 export type IUserRequest = z.infer<typeof UserCreateSchema>;

@@ -31,7 +31,7 @@ export const createSessionService = async ({
     );
   }
 
-  const token = jwt.sign({ role: user.role }, process.env.SECRET_KEY!, {
+  const token = jwt.sign({ role: user.role }, process.env.SECRET_KEY, {
     subject: user.id,
     expiresIn: '7d',
   });

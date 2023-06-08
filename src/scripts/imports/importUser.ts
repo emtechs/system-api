@@ -2,14 +2,7 @@ import { hashSync } from 'bcryptjs';
 import { IUser } from '../../interfaces';
 import prisma from '../../prisma';
 
-const verifyUser = async ({
-  cpf,
-  dash,
-  school_id,
-  login,
-  name,
-  role,
-}: IUser) => {
+const verifyUser = async ({ login, name, cpf, role, dash }: IUser) => {
   const userData = await prisma.user.findUnique({ where: { login } });
   let user = userData;
   if (!userData) {
@@ -26,20 +19,6 @@ const verifyUser = async ({
       },
     });
   }
-
-  await prisma.school.update({
-    where: { id: school_id },
-    data: {
-      director_id: user.id,
-      servers: {
-        upsert: {
-          where: { school_id_server_id: { school_id, server_id: user.id } },
-          create: { server_id: user.id, dash, role },
-          update: { dash, role },
-        },
-      },
-    },
-  });
 
   return user;
 };

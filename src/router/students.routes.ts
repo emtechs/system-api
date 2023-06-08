@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createStudentController,
   createStudentWithClassController,
+  exportStudentController,
   listStudentController,
   retrieveStudentController,
   updateManyStudentController,
@@ -35,6 +36,12 @@ studentRouter.post(
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);
+
+studentRouter.get(
+  '/export',
+  verifyUserIsAuthenticated,
+  exportStudentController,
+);
 
 studentRouter.get('/:id', verifyUserIsAuthenticated, retrieveStudentController);
 

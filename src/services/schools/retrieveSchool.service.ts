@@ -5,7 +5,7 @@ import { schoolClassParseFrequency } from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
-  { school_year_id, is_listSchool }: ISchoolQuery,
+  { year_id, is_listSchool }: ISchoolQuery,
 ) => {
   if (is_listSchool) {
     const schoolList = await prisma.school.findUnique({
@@ -14,12 +14,12 @@ export const retrieveSchoolService = async (
         director: true,
         servers: { include: { server: true } },
         classes: {
-          where: { school_year_id },
+          where: { year_id },
           include: {
             _count: true,
           },
         },
-        _count: { select: { classes: { where: { school_year_id } } } },
+        _count: { select: { classes: { where: { year_id } } } },
       },
     });
 
@@ -39,7 +39,7 @@ export const retrieveSchoolService = async (
     return SchoolListReturnSchema.parse(schoolsReturn);
   }
 
-  if (school_year_id) {
+  if (year_id) {
     const schoolFreq = await prisma.school.findUnique({
       where: {
         id,
@@ -48,7 +48,7 @@ export const retrieveSchoolService = async (
         director: true,
         classes: {
           include: {
-            _count: { select: { students: { where: { school_year_id } } } },
+            _count: { select: { students: { where: { year_id } } } },
             class: true,
             students: {
               where: { student: { infreq: { gt: 0 } } },
@@ -62,7 +62,7 @@ export const retrieveSchoolService = async (
     });
     const schoolsReturn = await schoolClassParseFrequency(
       schoolFreq,
-      school_year_id,
+      year_id,
     );
 
     return SchoolReturnSchema.parse(schoolsReturn);

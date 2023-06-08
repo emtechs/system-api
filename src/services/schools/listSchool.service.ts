@@ -5,7 +5,7 @@ import { schoolArrParseFrequency } from '../../scripts';
 
 export const listSchoolService = async ({
   is_active,
-  school_year_id,
+  year_id,
   take,
   is_dash,
   is_listSchool,
@@ -45,7 +45,7 @@ export const listSchoolService = async ({
         AND: {
           is_active: true,
           school_infreq: { gt: 0 },
-          classes: { every: { school_year_id } },
+          classes: { every: { year_id } },
         },
       },
       orderBy: { school_infreq: 'desc' },
@@ -53,7 +53,7 @@ export const listSchoolService = async ({
         director: true,
         classes: {
           include: {
-            _count: { select: { students: { where: { school_year_id } } } },
+            _count: { select: { students: { where: { year_id } } } },
             class: true,
             students: { include: { student: true } },
           },
@@ -61,10 +61,7 @@ export const listSchoolService = async ({
         },
       },
     });
-    const schoolsReturn = await schoolArrParseFrequency(
-      schoolFreq,
-      school_year_id,
-    );
+    const schoolsReturn = await schoolArrParseFrequency(schoolFreq, year_id);
 
     return SchoolArraySchema.parse(schoolsReturn);
   }
@@ -87,12 +84,12 @@ export const listSchoolService = async ({
       include: {
         director: true,
         classes: {
-          where: { school_year_id },
+          where: { year_id },
           include: {
             _count: true,
           },
         },
-        _count: { select: { classes: { where: { school_year_id } } } },
+        _count: { select: { classes: { where: { year_id } } } },
       },
     });
 
@@ -127,7 +124,7 @@ export const listSchoolService = async ({
     return SchoolListArraySchema.parse(schoolsReturn);
   }
 
-  if (school_year_id) {
+  if (year_id) {
     const schoolFreq = await prisma.school.findMany({
       take,
       orderBy: { name: 'asc' },
@@ -140,7 +137,7 @@ export const listSchoolService = async ({
     });
     const schoolsReturn = await schoolArrParseFrequency(
       schoolFreq,
-      school_year_id,
+      year_id,
     );
     return SchoolArraySchema.parse(schoolsReturn);
   }

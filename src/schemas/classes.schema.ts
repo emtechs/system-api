@@ -6,14 +6,14 @@ export const ClassCreateSchema = z.object({
 
 export const ClassStudentCreateSchema = z.object({
   school_id: z.string().uuid(),
-  school_year_id: z.string().uuid(),
+  year_id: z.string().uuid(),
   student_id: z.string().uuid(),
 });
 
 export const ClassSchoolUpdateSchema = z.object({
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
-  school_year_id: z.string().uuid(),
+  year_id: z.string().uuid(),
   class_infreq: z.number(),
   school_infreq: z.number(),
 });
@@ -38,7 +38,7 @@ export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
   class_infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
-  school_year: z.object({ id: z.string(), year: z.string() }),
+  year: z.object({ id: z.string(), year: z.string() }),
   students: z
     .object({
       student: z.object({
@@ -57,7 +57,7 @@ export const ClassSchoolFrequencyReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
   class_infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
-  school_year: z.object({ id: z.string(), year: z.string() }),
+  year: z.object({ id: z.string(), year: z.string() }),
   students: z
     .object({
       id: z.string(),

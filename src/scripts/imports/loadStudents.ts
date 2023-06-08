@@ -7,7 +7,7 @@ export const loadStudents = (
   file: Express.Multer.File,
   class_id: string,
   school_id: string,
-  school_year_id: string,
+  year_id: string,
 ): Promise<IStudent[]> => {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(file.path);
@@ -23,7 +23,7 @@ export const loadStudents = (
           name,
           class_id,
           school_id,
-          school_year_id,
+          year_id,
         });
       })
       .on('end', () => {
@@ -50,13 +50,13 @@ export const loadStudentsAll = (
 
     parseFile
       .on('data', async (line) => {
-        const [registry, name, school_id, class_id, school_year_id] = line;
+        const [registry, name, school_id, class_id, year_id] = line;
         students.push({
           registry,
           name,
           school_id,
           class_id,
-          school_year_id,
+          year_id,
         });
       })
       .on('end', () => {

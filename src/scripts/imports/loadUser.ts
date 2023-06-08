@@ -12,14 +12,13 @@ export const loadUser = (file: Express.Multer.File): Promise<IUser[]> => {
 
     parseFile
       .on('data', async (line) => {
-        const [login, name, cpf, role, dash, school_id] = line;
+        const [login, name, cpf, role, dash] = line;
         users.push({
           login,
           name,
           cpf,
           role,
           dash,
-          school_id,
         });
       })
       .on('end', () => {

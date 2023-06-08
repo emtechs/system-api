@@ -6,21 +6,21 @@ import { classParseFrequency } from '../../scripts';
 export const retrieveClassSchoolService = async (
   class_id: string,
   school_id: string,
-  school_year_id: string,
+  year_id: string,
   { is_infreq }: IClassQuery,
 ) => {
   if (is_infreq) {
     const classShool = await prisma.classSchool.findUnique({
       where: {
-        class_id_school_id_school_year_id: {
+        class_id_school_id_year_id: {
           class_id,
           school_id,
-          school_year_id,
+          year_id,
         },
       },
       include: {
         school: true,
-        school_year: true,
+        year: true,
         class: true,
         students: {
           include: { student: true },
@@ -30,22 +30,22 @@ export const retrieveClassSchoolService = async (
         _count: { select: { frequencies: true, students: true } },
       },
     });
-    const classRetun = await classParseFrequency(classShool, school_year_id);
+    const classRetun = await classParseFrequency(classShool, year_id);
 
     return ClassSchoolFrequencyReturnSchema.parse(classRetun);
   }
 
   const classShool = await prisma.classSchool.findUnique({
     where: {
-      class_id_school_id_school_year_id: {
+      class_id_school_id_year_id: {
         class_id,
         school_id,
-        school_year_id,
+        year_id,
       },
     },
     include: {
       school: true,
-      school_year: true,
+      year: true,
       class: true,
       students: {
         include: { student: true },
@@ -55,7 +55,7 @@ export const retrieveClassSchoolService = async (
     },
   });
 
-  const classRetun = await classParseFrequency(classShool, school_year_id);
+  const classRetun = await classParseFrequency(classShool, year_id);
 
   return ClassSchoolFrequencyReturnSchema.parse(classRetun);
 };

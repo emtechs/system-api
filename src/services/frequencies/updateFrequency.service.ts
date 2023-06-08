@@ -4,7 +4,7 @@ import { FrequencyInfreqReturnSchema } from '../../schemas';
 import { freqParseRetrieveFrequency } from '../../scripts';
 
 export const updateFrequencyService = async (
-  { status, finished_at, school_year_id }: IFrequencyUpdateRequest,
+  { status, finished_at, year_id }: IFrequencyUpdateRequest,
   id: string,
 ) => {
   const frequency = await prisma.frequency.update({
@@ -26,7 +26,7 @@ export const updateFrequencyService = async (
               },
             },
           },
-          school_year: true,
+          year: true,
           class: true,
         },
       },
@@ -39,7 +39,7 @@ export const updateFrequencyService = async (
 
   const frequencyReturn = await freqParseRetrieveFrequency(
     frequency,
-    school_year_id,
+    year_id,
   );
 
   return FrequencyInfreqReturnSchema.parse(frequencyReturn);

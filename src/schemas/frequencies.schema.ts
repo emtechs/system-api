@@ -13,7 +13,7 @@ export const FrequencyCreateSchema = z.object({
   day: z.number(),
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
-  school_year_id: z.string().uuid(),
+  year_id: z.string().uuid(),
   students: z.object({ student_id: z.string().uuid() }).array(),
 });
 
@@ -21,7 +21,7 @@ export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
-    school_year_id: z.string().uuid(),
+    year_id: z.string().uuid(),
   })
   .partial();
 
@@ -32,7 +32,7 @@ const UserSchema = z.object({
 });
 
 const ClassSchema = z.object({
-  school_year: z.object({ id: z.string(), year: z.string() }),
+  year: z.object({ id: z.string(), year: z.string() }),
   school: z.object({ id: z.string(), name: z.string() }),
   class: z.object({ id: z.string(), name: z.string() }),
   class_infreq: z.number(),

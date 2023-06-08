@@ -8,7 +8,7 @@ import { classArrParseFrequency } from '../../scripts';
 
 export const listClassSchoolService = async (
   school_id: string,
-  { is_active, school_year_id, class_infreq, is_dash, date, take }: IClassQuery,
+  { is_active, year_id, class_infreq, is_dash, date, take }: IClassQuery,
 ) => {
   if (take) {
     take = +take;
@@ -27,7 +27,7 @@ export const listClassSchoolService = async (
       orderBy: { class: { name: 'asc' } },
       include: {
         school: true,
-        school_year: true,
+        year: true,
         class: true,
         students: { include: { student: true } },
         _count: {
@@ -52,7 +52,7 @@ export const listClassSchoolService = async (
     orderBy: { class: { name: 'asc' } },
     include: {
       school: true,
-      school_year: true,
+      year: true,
       class: true,
       students: { include: { student: true } },
       _count: {
@@ -64,20 +64,20 @@ export const listClassSchoolService = async (
     },
   });
 
-  if (school_year_id) {
+  if (year_id) {
     classes = await prisma.classSchool.findMany({
       take,
       where: {
         AND: {
           school_id,
-          school_year_id,
+          year_id,
           class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
         },
       },
       orderBy: { class: { name: 'asc' } },
       include: {
         school: true,
-        school_year: true,
+        year: true,
         class: true,
         students: { include: { student: true } },
         _count: {
@@ -105,7 +105,7 @@ export const listClassSchoolService = async (
         orderBy: { class: { name: 'asc' } },
         include: {
           school: true,
-          school_year: true,
+          year: true,
           class: true,
           students: { include: { student: true } },
           _count: {
@@ -130,7 +130,7 @@ export const listClassSchoolService = async (
         orderBy: { class: { name: 'asc' } },
         include: {
           school: true,
-          school_year: true,
+          year: true,
           class: true,
           students: { include: { student: true } },
           _count: {
@@ -145,8 +145,8 @@ export const listClassSchoolService = async (
     }
   }
 
-  if (school_year_id) {
-    const classesReturn = await classArrParseFrequency(classes, school_year_id);
+  if (year_id) {
+    const classesReturn = await classArrParseFrequency(classes, year_id);
 
     return ClassSchoolFrequencyArraySchema.parse(classesReturn);
   }

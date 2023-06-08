@@ -2,7 +2,7 @@ import prisma from '../../prisma';
 import { IClassStudentRequest } from '../../interfaces';
 
 export const createClassStudentService = async (
-  { school_id, school_year_id, student_id }: IClassStudentRequest,
+  { school_id, year_id, student_id }: IClassStudentRequest,
   class_id: string,
 ) => {
   const classStudent = await prisma.classStudent.create({
@@ -10,13 +10,13 @@ export const createClassStudentService = async (
       class: {
         connectOrCreate: {
           where: {
-            class_id_school_id_school_year_id: {
+            class_id_school_id_year_id: {
               class_id,
               school_id,
-              school_year_id,
+              year_id,
             },
           },
-          create: { class_id, school_id, school_year_id },
+          create: { class_id, school_id, year_id },
         },
       },
       student: { connect: { id: student_id } },

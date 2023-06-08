@@ -8,6 +8,7 @@ export type ISchoolUpdateRequest = z.infer<typeof SchoolUpdateSchema>;
 
 export interface ISchool {
   name: string;
+  director_id: string;
 }
 
 export interface ISchoolUpdate {
@@ -17,7 +18,7 @@ export interface ISchoolUpdate {
 export interface ISchoolQuery extends IQuery {
   is_active?: 'true' | 'false';
   is_dash?: string;
-  school_year_id?: string;
+  year_id?: string;
   is_listSchool?: string;
   is_director?: string;
 }

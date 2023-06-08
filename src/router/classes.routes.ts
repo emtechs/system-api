@@ -41,7 +41,7 @@ classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
 classRouter.get('/:id', verifyUserIsAuthenticated, listClassSchoolController);
 
 classRouter.get(
-  '/:class_id/:school_id/:school_year_id',
+  '/:class_id/:school_id/:year_id',
   verifyUserIsAuthenticated,
   retrieveClassSchoolController,
 );

@@ -12,9 +12,10 @@ export const loadSchool = (file: Express.Multer.File): Promise<ISchool[]> => {
 
     parseFile
       .on('data', async (line) => {
-        const [name] = line;
+        const [name, director_id] = line;
         schools.push({
           name,
+          director_id,
         });
       })
       .on('end', () => {

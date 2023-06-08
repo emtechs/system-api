@@ -26,7 +26,7 @@ export const listFrequencyService = async ({
       include: {
         _count: true,
         user: true,
-        class: { include: { school: true, school_year: true, class: true } },
+        class: { include: { school: true, year: true, class: true } },
         students: {
           include: { student: true },
           orderBy: { student: { name: 'asc' } },
@@ -45,7 +45,7 @@ export const listFrequencyService = async ({
       include: {
         _count: true,
         user: true,
-        class: { include: { school: true, school_year: true, class: true } },
+        class: { include: { school: true, year: true, class: true } },
         students: {
           include: { student: true },
           orderBy: { student: { name: 'asc' } },
@@ -62,7 +62,7 @@ export const listFrequencyService = async ({
     include: {
       _count: true,
       user: true,
-      class: { include: { school: true, school_year: true, class: true } },
+      class: { include: { school: true, year: true, class: true } },
       students: {
         include: { student: true },
         orderBy: { student: { name: 'asc' } },

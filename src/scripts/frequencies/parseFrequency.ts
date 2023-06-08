@@ -5,7 +5,7 @@ import {
   FrequencyStudent,
   Prisma,
   School,
-  SchoolYear,
+  Year,
   StatusStudent,
   Student,
   User,
@@ -65,8 +65,6 @@ const infrequencyFreq = (
     id: string;
     name: string;
     registry: string;
-    is_active: boolean;
-    justify_disabled: string;
     created_at: Date;
   }[],
   frequency_id: string,
@@ -85,7 +83,7 @@ export const freqArrParseFrequency = async (
   frequencies: (Frequency & {
     user: User;
     class: ClassSchool & {
-      school_year: SchoolYear;
+      year: Year;
       school: School;
       class: Class;
     };
@@ -120,7 +118,7 @@ export const freqParseFrequency = async (
   frequency: Frequency & {
     user: User;
     class: ClassSchool & {
-      school_year: SchoolYear;
+      year: Year;
       school: School;
       class: Class;
     };

@@ -73,11 +73,28 @@ CREATE TABLE "school_server" (
 );
 
 -- CreateTable
-CREATE TABLE "school_year" (
+CREATE TABLE "years" (
     "id" TEXT NOT NULL,
     "year" VARCHAR(10) NOT NULL,
 
-    CONSTRAINT "school_year_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "years_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "months" (
+    "id" TEXT NOT NULL,
+    "month" INTEGER NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "months_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "days" (
+    "id" TEXT NOT NULL,
+    "day" INTEGER NOT NULL,
+
+    CONSTRAINT "days_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -94,23 +111,24 @@ CREATE TABLE "classes" (
 CREATE TABLE "class_school" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
-    "school_year_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
     "class_infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
-    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","school_year_id")
+    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","year_id")
 );
 
 -- CreateTable
 CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
     "date" VARCHAR(50) NOT NULL,
-    "month" INTEGER NOT NULL DEFAULT 0,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "month_id" TEXT NOT NULL,
+    "day_id" TEXT NOT NULL,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
-    "school_year_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
@@ -121,8 +139,6 @@ CREATE TABLE "students" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
     "registry" VARCHAR(50) NOT NULL,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "justify_disabled" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
@@ -133,10 +149,14 @@ CREATE TABLE "students" (
 CREATE TABLE "class_student" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
-    "school_year_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "justify_disabled" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
-    CONSTRAINT "class_student_pkey" PRIMARY KEY ("class_id","school_id","school_year_id","student_id")
+    CONSTRAINT "class_student_pkey" PRIMARY KEY ("class_id","school_id","year_id","student_id")
 );
 
 -- CreateTable
@@ -170,10 +190,16 @@ CREATE UNIQUE INDEX "token_user_id_key" ON "token"("user_id");
 CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "schools_director_id_key" ON "schools"("director_id");
+CREATE UNIQUE INDEX "years_year_key" ON "years"("year");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "school_year_year_key" ON "school_year"("year");
+CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "days_day_key" ON "days"("day");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
@@ -188,7 +214,7 @@ ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id"
 ALTER TABLE "token" ADD CONSTRAINT "token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "schools" ADD CONSTRAINT "schools_director_id_fkey" FOREIGN KEY ("director_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "schools" ADD CONSTRAINT "schools_director_id_fkey" FOREIGN KEY ("director_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -203,16 +229,22 @@ ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN K
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_year_id_fkey" FOREIGN KEY ("school_year_id") REFERENCES "school_year"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_school" ADD CONSTRAINT "class_school_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_school_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "school_year_id") REFERENCES "class_school"("class_id", "school_id", "school_year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_day_id_fkey" FOREIGN KEY ("day_id") REFERENCES "days"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_school_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "school_year_id") REFERENCES "class_school"("class_id", "school_id", "school_year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;

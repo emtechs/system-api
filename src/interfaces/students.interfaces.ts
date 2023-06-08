@@ -11,7 +11,7 @@ export interface IStudent {
   name: string;
   school_id: string;
   class_id: string;
-  school_year_id: string;
+  year_id: string;
 }
 
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
@@ -32,6 +32,6 @@ export type IStudentWithClassRequest = z.infer<
 >;
 
 export interface IStudentQuery extends IQuery {
-  school_year_id?: string;
+  year_id?: string;
   school_id?: string;
 }

@@ -15,8 +15,6 @@ export const StudentCreateWithClassSchema = z.object({
 export const StudentUpdateSchema = z
   .object({
     name: z.string().optional(),
-    is_active: z.boolean().optional(),
-    justify_disabled: z.string().optional(),
   })
   .partial();
 

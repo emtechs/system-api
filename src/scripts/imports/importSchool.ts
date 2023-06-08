@@ -1,11 +1,22 @@
 import { ISchool } from '../../interfaces';
 import prisma from '../../prisma';
 
-const verifySchool = async ({ name }: ISchool) => {
+const verifySchool = async ({ name, director_id }: ISchool) => {
   const schoolData = await prisma.school.findUnique({ where: { name } });
   let school = schoolData;
   if (!schoolData) {
     school = await prisma.school.create({ data: { name } });
+  }
+  if (director_id) {
+    await prisma.school.update({
+      where: { name },
+      data: {
+        director_id,
+        servers: {
+          create: { server_id: director_id, dash: 'SCHOOL', role: 'DIRET' },
+        },
+      },
+    });
   }
   return school;
 };

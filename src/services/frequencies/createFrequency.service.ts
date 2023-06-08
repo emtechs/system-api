@@ -9,13 +9,13 @@ export const createFrequencyService = async (
     day,
     class_id,
     school_id,
-    school_year_id,
+    year_id,
     students,
   }: IFrequencyRequest,
   user_id: string,
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
-    where: { date, class_id, school_id, school_year_id },
+    where: { date, class_id, school_id, year_id },
   });
 
   if (frequencyData) {
@@ -34,13 +34,13 @@ export const createFrequencyService = async (
       class: {
         connectOrCreate: {
           where: {
-            class_id_school_id_school_year_id: {
+            class_id_school_id_year_id: {
               class_id,
               school_id,
-              school_year_id,
+              year_id,
             },
           },
-          create: { class_id, school_id, school_year_id },
+          create: { class_id, school_id, year_id },
         },
       },
       students: { createMany: { data: students } },

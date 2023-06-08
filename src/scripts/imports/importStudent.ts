@@ -6,7 +6,7 @@ const verifyStudent = async ({
   registry,
   class_id,
   school_id,
-  school_year_id,
+  year_id,
 }: IStudent) => {
   let student = await prisma.student.findUnique({
     where: { registry },
@@ -23,26 +23,26 @@ const verifyStudent = async ({
 
   const classSchool = await prisma.classSchool.findUnique({
     where: {
-      class_id_school_id_school_year_id: {
+      class_id_school_id_year_id: {
         class_id,
         school_id,
-        school_year_id,
+        year_id,
       },
     },
   });
 
   if (!classSchool) {
     await prisma.classSchool.create({
-      data: { class_id, school_id, school_year_id },
+      data: { class_id, school_id, year_id },
     });
   }
 
   const classStudent = await prisma.classStudent.findUnique({
     where: {
-      class_id_school_id_school_year_id_student_id: {
+      class_id_school_id_year_id_student_id: {
         class_id,
         school_id,
-        school_year_id,
+        year_id,
         student_id: student.id,
       },
     },
@@ -50,7 +50,7 @@ const verifyStudent = async ({
 
   if (!classStudent) {
     await prisma.classStudent.create({
-      data: { class_id, school_id, school_year_id, student_id: student.id },
+      data: { class_id, school_id, year_id, student_id: student.id },
     });
   }
 
