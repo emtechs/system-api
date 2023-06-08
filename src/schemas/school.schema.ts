@@ -42,6 +42,12 @@ const StudentSchema = z.object({
   class: UserSchema.omit({ cpf: true }).optional(),
 });
 
+const ServerSchema = z.object({
+  role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
+  dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
+  server: UserSchema,
+});
+
 export const SchoolReturnSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -49,14 +55,7 @@ export const SchoolReturnSchema = z.object({
   created_at: z.date(),
   school_infreq: z.number(),
   director: UserSchema.nullable().optional(),
-  servers: z
-    .object({
-      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
-      dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-      server: UserSchema,
-    })
-    .array()
-    .optional(),
+  servers: ServerSchema.array().optional(),
   classes: ClassSchema.array().optional(),
   students: StudentSchema.array().optional(),
   infrequency: z.number().optional(),
@@ -73,13 +72,7 @@ export const SchoolListReturnSchema = z.object({
   created_at: z.date(),
   school_infreq: z.number(),
   director: UserSchema.nullable().optional(),
-  servers: z
-    .object({
-      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
-      server: UserSchema,
-    })
-    .array()
-    .optional(),
+  servers: ServerSchema.array().optional(),
   num_students: z.number(),
   num_frequencies: z.number(),
   num_classes: z.number(),
