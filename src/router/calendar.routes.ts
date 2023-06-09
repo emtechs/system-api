@@ -7,6 +7,7 @@ import { YearCreateSchema } from '../schemas';
 import {
   createYearController,
   exportYearController,
+  listCalendarController,
   listYearController,
   retrieveYearController,
 } from '../controllers';
@@ -32,4 +33,10 @@ calendarRouter.get(
   '/export/year',
   verifyUserIsAuthenticated,
   exportYearController,
+);
+
+calendarRouter.get(
+  '/:month/:year_id',
+  verifyUserIsAuthenticated,
+  listCalendarController,
 );

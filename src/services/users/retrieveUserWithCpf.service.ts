@@ -13,26 +13,22 @@ export const retrieveUserWithCpfService = async (
     });
 
     if (!server && allNotServ) {
-      const user = await prisma.user.findUnique({ where: { login } });
+      const user = await prisma.user.findFirst({
+        where: { AND: { login, role: { not: { in: ['ADMIN', 'SECRET'] } } } },
+      });
 
-      if (user.role === 'ADMIN' || user.role === 'SECRET') {
-        return UserReturnSchema.parse(user);
-      }
-
-      return {};
+      return user;
     }
 
     return UserReturnSchema.parse(server.server);
   }
 
   if (allNotServ) {
-    const user = await prisma.user.findUnique({ where: { login } });
+    const user = await prisma.user.findFirst({
+      where: { AND: { login, role: { not: { in: ['ADMIN', 'SECRET'] } } } },
+    });
 
-    if (user.role === 'ADMIN' || user.role === 'SECRET') {
-      return UserReturnSchema.parse(user);
-    }
-
-    return {};
+    return user;
   }
 
   const user = await prisma.user.findUnique({

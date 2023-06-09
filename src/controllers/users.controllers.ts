@@ -8,6 +8,7 @@ import {
   retrieveUserWithCpfService,
   exportUserService,
   importUserService,
+  dashUserService,
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -46,6 +47,11 @@ export const importUserController = async (req: Request, res: Response) => {
 export const exportUserController = async (req: Request, res: Response) => {
   const users = await exportUserService();
   return res.json(users);
+};
+
+export const dashUserController = async (req: Request, res: Response) => {
+  const user = await dashUserService(req.params.year_id);
+  return res.json(user);
 };
 
 export const updateUserController = async (req: Request, res: Response) => {

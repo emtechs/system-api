@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createUserController,
+  dashUserController,
   deleteUserController,
   exportUserController,
   listUserController,
@@ -40,6 +41,8 @@ userRouter.get(
   verifyUserIsAuthenticated,
   retrieveUserWithCpfController,
 );
+
+userRouter.get('/dash/:year_id', verifyUserIsAuthenticated, dashUserController);
 
 userRouter.get('/:id', verifyUserIsAuthenticated, retrieveUserController);
 

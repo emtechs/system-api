@@ -9,6 +9,15 @@ export const listUserService = async (
   if (take) {
     take = +take;
   }
+
+  if (role === 'SERV') {
+    const users = await prisma.user.findMany({
+      where: { role: { not: { in: ['ADMIN', 'SECRET'] } } },
+    });
+
+    return UserArraySchema.parse(users);
+  }
+
   let users = await prisma.user.findMany({
     take,
     where: { NOT: { id } },
@@ -25,12 +34,12 @@ export const listUserService = async (
 
   if (is_active) {
     switch (is_active) {
-    case 'true':
-      users = users.filter((user) => user.is_active === true);
-      break;
-    case 'false':
-      users = users.filter((user) => user.is_active === false);
-      break;
+      case 'true':
+        users = users.filter((user) => user.is_active === true);
+        break;
+      case 'false':
+        users = users.filter((user) => user.is_active === false);
+        break;
     }
   }
 
