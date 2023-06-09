@@ -2,12 +2,10 @@ import prisma from '../../prisma';
 import { freqArrParseFrequency } from '../../scripts';
 
 const defineColor = (infreq: number) => {
-  if (infreq <= 30) {
-    return '#388e3c';
-  }
-  if (infreq <= 65) {
-    return '#f57c00';
-  }
+  if (infreq <= 30) return '#388e3c';
+
+  if (infreq <= 65) return '#f57c00';
+
   return '#d32f2f';
 };
 
