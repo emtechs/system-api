@@ -4,10 +4,6 @@ export const SchoolCreateSchema = z.object({
   name: z.string(),
 });
 
-export const SchoolYearCreateSchema = z.object({
-  year: z.string(),
-});
-
 export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   is_active: z.boolean(),
   login: z.string(),

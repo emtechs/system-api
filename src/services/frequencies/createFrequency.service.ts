@@ -28,7 +28,7 @@ export const createFrequencyService = async (
   const frequency = await prisma.frequency.create({
     data: {
       date,
-      month: { connect: { month } },
+      month: { connectOrCreate: { where: { month }, create: { month } } },
       day: { connectOrCreate: { where: { day }, create: { day } } },
       user: { connect: { id: user_id } },
       class: {

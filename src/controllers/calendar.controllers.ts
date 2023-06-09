@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import {
-  createMonthService,
   createYearService,
   exportYearService,
-  importMonthService,
-  listMonthService,
   listYearService,
   retrieveYearService,
 } from '../services';
@@ -14,24 +11,9 @@ export const createYearController = async (req: Request, res: Response) => {
   return res.status(201).json(year);
 };
 
-export const createMonthController = async (req: Request, res: Response) => {
-  const month = await createMonthService(req.body);
-  return res.status(201).json(month);
-};
-
-export const importMonthController = async (req: Request, res: Response) => {
-  const months = await importMonthService(req.file);
-  return res.status(201).json(months);
-};
-
 export const listYearController = async (req: Request, res: Response) => {
   const years = await listYearService();
   return res.json(years);
-};
-
-export const listMonthController = async (req: Request, res: Response) => {
-  const months = await listMonthService();
-  return res.json(months);
 };
 
 export const retrieveYearController = async (req: Request, res: Response) => {

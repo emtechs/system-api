@@ -84,7 +84,6 @@ CREATE TABLE "years" (
 CREATE TABLE "months" (
     "id" TEXT NOT NULL,
     "month" INTEGER NOT NULL,
-    "name" VARCHAR(50) NOT NULL,
 
     CONSTRAINT "months_pkey" PRIMARY KEY ("id")
 );
@@ -194,9 +193,6 @@ CREATE UNIQUE INDEX "years_year_key" ON "years"("year");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
-
--- CreateIndex
-CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "days_day_key" ON "days"("day");

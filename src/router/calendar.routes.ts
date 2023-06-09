@@ -3,12 +3,10 @@ import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
 } from '../middlewares';
-import { MonthCreateSchema, SchoolYearCreateSchema } from '../schemas';
+import { YearCreateSchema } from '../schemas';
 import {
-  createMonthController,
   createYearController,
   exportYearController,
-  listMonthController,
   listYearController,
   retrieveYearController,
 } from '../controllers';
@@ -18,15 +16,8 @@ export const calendarRouter = Router();
 calendarRouter.post(
   '/year',
   verifyUserIsAuthenticated,
-  validateSchemaMiddleware(SchoolYearCreateSchema),
+  validateSchemaMiddleware(YearCreateSchema),
   createYearController,
-);
-
-calendarRouter.post(
-  '/month',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(MonthCreateSchema),
-  createMonthController,
 );
 
 calendarRouter.get('/year', verifyUserIsAuthenticated, listYearController);
@@ -36,8 +27,6 @@ calendarRouter.get(
   verifyUserIsAuthenticated,
   retrieveYearController,
 );
-
-calendarRouter.get('/month', verifyUserIsAuthenticated, listMonthController);
 
 calendarRouter.get(
   '/export/year',

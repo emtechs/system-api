@@ -1,13 +1,5 @@
 import { z } from 'zod';
 
-export const MonthCreateSchema = z.object({
-  month: z.number(),
-  name: z.string(),
-  date: z.string(),
-});
-
-export const MonthArraySchema = MonthCreateSchema.array();
-
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
   month: z.number(),
@@ -56,13 +48,17 @@ const DaySchema = z.object({
   day: z.number(),
 });
 
+export const MonthSchema = z.object({
+  month: z.number(),
+});
+
 export const FrequencyReturnSchema = z.object({
   id: z.string(),
   date: z.string(),
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
-  month: MonthCreateSchema.optional(),
+  month: MonthSchema.optional(),
   day: DaySchema.optional(),
   user: UserSchema.optional(),
   class: ClassSchema.optional(),
