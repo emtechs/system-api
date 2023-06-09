@@ -60,11 +60,12 @@ export const retrieveSchoolService = async (
         },
       },
     });
-    const schoolsReturn = await schoolClassParseFrequency(
-      schoolFreq,
-      year_id,
-    );
+    const schoolsReturn = await schoolClassParseFrequency(schoolFreq, year_id);
 
     return SchoolReturnSchema.parse(schoolsReturn);
   }
+
+  const school = await prisma.school.findUnique({ where: { id } });
+
+  return SchoolReturnSchema.parse(school);
 };
