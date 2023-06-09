@@ -10,6 +10,7 @@ export const listSchoolService = async ({
   is_dash,
   is_listSchool,
   is_director,
+  school_infreq,
 }: ISchoolQuery) => {
   if (take) {
     take = +take;
@@ -78,9 +79,14 @@ export const listSchoolService = async ({
   }
 
   if (is_listSchool) {
+    if (school_infreq) {
+      school_infreq = +school_infreq;
+    }
+
     let schoolList = await prisma.school.findMany({
       take,
       orderBy: { name: 'asc' },
+      where: { school_infreq: { gte: school_infreq ? school_infreq : 0 } },
       include: {
         director: true,
         classes: {

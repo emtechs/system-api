@@ -21,4 +21,5 @@ export interface ISchoolQuery extends IQuery {
   year_id?: string;
   is_listSchool?: string;
   is_director?: string;
+  school_infreq?: number;
 }
