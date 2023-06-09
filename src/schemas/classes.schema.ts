@@ -47,7 +47,7 @@ export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
   class_infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
-  year: z.object({ id: z.string(), year: z.string() }),
+  year: z.object({ id: z.string(), year: z.string() }).optional(),
   students: z
     .object({
       student: z.object({
@@ -56,7 +56,8 @@ export const ClassSchoolReturnSchema = z.object({
         registry: z.string(),
       }),
     })
-    .array(),
+    .array()
+    .optional(),
   _count: z.object({ frequencies: z.number(), students: z.number() }),
 });
 

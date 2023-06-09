@@ -3,23 +3,36 @@ import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
 
 export const listUserService = async (
-  { role, is_active, isNot_director_school, take }: IUserQuery,
+  { role, is_active, isNot_director_school, take, skip }: IUserQuery,
   id: string,
 ) => {
-  if (take) {
-    take = +take;
-  }
+  if (take) take = +take;
+
+  if (skip) skip = +skip;
 
   if (role === 'SERV') {
     const users = await prisma.user.findMany({
+      take,
+      skip,
+      where: { role: { not: { in: ['ADMIN', 'SECRET'] } } },
+      orderBy: { name: 'asc' },
+    });
+
+    const usersSchema = UserArraySchema.parse(users);
+
+    const total = await prisma.user.count({
       where: { role: { not: { in: ['ADMIN', 'SECRET'] } } },
     });
 
-    return UserArraySchema.parse(users);
+    return {
+      total,
+      result: usersSchema,
+    };
   }
 
   let users = await prisma.user.findMany({
     take,
+    skip,
     where: { NOT: { id } },
     orderBy: { name: 'asc' },
     include: {
@@ -34,12 +47,12 @@ export const listUserService = async (
 
   if (is_active) {
     switch (is_active) {
-      case 'true':
-        users = users.filter((user) => user.is_active === true);
-        break;
-      case 'false':
-        users = users.filter((user) => user.is_active === false);
-        break;
+    case 'true':
+      users = users.filter((user) => user.is_active === true);
+      break;
+    case 'false':
+      users = users.filter((user) => user.is_active === false);
+      break;
     }
   }
 
@@ -49,5 +62,14 @@ export const listUserService = async (
     ? users.filter((user) => !user.director_school)
     : users;
 
-  return UserArraySchema.parse(users);
+  const usersSchema = UserArraySchema.parse(users);
+
+  const total = await prisma.user.count({
+    where: { NOT: { id } },
+  });
+
+  return {
+    total,
+    result: usersSchema,
+  };
 };

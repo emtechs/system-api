@@ -1,158 +1,37 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import {
-  ClassSchoolArraySchema,
-  ClassSchoolFrequencyArraySchema,
-} from '../../schemas';
-import { classArrParseFrequency } from '../../scripts';
+import { ClassSchoolArraySchema } from '../../schemas';
 
 export const listClassSchoolService = async (
-  school_id: string,
-  { is_active, year_id, class_infreq, is_dash, date, take }: IClassQuery,
+  year_id: string,
+  { take, skip, class_infreq }: IClassQuery,
 ) => {
-  if (take) {
-    take = +take;
-  }
+  if (take) take = +take;
+  if (skip) skip = +skip;
+  if (class_infreq) class_infreq = +class_infreq;
 
-  if (is_dash) {
-    const classes = await prisma.classSchool.findMany({
-      take,
-      where: {
-        AND: {
-          school_id,
-          class: { is_active: true },
-          frequencies: { none: { date, status: 'CLOSED' } },
-        },
-      },
-      orderBy: { class: { name: 'asc' } },
-      include: {
-        school: true,
-        year: true,
-        class: true,
-        students: { include: { student: true } },
-        _count: {
-          select: {
-            frequencies: { where: { status: 'CLOSED' } },
-            students: true,
-          },
-        },
-      },
-    });
-    return ClassSchoolArraySchema.parse(classes);
-  }
-
-  let classes = await prisma.classSchool.findMany({
+  const classes = await prisma.classSchool.findMany({
     take,
+    skip,
     where: {
-      AND: {
-        school_id,
-        class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
-      },
+      AND: { year_id, class: { is_active: true } },
+      class_infreq: { gte: class_infreq },
     },
     orderBy: { class: { name: 'asc' } },
-    include: {
-      school: true,
-      year: true,
-      class: true,
-      students: { include: { student: true } },
-      _count: {
-        select: {
-          frequencies: { where: { status: 'CLOSED' } },
-          students: true,
-        },
-      },
+    include: { class: true, school: true, year: true, _count: true },
+  });
+
+  const classesSchema = ClassSchoolArraySchema.parse(classes);
+
+  const total = await prisma.classSchool.count({
+    where: {
+      AND: { year_id, class: { is_active: true } },
+      class_infreq: { gte: class_infreq },
     },
   });
 
-  if (year_id) {
-    classes = await prisma.classSchool.findMany({
-      take,
-      where: {
-        AND: {
-          school_id,
-          year_id,
-          class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
-        },
-      },
-      orderBy: { class: { name: 'asc' } },
-      include: {
-        school: true,
-        year: true,
-        class: true,
-        students: { include: { student: true } },
-        _count: {
-          select: {
-            frequencies: { where: { status: 'CLOSED' } },
-            students: true,
-          },
-        },
-      },
-    });
-  }
-
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      classes = await prisma.classSchool.findMany({
-        take,
-        where: {
-          AND: {
-            school_id,
-            class: { is_active: true },
-            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
-          },
-        },
-        orderBy: { class: { name: 'asc' } },
-        include: {
-          school: true,
-          year: true,
-          class: true,
-          students: {
-            where: { is_active: true },
-            include: { student: true },
-          },
-          _count: {
-            select: {
-              frequencies: { where: { status: 'CLOSED' } },
-              students: true,
-            },
-          },
-        },
-      });
-      break;
-    case 'false':
-      classes = await prisma.classSchool.findMany({
-        take,
-        where: {
-          AND: {
-            school_id,
-            class: { is_active: true },
-            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
-          },
-        },
-        orderBy: { class: { name: 'asc' } },
-        include: {
-          school: true,
-          year: true,
-          class: true,
-          students: { include: { student: true } },
-          _count: {
-            select: {
-              frequencies: { where: { status: 'CLOSED' } },
-              students: true,
-            },
-          },
-        },
-      });
-      break;
-    }
-  }
-
-  if (year_id) {
-    const classesReturn = await classArrParseFrequency(classes, year_id);
-
-    return ClassSchoolFrequencyArraySchema.parse(classesReturn);
-  }
-
-  return ClassSchoolArraySchema.parse(classes);
+  return {
+    total,
+    result: classesSchema,
+  };
 };

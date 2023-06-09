@@ -11,13 +11,15 @@ export const listSchoolService = async ({
   is_listSchool,
   is_director,
   school_infreq,
+  skip,
 }: ISchoolQuery) => {
-  if (take) {
-    take = +take;
-  }
+  if (take) take = +take;
+  if (skip) skip = +skip;
 
   if (is_director) {
     const schools = await prisma.school.findMany({
+      take,
+      skip,
       where: { AND: { is_active: true, director_id: { equals: null } } },
       orderBy: { name: 'asc' },
       include: {
@@ -26,22 +28,23 @@ export const listSchoolService = async ({
         classes: { include: { class: true } },
       },
     });
-    return SchoolArraySchema.parse(schools);
+
+    const schoolsSchema = SchoolArraySchema.parse(schools);
+
+    const total = await prisma.school.count({
+      where: { AND: { is_active: true, director_id: { equals: null } } },
+    });
+
+    return {
+      total,
+      result: schoolsSchema,
+    };
   }
 
-  let schools = await prisma.school.findMany({
-    take,
-    orderBy: { name: 'asc' },
-    include: {
-      director: true,
-      servers: { include: { server: true } },
-      classes: { include: { class: true } },
-    },
-  });
-
   if (is_dash) {
-    const schoolFreq = await prisma.school.findMany({
+    const schools = await prisma.school.findMany({
       take,
+      skip,
       where: {
         AND: {
           is_active: true,
@@ -62,20 +65,24 @@ export const listSchoolService = async ({
         },
       },
     });
-    const schoolsReturn = await schoolArrParseFrequency(schoolFreq, year_id);
+    const schoolsReturn = await schoolArrParseFrequency(schools, year_id);
 
-    return SchoolArraySchema.parse(schoolsReturn);
-  }
+    const schoolsSchema = SchoolArraySchema.parse(schoolsReturn);
 
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      schools = schools.filter((school) => school.is_active === true);
-      break;
-    case 'false':
-      schools = schools.filter((school) => school.is_active === false);
-      break;
-    }
+    const total = await prisma.school.count({
+      where: {
+        AND: {
+          is_active: true,
+          school_infreq: { gt: 0 },
+          classes: { every: { year_id } },
+        },
+      },
+    });
+
+    return {
+      total,
+      result: schoolsSchema,
+    };
   }
 
   if (is_listSchool) {
@@ -83,8 +90,9 @@ export const listSchoolService = async ({
       school_infreq = +school_infreq;
     }
 
-    let schoolList = await prisma.school.findMany({
+    let schools = await prisma.school.findMany({
       take,
+      skip,
       orderBy: { name: 'asc' },
       where: { school_infreq: { gte: school_infreq ? school_infreq : 0 } },
       include: {
@@ -107,17 +115,15 @@ export const listSchoolService = async ({
     if (is_active) {
       switch (is_active) {
       case 'true':
-        schoolList = schoolList.filter((school) => school.is_active === true);
+        schools = schools.filter((school) => school.is_active === true);
         break;
       case 'false':
-        schoolList = schoolList.filter(
-          (school) => school.is_active === false,
-        );
+        schools = schools.filter((school) => school.is_active === false);
         break;
       }
     }
 
-    const schoolsReturn = schoolList.map((el) => {
+    const schoolsReturn = schools.map((el) => {
       let num_students = 0;
       let num_frequencies = 0;
       el.classes.forEach((el) => {
@@ -132,12 +138,22 @@ export const listSchoolService = async ({
       };
     });
 
-    return SchoolListArraySchema.parse(schoolsReturn);
+    const schoolsSchema = SchoolListArraySchema.parse(schoolsReturn);
+
+    const total = await prisma.school.count({
+      where: { school_infreq: { gte: school_infreq ? school_infreq : 0 } },
+    });
+
+    return {
+      total,
+      result: schoolsSchema,
+    };
   }
 
   if (year_id) {
-    const schoolFreq = await prisma.school.findMany({
+    const schools = await prisma.school.findMany({
       take,
+      skip,
       orderBy: { name: 'asc' },
       include: {
         director: true,
@@ -152,9 +168,46 @@ export const listSchoolService = async ({
         },
       },
     });
-    const schoolsReturn = await schoolArrParseFrequency(schoolFreq, year_id);
-    return SchoolArraySchema.parse(schoolsReturn);
+    const schoolsReturn = await schoolArrParseFrequency(schools, year_id);
+
+    const schoolsSchema = SchoolArraySchema.parse(schoolsReturn);
+
+    const total = await prisma.school.count({});
+
+    return {
+      total,
+      result: schoolsSchema,
+    };
   }
 
-  return SchoolArraySchema.parse(schools);
+  let schools = await prisma.school.findMany({
+    take,
+    skip,
+    orderBy: { name: 'asc' },
+    include: {
+      director: true,
+      servers: { include: { server: true } },
+      classes: { include: { class: true } },
+    },
+  });
+
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      schools = schools.filter((school) => school.is_active === true);
+      break;
+    case 'false':
+      schools = schools.filter((school) => school.is_active === false);
+      break;
+    }
+  }
+
+  const schoolsSchema = SchoolArraySchema.parse(schools);
+
+  const total = await prisma.school.findMany({});
+
+  return {
+    total,
+    result: schoolsSchema,
+  };
 };
