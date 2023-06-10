@@ -96,7 +96,7 @@ export const listFrequencyService = async ({
             orderBy: { student: { name: 'asc' } },
           },
         },
-        orderBy: { finished_at: 'desc' },
+        orderBy: { date: 'asc' },
       });
 
       const total = await prisma.frequency.count({
