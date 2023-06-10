@@ -1,4 +1,10 @@
-type IOrder = 'finished_at' | 'date' | 'created_at' | 'infreq' | 'name';
+type IOrder =
+  | 'finished_at'
+  | 'date'
+  | 'created_at'
+  | 'infreq'
+  | 'name'
+  | 'director_name';
 
 export interface IQuery {
   take?: number;
