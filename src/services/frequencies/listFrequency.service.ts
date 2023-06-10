@@ -14,14 +14,16 @@ export const listFrequencyService = async ({
   is_infreq,
   is_dash,
   school_id,
+  skip,
+  year_id,
 }: IFrequencyQuery) => {
-  if (take) {
-    take = +take;
-  }
+  if (take) take = +take;
+  if (skip) skip = +skip;
 
   if (school_id) {
     const frequencies = await prisma.frequency.findMany({
       take,
+      skip,
       where: { AND: { status: 'OPENED', school_id } },
       include: {
         _count: true,
@@ -35,12 +37,23 @@ export const listFrequencyService = async ({
       orderBy: { created_at: 'desc' },
     });
     const frequenciesReturn = await freqArrParseFrequency(frequencies);
-    return FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const frequencySchema = FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const total = await prisma.frequency.count({
+      where: { AND: { status: 'OPENED', school_id } },
+    });
+
+    return {
+      total,
+      result: frequencySchema,
+    };
   }
 
   if (is_dash) {
     const frequencies = await prisma.frequency.findMany({
       take,
+      skip,
       where: { status: 'OPENED' },
       include: {
         _count: true,
@@ -53,12 +66,182 @@ export const listFrequencyService = async ({
       },
       orderBy: { created_at: 'desc' },
     });
+
     const frequenciesReturn = await freqArrParseFrequency(frequencies);
-    return FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const frequencySchema = FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const total = await prisma.frequency.count({
+      where: { status: 'OPENED' },
+    });
+
+    return {
+      total,
+      result: frequencySchema,
+    };
   }
 
-  let frequencies = await prisma.frequency.findMany({
+  if (status) {
+    if (year_id) {
+      const frequencies = await prisma.frequency.findMany({
+        take,
+        skip,
+        where: { AND: { status, year_id } },
+        include: {
+          _count: true,
+          user: true,
+          class: { include: { school: true, year: true, class: true } },
+          students: {
+            include: { student: true },
+            orderBy: { student: { name: 'asc' } },
+          },
+        },
+        orderBy: { finished_at: 'desc' },
+      });
+
+      const total = await prisma.frequency.count({
+        where: { AND: { status, year_id } },
+      });
+
+      if (is_infreq) {
+        const frequenciesReturn = await freqArrParseFrequency(frequencies);
+
+        const frequencySchema =
+          FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+        return {
+          total,
+          result: frequencySchema,
+        };
+      }
+
+      const frequencySchema = FrequencyArraySchema.parse(frequencies);
+
+      return {
+        total,
+        result: frequencySchema,
+      };
+    }
+
+    const frequencies = await prisma.frequency.findMany({
+      take,
+      skip,
+      where: { status },
+      include: {
+        _count: true,
+        user: true,
+        class: { include: { school: true, year: true, class: true } },
+        students: {
+          include: { student: true },
+          orderBy: { student: { name: 'asc' } },
+        },
+      },
+      orderBy: { finished_at: 'desc' },
+    });
+
+    const total = await prisma.frequency.count({ where: { status } });
+
+    if (is_infreq) {
+      const frequenciesReturn = await freqArrParseFrequency(frequencies);
+
+      const frequencySchema =
+        FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+      return {
+        total,
+        result: frequencySchema,
+      };
+    }
+
+    const frequencySchema = FrequencyArraySchema.parse(frequencies);
+
+    return {
+      total,
+      result: frequencySchema,
+    };
+  }
+
+  if (date) {
+    const frequencies = await prisma.frequency.findMany({
+      take,
+      skip,
+      where: { date },
+      include: {
+        _count: true,
+        user: true,
+        class: { include: { school: true, year: true, class: true } },
+        students: {
+          include: { student: true },
+          orderBy: { student: { name: 'asc' } },
+        },
+      },
+      orderBy: { finished_at: 'desc' },
+    });
+
+    const total = await prisma.frequency.count({ where: { date } });
+
+    if (is_infreq) {
+      const frequenciesReturn = await freqArrParseFrequency(frequencies);
+
+      const frequencySchema =
+        FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+      return {
+        total,
+        result: frequencySchema,
+      };
+    }
+
+    const frequencySchema = FrequencyArraySchema.parse(frequencies);
+
+    return {
+      total,
+      result: frequencySchema,
+    };
+  }
+
+  if (class_id) {
+    const frequencies = await prisma.frequency.findMany({
+      take,
+      skip,
+      where: { class_id },
+      include: {
+        _count: true,
+        user: true,
+        class: { include: { school: true, year: true, class: true } },
+        students: {
+          include: { student: true },
+          orderBy: { student: { name: 'asc' } },
+        },
+      },
+      orderBy: { finished_at: 'desc' },
+    });
+
+    const total = await prisma.frequency.count({ where: { class_id } });
+
+    if (is_infreq) {
+      const frequenciesReturn = await freqArrParseFrequency(frequencies);
+
+      const frequencySchema =
+        FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+      return {
+        total,
+        result: frequencySchema,
+      };
+    }
+
+    const frequencySchema = FrequencyArraySchema.parse(frequencies);
+
+    return {
+      total,
+      result: frequencySchema,
+    };
+  }
+
+  const frequencies = await prisma.frequency.findMany({
     take,
+    skip,
     include: {
       _count: true,
       user: true,
@@ -71,22 +254,25 @@ export const listFrequencyService = async ({
     orderBy: { finished_at: 'desc' },
   });
 
-  frequencies = status
-    ? frequencies.filter((frequency) => status === frequency.status)
-    : frequencies;
-
-  frequencies = date
-    ? frequencies.filter((frequency) => date === frequency.date)
-    : frequencies;
-
-  frequencies = class_id
-    ? frequencies.filter((frequency) => class_id === frequency.class_id)
-    : frequencies;
-
   if (is_infreq) {
     const frequenciesReturn = await freqArrParseFrequency(frequencies);
-    return FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const frequencySchema = FrequencyInfreqArraySchema.parse(frequenciesReturn);
+
+    const total = await prisma.frequency.count();
+
+    return {
+      total,
+      result: frequencySchema,
+    };
   }
 
-  return FrequencyArraySchema.parse(frequencies);
+  const frequencySchema = FrequencyArraySchema.parse(frequencies);
+
+  const total = await prisma.frequency.count();
+
+  return {
+    total,
+    result: frequencySchema,
+  };
 };
