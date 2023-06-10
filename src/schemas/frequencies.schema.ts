@@ -14,7 +14,7 @@ export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
-    year_id: z.string().uuid(),
+    infreq: z.number(),
   })
   .partial();
 
@@ -58,6 +58,7 @@ export const FrequencyReturnSchema = z.object({
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
+  infreq: z.number(),
   month: MonthSchema.optional(),
   day: DaySchema.optional(),
   user: UserSchema.optional(),

@@ -40,11 +40,4 @@ export interface IFrequencyQuery extends IQuery {
   is_infreq?: boolean;
   is_dash?: string;
   school_id?: string;
-  order?:
-    | 'finished_at_asc'
-    | 'finished_at_desc'
-    | 'date_asc'
-    | 'date_desc'
-    | 'created_at_asc'
-    | 'created_at_desc';
 }

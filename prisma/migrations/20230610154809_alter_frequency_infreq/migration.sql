@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "frequencies" ADD COLUMN     "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0;

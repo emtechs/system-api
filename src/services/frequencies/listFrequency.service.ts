@@ -17,39 +17,34 @@ export const listFrequencyService = async ({
   school_id,
   year_id,
   order,
+  by,
 }: IFrequencyQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   let objData = {};
   let orderBy = {};
+  let orderByStudent = {};
 
   if (order) {
     switch (order) {
-    case 'created_at_asc':
-      orderBy = { created_at: 'asc' };
+    case 'created_at':
+      orderBy = { created_at: by };
       break;
 
-    case 'created_at_desc':
-      orderBy = { created_at: 'desc' };
+    case 'date':
+      orderBy = { date: by };
       break;
 
-    case 'date_asc':
-      orderBy = { date: 'asc' };
+    case 'finished_at':
+      orderBy = { finished_at: by };
       break;
 
-    case 'date_desc':
-      orderBy = { date: 'desc' };
-      break;
-
-    case 'finished_at_asc':
-      orderBy = { finished_at: 'asc' };
-      break;
-
-    case 'finished_at_desc':
-      orderBy = { finished_at: 'desc' };
+    case 'infreq':
+      orderBy = { infreq: by };
       break;
     }
+    if (order === 'name') orderByStudent = { name: by };
   }
 
   if (status) objData = { ...objData, status };
@@ -99,7 +94,7 @@ export const listFrequencyService = async ({
       class: { include: { school: true, year: true, class: true } },
       students: {
         include: { student: true },
-        orderBy: { student: { name: 'asc' } },
+        orderBy: { student: orderByStudent },
       },
     },
     orderBy,

@@ -27,7 +27,11 @@ export const updateFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await updateFrequencyService(req.body, req.params.id);
+  const frequency = await updateFrequencyService(
+    req.body,
+    req.params.id,
+    req.query,
+  );
   return res.json(frequency);
 };
 

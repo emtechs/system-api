@@ -155,6 +155,7 @@ model Frequency{
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
+  infreq Float @default(0)
   month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
   month_id String
   day Day @relation(fields: [day_id], references: [id], onDelete: Cascade)
