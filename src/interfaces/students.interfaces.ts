@@ -36,4 +36,5 @@ export interface IStudentQuery extends IQuery {
   school_id?: string;
   is_active?: 'true' | 'false';
   is_list?: string;
+  infreq?: number;
 }

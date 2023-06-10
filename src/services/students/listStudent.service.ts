@@ -11,14 +11,17 @@ export const listStudentService = async ({
   is_active,
   skip,
   is_list,
+  infreq,
 }: IStudentQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
+  if (infreq) infreq = +infreq;
 
   if (is_list) {
     const students = await prisma.student.findMany({
       take,
       skip,
+      where: { infreq: { gte: infreq ? infreq : 0 } },
       orderBy: { name: 'asc' },
       include: {
         classes: {
@@ -32,7 +35,9 @@ export const listStudentService = async ({
 
     const studentsSchema = StudentArraySchema.parse(students);
 
-    const total = await prisma.student.count();
+    const total = await prisma.student.count({
+      where: { infreq: { gte: infreq ? infreq : 0 } },
+    });
 
     return {
       total,
