@@ -48,11 +48,11 @@ export const listSchoolService = async ({
       where: {
         AND: {
           is_active: true,
-          school_infreq: { gt: 0 },
+          infreq: { gt: 0 },
           classes: { every: { year_id } },
         },
       },
-      orderBy: { school_infreq: 'desc' },
+      orderBy: { infreq: 'desc' },
       include: {
         director: true,
         classes: {
@@ -61,7 +61,7 @@ export const listSchoolService = async ({
             class: true,
             students: { include: { student: true } },
           },
-          orderBy: { class_infreq: 'desc' },
+          orderBy: { infreq: 'desc' },
         },
       },
     });
@@ -73,7 +73,7 @@ export const listSchoolService = async ({
       where: {
         AND: {
           is_active: true,
-          school_infreq: { gt: 0 },
+          infreq: { gt: 0 },
           classes: { every: { year_id } },
         },
       },
@@ -94,7 +94,7 @@ export const listSchoolService = async ({
       take,
       skip,
       orderBy: { name: 'asc' },
-      where: { school_infreq: { gte: school_infreq ? school_infreq : 0 } },
+      where: { infreq: { gte: school_infreq ? school_infreq : 0 } },
       include: {
         director: true,
         classes: {
@@ -141,7 +141,7 @@ export const listSchoolService = async ({
     const schoolsSchema = SchoolListArraySchema.parse(schoolsReturn);
 
     const total = await prisma.school.count({
-      where: { school_infreq: { gte: school_infreq ? school_infreq : 0 } },
+      where: { infreq: { gte: school_infreq ? school_infreq : 0 } },
     });
 
     return {

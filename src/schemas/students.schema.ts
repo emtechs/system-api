@@ -33,7 +33,7 @@ const YearSchema = z.object({
 });
 
 const ClassSchoolSchema = z.object({
-  class_infreq: z.number(),
+  infreq: z.number(),
   class: ClassAndSchoolSchema,
   school: ClassAndSchoolSchema,
   year: YearSchema,

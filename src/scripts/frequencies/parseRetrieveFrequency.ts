@@ -175,7 +175,7 @@ export const freqParseRetrieveFrequency = async (
     students,
     infrequency: Number(infrequency.toFixed(2)),
     class_infreq: classData.infrequency,
-    school_infreq: school.infrequency,
+    infreq: school.infrequency,
   };
   return result;
 };

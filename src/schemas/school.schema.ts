@@ -22,7 +22,7 @@ const UserSchema = z.object({
 
 const ClassSchema = z.object({
   class: UserSchema.omit({ cpf: true }),
-  class_infreq: z.number(),
+  infreq: z.number(),
   _count: z.object({ students: z.number() }).optional(),
 });
 
@@ -49,7 +49,7 @@ export const SchoolReturnSchema = z.object({
   name: z.string(),
   is_active: z.boolean(),
   created_at: z.date(),
-  school_infreq: z.number(),
+  infreq: z.number(),
   director: UserSchema.nullable().optional(),
   servers: ServerSchema.array().optional(),
   classes: ClassSchema.array().optional(),
@@ -66,7 +66,7 @@ export const SchoolListReturnSchema = z.object({
   name: z.string(),
   is_active: z.boolean(),
   created_at: z.date(),
-  school_infreq: z.number(),
+  infreq: z.number(),
   director: UserSchema.nullable().optional(),
   servers: ServerSchema.array().optional(),
   num_students: z.number(),

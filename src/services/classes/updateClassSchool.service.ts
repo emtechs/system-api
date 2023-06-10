@@ -16,7 +16,10 @@ export const updateClassSchoolService = async ({
         year_id,
       },
     },
-    data: { class_infreq, school: { update: { school_infreq } } },
+    data: {
+      infreq: class_infreq,
+      school: { update: { infreq: school_infreq } },
+    },
   });
 
   return classSchool;

@@ -56,7 +56,7 @@ export const retrieveSchoolService = async (
               orderBy: { student: { infreq: 'desc' } },
             },
           },
-          orderBy: { class_infreq: 'desc' },
+          orderBy: { infreq: 'desc' },
         },
       },
     });

@@ -4,18 +4,18 @@ import { ClassSchoolArraySchema } from '../../schemas';
 
 export const listClassSchoolService = async (
   year_id: string,
-  { take, skip, class_infreq }: IClassQuery,
+  { take, skip, infreq }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
-  if (class_infreq) class_infreq = +class_infreq;
+  if (infreq) infreq = +infreq;
 
   const classes = await prisma.classSchool.findMany({
     take,
     skip,
     where: {
       AND: { year_id, class: { is_active: true } },
-      class_infreq: { gte: class_infreq },
+      infreq: { gte: infreq },
     },
     orderBy: { class: { name: 'asc' } },
     include: { class: true, school: true, year: true, _count: true },
@@ -26,7 +26,7 @@ export const listClassSchoolService = async (
   const total = await prisma.classSchool.count({
     where: {
       AND: { year_id, class: { is_active: true } },
-      class_infreq: { gte: class_infreq },
+      infreq: { gte: infreq },
     },
   });
 

@@ -28,7 +28,7 @@ const ClassSchema = z.object({
   year: z.object({ id: z.string(), year: z.string() }),
   school: z.object({ id: z.string(), name: z.string() }),
   class: z.object({ id: z.string(), name: z.string() }),
-  class_infreq: z.number(),
+  infreq: z.number(),
 });
 
 const StudentSchema = z.object({

@@ -76,7 +76,7 @@ model School{
   created_at DateTime @default(now())
   director User? @relation(fields: [director_id], references: [id], onDelete: SetNull)
   director_id String?
-  school_infreq Float @default(0)
+  infreq Float @default(0)
   servers SchoolServer[]
   classes ClassSchool[]
 
@@ -136,7 +136,7 @@ model ClassSchool{
   school_id String
   year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
   year_id String
-  class_infreq Float @default(0)
+  infreq Float @default(0)
   students ClassStudent[]
   frequencies Frequency[]
 

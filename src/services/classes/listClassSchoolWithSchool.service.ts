@@ -8,7 +8,7 @@ import { classArrParseFrequency } from '../../scripts';
 
 export const listClassSchoolWithSchoolService = async (
   school_id: string,
-  { is_active, year_id, class_infreq, is_dash, date, take, skip }: IClassQuery,
+  { is_active, year_id, infreq, is_dash, date, take, skip }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -67,7 +67,7 @@ export const listClassSchoolWithSchoolService = async (
             class: { is_active: true },
             school_id,
             year_id,
-            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+            infreq: { gte: Number(infreq ? infreq : 0) },
           },
         },
         orderBy: { class: { name: 'asc' } },
@@ -95,7 +95,7 @@ export const listClassSchoolWithSchoolService = async (
             class: { is_active: true },
             school_id,
             year_id,
-            class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+            infreq: { gte: Number(infreq ? infreq : 0) },
           },
         },
       });
@@ -113,7 +113,7 @@ export const listClassSchoolWithSchoolService = async (
         AND: {
           school_id,
           year_id,
-          class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+          infreq: { gte: Number(infreq ? infreq : 0) },
         },
       },
       orderBy: { class: { name: 'asc' } },
@@ -139,7 +139,7 @@ export const listClassSchoolWithSchoolService = async (
         AND: {
           school_id,
           year_id,
-          class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+          infreq: { gte: Number(infreq ? infreq : 0) },
         },
       },
     });
@@ -156,7 +156,7 @@ export const listClassSchoolWithSchoolService = async (
     where: {
       AND: {
         school_id,
-        class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+        infreq: { gte: Number(infreq ? infreq : 0) },
       },
     },
     orderBy: { class: { name: 'asc' } },
@@ -180,7 +180,7 @@ export const listClassSchoolWithSchoolService = async (
     where: {
       AND: {
         school_id,
-        class_infreq: { gte: Number(class_infreq ? class_infreq : 0) },
+        infreq: { gte: Number(infreq ? infreq : 0) },
       },
     },
   });

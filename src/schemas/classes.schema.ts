@@ -65,7 +65,7 @@ export const ClassSchoolArraySchema = ClassSchoolReturnSchema.array();
 
 export const ClassSchoolFrequencyReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
-  class_infreq: z.number(),
+  infreq: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
   year: z.object({ id: z.string(), year: z.string() }),
   students: z
