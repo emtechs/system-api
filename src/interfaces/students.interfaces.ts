@@ -35,4 +35,5 @@ export interface IStudentQuery extends IQuery {
   year_id?: string;
   school_id?: string;
   is_active?: 'true' | 'false';
+  is_list?: string;
 }

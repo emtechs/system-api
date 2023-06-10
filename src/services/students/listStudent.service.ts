@@ -2,6 +2,7 @@ import { Student } from '@prisma/client';
 import { IStudentQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { studentsParseFrequency } from '../../scripts';
+import { StudentArraySchema } from '../../schemas';
 
 export const listStudentService = async ({
   year_id,
@@ -9,9 +10,35 @@ export const listStudentService = async ({
   take,
   is_active,
   skip,
+  is_list,
 }: IStudentQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
+
+  if (is_list) {
+    const students = await prisma.student.findMany({
+      take,
+      skip,
+      orderBy: { name: 'asc' },
+      include: {
+        classes: {
+          where: { AND: { year_id, is_active: true } },
+          include: {
+            class: { include: { class: true, school: true, year: true } },
+          },
+        },
+      },
+    });
+
+    const studentsSchema = StudentArraySchema.parse(students);
+
+    const total = await prisma.student.count();
+
+    return {
+      total,
+      result: studentsSchema,
+    };
+  }
 
   let students: Student[];
   let total: number;
@@ -23,6 +50,7 @@ export const listStudentService = async ({
         take,
         skip,
         where: { classes: { every: { is_active: true } } },
+        orderBy: { name: 'asc' },
       });
 
       total = await prisma.student.count({
@@ -39,6 +67,7 @@ export const listStudentService = async ({
         take,
         skip,
         where: { classes: { every: { is_active: false } } },
+        orderBy: { name: 'asc' },
       });
 
       total = await prisma.student.count({
@@ -96,10 +125,12 @@ export const listStudentService = async ({
     orderBy: { name: 'asc' },
   });
 
+  const studentsSchema = StudentArraySchema.parse(students);
+
   total = await prisma.student.count();
 
   return {
     total,
-    result: students,
+    result: studentsSchema,
   };
 };
