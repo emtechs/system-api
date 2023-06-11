@@ -22,14 +22,12 @@ export const createUserService = async (
           name,
           password,
           cpf,
-          role,
-          dash,
         },
       });
     } else {
       await prisma.user.update({
         where: { login },
-        data: { is_active: true, dash: 'SCHOOL', role: 'DIRET' },
+        data: { is_active: true },
       });
     }
 
@@ -47,8 +45,6 @@ export const createUserService = async (
           name,
           password,
           cpf,
-          role,
-          dash,
         },
       });
     }
@@ -87,7 +83,7 @@ export const createUserService = async (
     if (user) {
       const server = await prisma.user.update({
         where: { id: user.id },
-        data: { role, dash, is_active: true },
+        data: { is_active: true },
       });
       return UserReturnSchema.parse(server);
     }
@@ -99,8 +95,6 @@ export const createUserService = async (
         login,
         name,
         cpf,
-        role,
-        dash,
         password,
       },
     });

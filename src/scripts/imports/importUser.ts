@@ -2,7 +2,7 @@ import { hashSync } from 'bcryptjs';
 import { IUser } from '../../interfaces';
 import prisma from '../../prisma';
 
-const verifyUser = async ({ login, name, cpf, role, dash }: IUser) => {
+const verifyUser = async ({ login, name, cpf }: IUser) => {
   const userData = await prisma.user.findUnique({ where: { login } });
   let user = userData;
   if (!userData) {
@@ -14,8 +14,6 @@ const verifyUser = async ({ login, name, cpf, role, dash }: IUser) => {
         login,
         name,
         password,
-        dash,
-        role,
       },
     });
   }

@@ -3,38 +3,71 @@ import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
 
 export const listUserService = async (
-  { role, is_active, isNot_director_school, take, skip }: IUserQuery,
+  {
+    role,
+    is_active,
+    isNot_director_school,
+    take,
+    skip,
+    order,
+    by,
+    name,
+  }: IUserQuery,
   id: string,
 ) => {
   if (take) take = +take;
-
   if (skip) skip = +skip;
 
-  if (role === 'SERV') {
-    const users = await prisma.user.findMany({
-      take,
-      skip,
-      where: { role: { not: { in: ['ADMIN', 'SECRET'] } } },
-      orderBy: { name: 'asc' },
-    });
+  let whereData = {};
+  let orderBy = {};
 
-    const usersSchema = UserArraySchema.parse(users);
-
-    const total = await prisma.user.count({
-      where: { role: { not: { in: ['ADMIN', 'SECRET'] } } },
-    });
-
-    return {
-      total,
-      result: usersSchema,
-    };
+  if (order) {
+    switch (order) {
+    case 'name':
+      orderBy = { name: by };
+      break;
+    }
   }
 
-  let users = await prisma.user.findMany({
+  if (name)
+    whereData = { ...whereData, name: { contains: name, mode: 'insensitive' } };
+
+  if (role) {
+    if (role === 'SERV') {
+      whereData = {
+        ...whereData,
+        role: { not: { in: ['ADMIN', 'SECRET'] } },
+      };
+    } else {
+      whereData = {
+        ...whereData,
+        role: role,
+      };
+    }
+  }
+
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      whereData = { ...whereData, is_active: true };
+      break;
+
+    case 'false':
+      whereData = { ...whereData, is_active: false };
+      break;
+    }
+  }
+
+  if (isNot_director_school)
+    whereData = { ...whereData, director_school: { none: {} } };
+
+  whereData = { ...whereData, NOT: { id } };
+
+  const users = await prisma.user.findMany({
     take,
     skip,
-    where: { NOT: { id } },
-    orderBy: { name: 'asc' },
+    where: { ...whereData },
+    orderBy,
     include: {
       director_school: true,
       work_school: {
@@ -45,27 +78,10 @@ export const listUserService = async (
     },
   });
 
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      users = users.filter((user) => user.is_active === true);
-      break;
-    case 'false':
-      users = users.filter((user) => user.is_active === false);
-      break;
-    }
-  }
-
-  users = role ? users.filter((user) => role === user.role) : users;
-
-  users = isNot_director_school
-    ? users.filter((user) => !user.director_school)
-    : users;
-
   const usersSchema = UserArraySchema.parse(users);
 
   const total = await prisma.user.count({
-    where: { NOT: { id } },
+    where: { ...whereData },
   });
 
   return {

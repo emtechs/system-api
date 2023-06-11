@@ -10,8 +10,6 @@ export const exportUserService = async () => {
       login: true,
       name: true,
       cpf: true,
-      role: true,
-      dash: true,
     },
   });
 
@@ -19,7 +17,7 @@ export const exportUserService = async () => {
     const writeStream = fs.createWriteStream('tmp/uploads/users.csv');
     const stringifier = stringify({
       header: true,
-      columns: ['id', 'login', 'name', 'cpf', 'role', 'dash'],
+      columns: ['id', 'login', 'name', 'cpf'],
     });
 
     users.map((user) => {

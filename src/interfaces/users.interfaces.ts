@@ -10,8 +10,6 @@ export interface IUser {
   login: string;
   name: string;
   cpf: string;
-  role: IRole;
-  dash: IDash;
 }
 
 export type IUserRequest = z.infer<typeof UserCreateSchema>;
@@ -24,4 +22,6 @@ export interface IUserQuery extends IQuery {
   isNot_director_school?: 'true' | 'false';
   school_id?: string;
   allNotServ?: 'true' | 'false';
+  director?: 'true' | 'false';
+  name?: string;
 }
