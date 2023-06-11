@@ -4,14 +4,15 @@ import { SchoolArraySchema, SchoolListArraySchema } from '../../schemas';
 import { schoolArrParseFrequency } from '../../scripts';
 
 export const listSchoolService = async ({
+  name,
   is_active,
+  infreq,
   year_id,
-  take,
   is_dash,
   is_listSchool,
   is_director,
+  take,
   skip,
-  infreq,
   order,
   by,
 }: ISchoolQuery) => {
@@ -36,6 +37,9 @@ export const listSchoolService = async ({
       break;
     }
   }
+
+  if (name)
+    whereData = { ...whereData, name: { contains: name, mode: 'insensitive' } };
 
   if (infreq) {
     infreq = +infreq;
