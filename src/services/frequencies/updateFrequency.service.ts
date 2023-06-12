@@ -15,13 +15,28 @@ export const updateFrequencyService = async (
       user: true,
       class: {
         include: {
-          _count: { select: { frequencies: true, students: true } },
-          students: { include: { student: true } },
+          _count: {
+            select: {
+              frequencies: true,
+              students: { where: { is_active: true } },
+            },
+          },
+          students: {
+            include: {
+              student: { include: { classes: { where: { is_active: true } } } },
+            },
+          },
           school: {
             include: {
               classes: {
                 include: {
-                  students: { include: { student: true } },
+                  students: {
+                    include: {
+                      student: {
+                        include: { classes: { where: { is_active: true } } },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -31,7 +46,9 @@ export const updateFrequencyService = async (
         },
       },
       students: {
-        include: { student: true },
+        include: {
+          student: { include: { classes: { where: { is_active: true } } } },
+        },
         orderBy: { student: { name: 'asc' } },
       },
     },
