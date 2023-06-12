@@ -8,6 +8,7 @@ import {
   retrieveFrequencyService,
   updateFrequencyService,
   updateFrequencyStudentService,
+  updateInfrequencyService,
 } from '../services';
 
 export const createFrequencyController = async (
@@ -27,11 +28,7 @@ export const updateFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await updateFrequencyService(
-    req.body,
-    req.params.id,
-    req.query,
-  );
+  const frequency = await updateFrequencyService(req.body, req.params.id);
   return res.json(frequency);
 };
 
@@ -67,6 +64,14 @@ export const updateFrequencyStudentController = async (
     req.body,
     req.params.id,
   );
+  return res.json(frequency);
+};
+
+export const updateInfrequencyController = async (
+  req: Request,
+  res: Response,
+) => {
+  const frequency = await updateInfrequencyService(req.body, req.params.id);
   return res.json(frequency);
 };
 

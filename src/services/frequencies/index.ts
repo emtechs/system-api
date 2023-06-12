@@ -6,3 +6,4 @@ export * from './listFrequencyStudent.service';
 export * from './retrieveFrequency.service';
 export * from './updateFrequency.service';
 export * from './updateFrequencyStudent.service';
+export * from './updateInfrequency.service';

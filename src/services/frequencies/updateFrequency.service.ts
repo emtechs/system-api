@@ -1,19 +1,15 @@
-import { IFrequencyQuery, IFrequencyUpdateRequest } from '../../interfaces';
+import { IFrequencyUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
-import {
-  FrequencyInfreqReturnSchema,
-  FrequencyReturnSchema,
-} from '../../schemas';
+import { FrequencyInfreqReturnSchema } from '../../schemas';
 import { freqParseRetrieveFrequency } from '../../scripts';
 
 export const updateFrequencyService = async (
-  { status, finished_at, infreq }: IFrequencyUpdateRequest,
+  { status, finished_at }: IFrequencyUpdateRequest,
   id: string,
-  { year_id }: IFrequencyQuery,
 ) => {
   const frequency = await prisma.frequency.update({
     where: { id },
-    data: { status, finished_at, infreq },
+    data: { status, finished_at },
     include: {
       _count: true,
       user: true,
@@ -41,14 +37,10 @@ export const updateFrequencyService = async (
     },
   });
 
-  if (year_id) {
-    const frequencyReturn = await freqParseRetrieveFrequency(
-      frequency,
-      year_id,
-    );
+  const frequencyReturn = await freqParseRetrieveFrequency(
+    frequency,
+    frequency.year_id,
+  );
 
-    return FrequencyInfreqReturnSchema.parse(frequencyReturn);
-  }
-
-  return FrequencyReturnSchema.parse(frequency);
+  return FrequencyInfreqReturnSchema.parse(frequencyReturn);
 };

@@ -7,6 +7,7 @@ import {
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
+  updateInfrequencyController,
 } from '../controllers';
 import {
   validateSchemaMiddleware,
@@ -53,6 +54,13 @@ frequencyRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
+);
+
+frequencyRouter.patch(
+  '/infreq/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(FrequencyUpdateSchema),
+  updateInfrequencyController,
 );
 
 frequencyRouter.delete(
