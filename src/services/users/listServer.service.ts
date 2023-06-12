@@ -23,7 +23,10 @@ export const listServerService = async (
   if (name)
     whereData = {
       ...whereData,
-      school: { name: { contains: name, mode: 'insensitive' } },
+      school: {
+        name: { contains: name, mode: 'insensitive' },
+        is_active: true,
+      },
     };
 
   whereData = { ...whereData, server_id };
@@ -31,9 +34,7 @@ export const listServerService = async (
   const servers = await prisma.schoolServer.findMany({
     take,
     skip,
-    where: {
-      ...whereData,
-    },
+    where: { ...whereData },
     include: { school: true },
     orderBy,
   });
