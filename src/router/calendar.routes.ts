@@ -36,7 +36,7 @@ calendarRouter.get(
 );
 
 calendarRouter.get(
-  '/:month/:year_id',
+  '/:year_id',
   verifyUserIsAuthenticated,
   listCalendarController,
 );

@@ -1,3 +1,4 @@
+import { ICalendarQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { freqArrParseFrequency } from '../../scripts';
 
@@ -10,12 +11,17 @@ const defineColor = (infreq: number) => {
 };
 
 export const listCalendarService = async (
-  monthData: string,
   year_id: string,
+  { start_date, end_date }: ICalendarQuery,
 ) => {
-  const month = +monthData;
   const frequenciesData = await prisma.frequency.findMany({
-    where: { AND: { status: 'CLOSED', month: { month }, year_id } },
+    where: {
+      AND: {
+        status: 'CLOSED',
+        date: { gte: start_date, lte: end_date },
+        year_id,
+      },
+    },
     include: {
       _count: true,
       user: true,

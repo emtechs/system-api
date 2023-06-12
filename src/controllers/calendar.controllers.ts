@@ -13,10 +13,7 @@ export const createYearController = async (req: Request, res: Response) => {
 };
 
 export const listCalendarController = async (req: Request, res: Response) => {
-  const calendar = await listCalendarService(
-    req.params.month,
-    req.params.year_id,
-  );
+  const calendar = await listCalendarService(req.params.year_id, req.query);
   return res.json(calendar);
 };
 
