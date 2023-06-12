@@ -4,13 +4,14 @@ import { ServerArraySchema } from '../../schemas';
 
 export const listSchoolServerService = async (
   school_id: string,
-  { name, take, skip, order, by }: ISchoolQuery,
+  { is_active, name, take, skip, order, by }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   let whereData = {};
   let orderBy = {};
+  let whereServer = {};
 
   if (order) {
     switch (order) {
@@ -20,11 +21,45 @@ export const listSchoolServerService = async (
     }
   }
 
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      whereServer = {
+        ...whereServer,
+        is_active: true,
+      };
+      whereData = {
+        ...whereData,
+        server: {
+          ...whereServer,
+        },
+      };
+      break;
+
+    case 'false':
+      whereServer = {
+        ...whereServer,
+        is_active: false,
+      };
+      whereData = {
+        ...whereData,
+        server: {
+          ...whereServer,
+        },
+      };
+      break;
+    }
+  }
+
   if (name)
-    whereData = {
-      ...whereData,
-      server: { name: { contains: name, mode: 'insensitive' } },
+    whereServer = {
+      ...whereServer,
+      name: { contains: name, mode: 'insensitive' },
     };
+  whereData = {
+    ...whereData,
+    server: { ...whereServer },
+  };
 
   whereData = { ...whereData, school_id };
 
