@@ -12,10 +12,13 @@ const defineColor = (infreq: number) => {
 
 export const listCalendarService = async (
   year_id: string,
-  { start_date, end_date }: ICalendarQuery,
+  { start_date, end_date, take }: ICalendarQuery,
 ) => {
   let date_time = {};
   let dateData: string[];
+
+  if (take) take = +take;
+
   if (end_date) {
     dateData = end_date.split('/');
     date_time = {
@@ -25,6 +28,7 @@ export const listCalendarService = async (
       ).toISOString(),
     };
   }
+
   if (start_date) {
     dateData = start_date.split('/');
     date_time = {
@@ -36,6 +40,7 @@ export const listCalendarService = async (
   }
 
   const frequenciesData = await prisma.frequency.findMany({
+    take,
     where: {
       status: 'CLOSED',
       date_time,
