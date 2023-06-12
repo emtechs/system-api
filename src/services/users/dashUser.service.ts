@@ -1,7 +1,7 @@
 import prisma from '../../prisma';
 
 export const dashUserService = async (year_id: string) => {
-  const countSchool = await prisma.school.count();
+  const countSchool = await prisma.school.count({ where: { is_active: true } });
   const countClass = await prisma.classSchool.count({ where: { year_id } });
   const countStudent = await prisma.student.count();
   const countFrequency = await prisma.frequency.count({

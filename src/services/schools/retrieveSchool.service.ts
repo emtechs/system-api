@@ -65,7 +65,10 @@ export const retrieveSchoolService = async (
     return SchoolReturnSchema.parse(schoolsReturn);
   }
 
-  const school = await prisma.school.findUnique({ where: { id } });
+  const school = await prisma.school.findUnique({
+    where: { id },
+    include: { director: true },
+  });
 
   return SchoolReturnSchema.parse(school);
 };
