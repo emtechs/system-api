@@ -6,6 +6,7 @@ import {
   deleteSchoolServerController,
   exportSchoolController,
   listSchoolController,
+  listSchoolServerController,
   retrieveSchoolController,
   updateSchoolController,
 } from '../controllers';
@@ -29,6 +30,12 @@ schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
 schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
 
 schoolRouter.get('/:id', verifyUserIsAuthenticated, retrieveSchoolController);
+
+schoolRouter.get(
+  '/:id/server',
+  verifyUserIsAuthenticated,
+  listSchoolServerController,
+);
 
 schoolRouter.patch(
   '/:id',

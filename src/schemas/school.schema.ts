@@ -44,6 +44,8 @@ const ServerSchema = z.object({
   server: UserSchema,
 });
 
+export const ServerArraySchema = ServerSchema.array();
+
 export const SchoolReturnSchema = z.object({
   id: z.string(),
   name: z.string(),
