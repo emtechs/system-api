@@ -24,14 +24,12 @@ export const updateSchoolService = async (
         where: { id: user.id },
         data: {
           is_active: true,
-          role,
-          dash,
         },
       });
     } else {
       password = hashSync(password, 10);
       user = await prisma.user.create({
-        data: { cpf, login, name: name_diret, password, dash, role },
+        data: { cpf, login, name: name_diret, password },
       });
     }
 
