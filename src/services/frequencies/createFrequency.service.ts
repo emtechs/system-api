@@ -22,12 +22,18 @@ export const createFrequencyService = async (
     return FrequencyReturnSchema.parse(frequencyData);
   }
 
+  const dateData = date.split('/');
+  const date_time = new Date(
+    `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
+  ).toISOString();
+
   month = +month;
   day = +day;
 
   const frequency = await prisma.frequency.create({
     data: {
       date,
+      date_time,
       month: { connectOrCreate: { where: { month }, create: { month } } },
       day: { connectOrCreate: { where: { day }, create: { day } } },
       user: { connect: { id: user_id } },

@@ -14,13 +14,32 @@ export const listCalendarService = async (
   year_id: string,
   { start_date, end_date }: ICalendarQuery,
 ) => {
+  let date_time = {};
+  let dateData: string[];
+  if (end_date) {
+    dateData = end_date.split('/');
+    date_time = {
+      ...date_time,
+      lte: new Date(
+        `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
+      ).toISOString(),
+    };
+  }
+  if (start_date) {
+    dateData = start_date.split('/');
+    date_time = {
+      ...date_time,
+      gte: new Date(
+        `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
+      ).toISOString(),
+    };
+  }
+
   const frequenciesData = await prisma.frequency.findMany({
     where: {
-      AND: {
-        status: 'CLOSED',
-        date: { gte: start_date, lte: end_date },
-        year_id,
-      },
+      status: 'CLOSED',
+      date_time,
+      year_id,
     },
     include: {
       _count: true,
@@ -60,7 +79,7 @@ export const listCalendarService = async (
         count++;
       }
     });
-    const dateData = date.split('/');
+    dateData = date.split('/');
     const infreq = infrequency / count;
     calendar.push({
       title: `${infreq}%`,

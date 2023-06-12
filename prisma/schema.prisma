@@ -152,6 +152,7 @@ enum StatusFrequency{
 model Frequency{
   id String @id @default(uuid())
   date String @db.VarChar(50)
+  date_time DateTime @db.Date
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
