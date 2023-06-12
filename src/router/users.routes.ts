@@ -4,6 +4,7 @@ import {
   dashUserController,
   deleteUserController,
   exportUserController,
+  listServerController,
   listUserController,
   profileUserController,
   retrieveUserController,
@@ -45,6 +46,8 @@ userRouter.get(
 userRouter.get('/dash/:year_id', verifyUserIsAuthenticated, dashUserController);
 
 userRouter.get('/:id', verifyUserIsAuthenticated, retrieveUserController);
+
+userRouter.get('/:id/server', verifyUserIsAuthenticated, listServerController);
 
 userRouter.patch(
   '/:id',

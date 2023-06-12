@@ -41,7 +41,8 @@ const StudentSchema = z.object({
 const ServerSchema = z.object({
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-  server: UserSchema,
+  server: UserSchema.optional(),
+  school: UserSchema.omit({ cpf: true }).optional(),
 });
 
 export const ServerArraySchema = ServerSchema.array();
