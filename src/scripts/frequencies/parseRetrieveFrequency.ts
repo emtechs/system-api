@@ -150,15 +150,9 @@ export const freqParseRetrieveFrequency = async (
     (student) => frequency.id === student.frequency_id,
   );
 
-  const students = await studentsFreqParseFrequency(
-    studentsData,
-    year_id,
-  );
+  const students = await studentsFreqParseFrequency(studentsData, year_id);
 
-  const classData = await classParseRetrieveFrequency(
-    frequency.class,
-    year_id,
-  );
+  const classData = await classParseRetrieveFrequency(frequency.class, year_id);
 
   const school = await schoolParseRetrieveFrequency(
     frequency.class.school,
@@ -175,6 +169,7 @@ export const freqParseRetrieveFrequency = async (
     students,
     infrequency: Number(infrequency.toFixed(2)),
     class_infreq: classData.infrequency,
+    school_infreq: school.infrequency,
     infreq: school.infrequency,
   };
   return result;
