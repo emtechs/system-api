@@ -5,14 +5,14 @@ export const retrieveCalendarSchoolService = async (
   school_id: string,
   { date }: ICalendarQuery,
 ) => {
-  if (!date) {
-    return {};
-  }
-
   const { infreq: school_infreq } = await prisma.school.findUnique({
     where: { id: school_id },
     select: { infreq: true },
   });
+
+  if (!date) {
+    return { school_infreq };
+  }
 
   const frequenciesData = await prisma.frequency.findMany({
     where: {
@@ -25,7 +25,7 @@ export const retrieveCalendarSchoolService = async (
   const frequencies = frequenciesData.length;
 
   if (frequencies === 0) {
-    return {};
+    return { school_infreq };
   }
 
   let infrequency = 0;
