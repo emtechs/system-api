@@ -9,6 +9,11 @@ export const retrieveCalendarSchoolService = async (
     return {};
   }
 
+  const { infreq: school_infreq } = await prisma.school.findUnique({
+    where: { id: school_id },
+    select: { infreq: true },
+  });
+
   const frequenciesData = await prisma.frequency.findMany({
     where: {
       status: 'CLOSED',
@@ -28,5 +33,5 @@ export const retrieveCalendarSchoolService = async (
   frequenciesData.forEach((el) => (infrequency += el.infreq));
   const infreq = infrequency / frequencies;
 
-  return { frequencies, infrequency: infreq };
+  return { frequencies, infrequency: infreq, school_infreq };
 };
