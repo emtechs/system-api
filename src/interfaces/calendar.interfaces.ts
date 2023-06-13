@@ -8,5 +8,4 @@ export interface ICalendarQuery extends IQuery {
   start_date?: string;
   end_date?: string;
   school_id?: string;
-  date?: string;
 }

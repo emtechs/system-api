@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createSchoolController,
+  dashSchoolServerController,
   deleteDirectorSchoolController,
   deleteSchoolController,
   deleteSchoolServerController,
@@ -35,6 +36,12 @@ schoolRouter.get(
   '/:id/server',
   verifyUserIsAuthenticated,
   listSchoolServerController,
+);
+
+schoolRouter.get(
+  '/:id/dash/server',
+  verifyUserIsAuthenticated,
+  dashSchoolServerController,
 );
 
 schoolRouter.patch(

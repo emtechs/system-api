@@ -23,4 +23,5 @@ export interface ISchoolQuery extends IQuery {
   is_director?: string;
   infreq?: number;
   name?: string;
+  date?: string;
 }

@@ -8,12 +8,34 @@ import { classArrParseFrequency } from '../../scripts';
 
 export const listClassSchoolWithSchoolService = async (
   school_id: string,
-  { is_active, year_id, infreq, is_dash, date, take, skip }: IClassQuery,
+  {
+    is_active,
+    year_id,
+    infreq,
+    is_dash,
+    date,
+    take,
+    skip,
+    order,
+    by,
+  }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   if (is_dash) {
+    let orderBy = {};
+    if (order) {
+      switch (order) {
+      case 'name':
+        orderBy = { class: { name: by } };
+        break;
+
+      case 'infreq':
+        orderBy = { infreq: by };
+        break;
+      }
+    }
     const classes = await prisma.classSchool.findMany({
       take,
       skip,
@@ -24,16 +46,20 @@ export const listClassSchoolWithSchoolService = async (
           frequencies: { none: { date, status: 'CLOSED' } },
         },
       },
-      orderBy: { class: { name: 'asc' } },
+      orderBy,
       include: {
         school: true,
         year: true,
         class: true,
-        students: { include: { student: true } },
+        students: {
+          include: {
+            student: { include: { classes: { where: { is_active: true } } } },
+          },
+        },
         _count: {
           select: {
             frequencies: { where: { status: 'CLOSED' } },
-            students: true,
+            students: { where: { is_active: true } },
           },
         },
       },

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   createSchoolService,
+  dashSchoolServerService,
   deleteDirectorSchoolService,
   deleteSchoolServerService,
   deleteSchoolService,
@@ -15,6 +16,14 @@ import {
 export const createSchoolController = async (req: Request, res: Response) => {
   const school = await createSchoolService(req.body);
   return res.status(201).json(school);
+};
+
+export const dashSchoolServerController = async (
+  req: Request,
+  res: Response,
+) => {
+  const dash = await dashSchoolServerService(req.params.id, req.query);
+  return res.json(dash);
 };
 
 export const importSchoolController = async (req: Request, res: Response) => {

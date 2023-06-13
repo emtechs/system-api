@@ -9,7 +9,6 @@ import {
   exportYearController,
   listCalendarController,
   listYearController,
-  retrieveCalendarSchoolController,
   retrieveYearController,
 } from '../controllers';
 
@@ -34,12 +33,6 @@ calendarRouter.get(
   '/export/year',
   verifyUserIsAuthenticated,
   exportYearController,
-);
-
-calendarRouter.get(
-  '/school/:school_id',
-  verifyUserIsAuthenticated,
-  retrieveCalendarSchoolController,
 );
 
 calendarRouter.get(
