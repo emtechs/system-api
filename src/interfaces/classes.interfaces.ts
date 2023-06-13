@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   ClassCreateSchema,
+  ClassSchoolCreateSchema,
   ClassStudentCreateSchema,
   ClassStudentUpdateSchema,
 } from '../schemas';
@@ -19,6 +20,8 @@ export interface IClassSchoolUpdateRequest {
   school_infreq: number;
   class_infreq: number;
 }
+
+export type IClassSchoolRequest = z.infer<typeof ClassSchoolCreateSchema>;
 
 export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>;
 

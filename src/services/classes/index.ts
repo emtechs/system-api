@@ -1,4 +1,5 @@
 export * from './createClass.service';
+export * from './createClassSchool.service';
 export * from './createClassStudent.service';
 export * from './exportClass.service';
 export * from './importClass.service';

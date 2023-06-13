@@ -4,6 +4,10 @@ export const ClassCreateSchema = z.object({
   name: z.string(),
 });
 
+export const ClassSchoolCreateSchema = z.object({
+  class_id: z.string().uuid(),
+});
+
 export const ClassStudentCreateSchema = z.object({
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),
@@ -46,7 +50,7 @@ export const ClassArraySchema = ClassReturnSchema.array();
 export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
   infreq: z.number(),
-  school: z.object({ id: z.string(), name: z.string() }),
+  school: z.object({ id: z.string(), name: z.string() }).optional(),
   year: z.object({ id: z.string(), year: z.string() }).optional(),
   students: z
     .object({

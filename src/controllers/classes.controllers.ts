@@ -10,11 +10,24 @@ import {
   updateClassStudentService,
   listClassSchoolWithSchoolService,
   listClassSchoolService,
+  createClassSchoolService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
   const classData = await createClassService(req.body);
   return res.status(201).json(classData);
+};
+
+export const createClassSchoolController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classSchool = await createClassSchoolService(
+    req.body,
+    req.params.year_id,
+    req.params.school_id,
+  );
+  return res.status(201).json(classSchool);
 };
 
 export const createClassStudentController = async (
