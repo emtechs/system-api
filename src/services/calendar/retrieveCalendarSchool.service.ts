@@ -1,9 +1,14 @@
+import { ICalendarQuery } from '../../interfaces';
 import prisma from '../../prisma';
 
 export const retrieveCalendarSchoolService = async (
-  date: string,
   school_id: string,
+  { date }: ICalendarQuery,
 ) => {
+  if (!date) {
+    return {};
+  }
+
   const frequenciesData = await prisma.frequency.findMany({
     where: {
       status: 'CLOSED',

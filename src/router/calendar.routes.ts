@@ -37,13 +37,13 @@ calendarRouter.get(
 );
 
 calendarRouter.get(
-  '/:year_id',
+  '/school/:school_id',
   verifyUserIsAuthenticated,
-  listCalendarController,
+  retrieveCalendarSchoolController,
 );
 
 calendarRouter.get(
-  '/:date/:school_id',
+  '/:year_id',
   verifyUserIsAuthenticated,
-  retrieveCalendarSchoolController,
+  listCalendarController,
 );

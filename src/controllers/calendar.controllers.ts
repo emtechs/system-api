@@ -33,8 +33,8 @@ export const retrieveCalendarSchoolController = async (
   res: Response,
 ) => {
   const calendar = await retrieveCalendarSchoolService(
-    req.params.date,
     req.params.school_id,
+    req.query,
   );
   return res.json(calendar);
 };
