@@ -10,8 +10,6 @@ export type IStatusFrequency = 'OPENED' | 'CLOSED';
 
 export interface IFrequencyRequest {
   date: string;
-  month: number;
-  day: number;
   class_id: string;
   school_id: string;
   year_id: string;

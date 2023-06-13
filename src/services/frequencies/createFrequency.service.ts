@@ -5,8 +5,6 @@ import { FrequencyReturnSchema } from '../../schemas';
 export const createFrequencyService = async (
   {
     date,
-    month,
-    day,
     class_id,
     school_id,
     year_id,
@@ -27,15 +25,10 @@ export const createFrequencyService = async (
     `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
   ).toISOString();
 
-  month = +month;
-  day = +day;
-
   const frequency = await prisma.frequency.create({
     data: {
       date,
       date_time,
-      month: { connectOrCreate: { where: { month }, create: { month } } },
-      day: { connectOrCreate: { where: { day }, create: { day } } },
       user: { connect: { id: user_id } },
       class: {
         connectOrCreate: {

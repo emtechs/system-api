@@ -103,22 +103,6 @@ model Year{
   @@map("years")
 }
 
-model Month{
-  id String @id @default(uuid())
-  month Int @db.Integer() @unique
-  frequencies Frequency[]
-
-  @@map("months")
-}
-
-model Day{
-  id String @id @default(uuid())
-  day Int @db.Integer() @unique
-  frequencies Frequency[]
-
-  @@map("days")
-}
-
 model Class{
   id String @id @default(uuid())
   name String @db.VarChar(254) @unique
@@ -157,10 +141,6 @@ model Frequency{
   created_at DateTime @default(now())
   finished_at Float @default(0)
   infreq Float @default(0)
-  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
-  month_id String
-  day Day @relation(fields: [day_id], references: [id], onDelete: Cascade)
-  day_id String
   class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String
