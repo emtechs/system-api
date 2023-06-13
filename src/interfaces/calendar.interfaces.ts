@@ -7,4 +7,5 @@ export type IYearRequest = z.infer<typeof YearCreateSchema>;
 export interface ICalendarQuery extends IQuery {
   start_date?: string;
   end_date?: string;
+  school_id?: string;
 }

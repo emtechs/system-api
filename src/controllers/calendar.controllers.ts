@@ -4,6 +4,7 @@ import {
   exportYearService,
   listCalendarService,
   listYearService,
+  retrieveCalendarSchoolService,
   retrieveYearService,
 } from '../services';
 
@@ -25,6 +26,17 @@ export const listYearController = async (req: Request, res: Response) => {
 export const retrieveYearController = async (req: Request, res: Response) => {
   const year = await retrieveYearService(req.params.year);
   return res.json(year);
+};
+
+export const retrieveCalendarSchoolController = async (
+  req: Request,
+  res: Response,
+) => {
+  const calendar = await retrieveCalendarSchoolService(
+    req.params.date,
+    req.params.school_id,
+  );
+  return res.json(calendar);
 };
 
 export const exportYearController = async (req: Request, res: Response) => {

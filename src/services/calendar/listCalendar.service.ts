@@ -1,6 +1,5 @@
 import { ICalendarQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { freqArrParseFrequency } from '../../scripts';
 
 const defineColor = (infreq: number) => {
   if (infreq <= 30) return '#388e3c';
@@ -12,12 +11,17 @@ const defineColor = (infreq: number) => {
 
 export const listCalendarService = async (
   year_id: string,
-  { start_date, end_date, take }: ICalendarQuery,
+  { take, start_date, end_date, school_id }: ICalendarQuery,
 ) => {
   let date_time = {};
   let dateData: string[];
+  let whereData = {};
 
   if (take) take = +take;
+
+  if (school_id) {
+    whereData = { ...whereData, school_id };
+  }
 
   if (end_date) {
     dateData = end_date.split('/');
@@ -39,23 +43,13 @@ export const listCalendarService = async (
     };
   }
 
+  whereData = { ...whereData, status: 'CLOSED', date_time, year_id };
+
   const frequenciesData = await prisma.frequency.findMany({
     take,
     where: {
-      status: 'CLOSED',
-      date_time,
-      year_id,
+      ...whereData,
     },
-    include: {
-      _count: true,
-      user: true,
-      class: { include: { school: true, year: true, class: true } },
-      students: {
-        include: { student: true },
-        orderBy: { student: { name: 'asc' } },
-      },
-    },
-    orderBy: { finished_at: 'desc' },
   });
 
   const frequencies = frequenciesData.length;
@@ -64,8 +58,6 @@ export const listCalendarService = async (
     return {};
   }
 
-  const frequenciesReturn = await freqArrParseFrequency(frequenciesData);
-
   const calendar: {
     title: string;
     date: string;
@@ -73,14 +65,14 @@ export const listCalendarService = async (
     color: '#388e3c' | '#f57c00' | '#d32f2f' | '#0288d1';
   }[] = [];
 
-  const dates = [...new Set(frequenciesReturn.map((el) => el.date))];
+  const dates = [...new Set(frequenciesData.map((el) => el.date))];
 
   dates.forEach((date) => {
     let infrequency = 0;
     let count = 0;
-    frequenciesReturn.forEach((el) => {
+    frequenciesData.forEach((el) => {
       if (el.date === date) {
-        infrequency += el.infrequency;
+        infrequency += el.infreq;
         count++;
       }
     });
