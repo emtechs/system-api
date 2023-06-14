@@ -11,6 +11,7 @@ import {
   listClassSchoolWithSchoolService,
   listClassSchoolService,
   createClassSchoolService,
+  listClassStudentService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -67,6 +68,19 @@ export const listClassSchoolWithSchoolController = async (
 ) => {
   const classes = await listClassSchoolWithSchoolService(
     req.params.id,
+    req.query,
+  );
+  return res.json(classes);
+};
+
+export const listClassStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classes = await listClassStudentService(
+    req.params.class_id,
+    req.params.school_id,
+    req.params.year_id,
     req.query,
   );
   return res.json(classes);

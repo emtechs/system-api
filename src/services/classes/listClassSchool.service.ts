@@ -4,13 +4,22 @@ import { ClassSchoolArraySchema } from '../../schemas';
 
 export const listClassSchoolService = async (
   year_id: string,
-  { take, skip, infreq, school_id, is_active, order, by }: IClassQuery,
+  { take, skip, infreq, school_id, is_active, order, by, name }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   let whereData = {};
+  let whereClass = {};
   let orderBy = {};
+
+  if (name) {
+    whereClass = {
+      ...whereClass,
+      name: { contains: name, mode: 'insensitive' },
+    };
+    whereData = { ...whereData, class: { ...whereClass } };
+  }
 
   if (order) {
     switch (order) {
@@ -32,11 +41,13 @@ export const listClassSchoolService = async (
   if (is_active) {
     switch (is_active) {
     case 'true':
-      whereData = { ...whereData, class: { is_active: true } };
+      whereClass = { ...whereClass, is_active: true };
+      whereData = { ...whereData, class: { ...whereClass } };
       break;
 
     case 'false':
-      whereData = { ...whereData, class: { is_active: false } };
+      whereClass = { ...whereClass, is_active: false };
+      whereData = { ...whereData, class: { ...whereClass } };
       break;
     }
   }

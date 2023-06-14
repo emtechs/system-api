@@ -4,7 +4,8 @@ type IOrder =
   | 'created_at'
   | 'infreq'
   | 'name'
-  | 'director_name';
+  | 'director_name'
+  | 'registry';
 
 export interface IQuery {
   take?: number;

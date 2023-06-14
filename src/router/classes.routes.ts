@@ -7,6 +7,7 @@ import {
   listClassController,
   listClassSchoolController,
   listClassSchoolWithSchoolController,
+  listClassStudentController,
   retrieveClassSchoolController,
   updateClassSchoolController,
   updateClassStudentController,
@@ -60,6 +61,12 @@ classRouter.get(
   '/year/:id',
   verifyUserIsAuthenticated,
   listClassSchoolController,
+);
+
+classRouter.get(
+  '/student/:class_id/:school_id/:year_id',
+  verifyUserIsAuthenticated,
+  listClassStudentController,
 );
 
 classRouter.get(
