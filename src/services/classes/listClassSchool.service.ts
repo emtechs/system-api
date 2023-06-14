@@ -11,6 +11,7 @@ export const listClassSchoolService = async (
 
   let whereData = {};
   let whereClass = {};
+  let whereSchool = {};
   let orderBy = {};
 
   if (name) {
@@ -18,7 +19,15 @@ export const listClassSchoolService = async (
       ...whereClass,
       name: { contains: name, mode: 'insensitive' },
     };
-    whereData = { ...whereData, class: { ...whereClass } };
+    whereSchool = {
+      ...whereSchool,
+      name: { contains: name, mode: 'insensitive' },
+    };
+    whereData = {
+      ...whereData,
+      class: { ...whereClass },
+      school: { ...whereSchool },
+    };
   }
 
   if (order) {
@@ -29,6 +38,10 @@ export const listClassSchoolService = async (
 
     case 'infreq':
       orderBy = { infreq: by };
+      break;
+
+    case 'school_name':
+      orderBy = { school: { name: by } };
       break;
     }
   }
@@ -42,12 +55,22 @@ export const listClassSchoolService = async (
     switch (is_active) {
     case 'true':
       whereClass = { ...whereClass, is_active: true };
-      whereData = { ...whereData, class: { ...whereClass } };
+      whereSchool = { ...whereSchool, is_active: true };
+      whereData = {
+        ...whereData,
+        class: { ...whereClass },
+        school: { ...whereSchool },
+      };
       break;
 
     case 'false':
       whereClass = { ...whereClass, is_active: false };
-      whereData = { ...whereData, class: { ...whereClass } };
+      whereSchool = { ...whereSchool, is_active: false };
+      whereData = {
+        ...whereData,
+        class: { ...whereClass },
+        school: { ...whereSchool },
+      };
       break;
     }
   }
@@ -67,6 +90,7 @@ export const listClassSchoolService = async (
     orderBy,
     include: {
       class: true,
+      school: true,
       _count: {
         select: {
           frequencies: { where: { status: 'CLOSED' } },

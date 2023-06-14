@@ -77,12 +77,7 @@ export const listClassStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const classes = await listClassStudentService(
-    req.params.class_id,
-    req.params.school_id,
-    req.params.year_id,
-    req.query,
-  );
+  const classes = await listClassStudentService(req.params.year_id, req.query);
   return res.json(classes);
 };
 

@@ -90,3 +90,20 @@ export const ClassSchoolFrequencyReturnSchema = z.object({
 
 export const ClassSchoolFrequencyArraySchema =
   ClassSchoolFrequencyReturnSchema.array();
+
+const ClassSchema = z.object({
+  class: z.object({ id: z.string(), name: z.string() }),
+  school: z.object({ id: z.string(), name: z.string() }),
+});
+
+export const ClassStudentReturnSchema = z.object({
+  class: ClassSchema,
+  student: z.object({
+    id: z.string(),
+    name: z.string(),
+    registry: z.string(),
+    infreq: z.number(),
+  }),
+});
+
+export const ClassStudentArraySchema = ClassStudentReturnSchema.array();

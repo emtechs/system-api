@@ -1,12 +1,21 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
+import { ClassStudentArraySchema } from '../../schemas';
 import { studentClassParseFrequency } from '../../scripts';
 
 export const listClassStudentService = async (
-  class_id: string,
-  school_id: string,
   year_id: string,
-  { by, skip, order, name, infreq, take }: IClassQuery,
+  {
+    by,
+    skip,
+    order,
+    name,
+    infreq,
+    take,
+    is_infreq,
+    class_id,
+    school_id,
+  }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -14,6 +23,14 @@ export const listClassStudentService = async (
   let whereData = {};
   let whereStudent = {};
   let orderBy = {};
+
+  if (class_id) {
+    whereData = { ...whereData, class_id };
+  }
+
+  if (school_id) {
+    whereData = { ...whereData, school_id };
+  }
 
   if (name) {
     whereStudent = {
@@ -48,7 +65,7 @@ export const listClassStudentService = async (
     }
   }
 
-  whereData = { ...whereData, class_id, school_id, is_active: true, year_id };
+  whereData = { ...whereData, is_active: true, year_id };
 
   const classStudent = await prisma.classStudent.findMany({
     take,
@@ -56,17 +73,32 @@ export const listClassStudentService = async (
     where: {
       ...whereData,
     },
-    include: { student: true },
+    include: {
+      student: true,
+      class: { include: { class: true, school: true } },
+    },
     orderBy,
   });
-
-  const classesSchema = await studentClassParseFrequency(classStudent, year_id);
 
   const total = await prisma.classStudent.count({
     where: {
       ...whereData,
     },
   });
+
+  if (is_infreq) {
+    const classesSchema = await studentClassParseFrequency(
+      classStudent,
+      year_id,
+    );
+
+    return {
+      total,
+      result: classesSchema,
+    };
+  }
+
+  const classesSchema = ClassStudentArraySchema.parse(classStudent);
 
   return {
     total,

@@ -5,7 +5,9 @@ export const dashUserService = async (year_id: string) => {
 
   const countClass = await prisma.classSchool.count({ where: { year_id } });
 
-  const countStudent = await prisma.student.count();
+  const countStudent = await prisma.classStudent.count({
+    where: { class: { class: { is_active: true } } },
+  });
 
   const countFrequency = await prisma.frequency.count({
     where: { AND: { year_id, status: 'CLOSED' } },

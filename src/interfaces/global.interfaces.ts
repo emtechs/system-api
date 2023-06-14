@@ -5,7 +5,8 @@ type IOrder =
   | 'infreq'
   | 'name'
   | 'director_name'
-  | 'registry';
+  | 'registry'
+  | 'school_name';
 
 export interface IQuery {
   take?: number;

@@ -64,7 +64,7 @@ classRouter.get(
 );
 
 classRouter.get(
-  '/student/:class_id/:school_id/:year_id',
+  '/student/:year_id',
   verifyUserIsAuthenticated,
   listClassStudentController,
 );
