@@ -84,7 +84,7 @@ export const listCalendarFrequencyService = async (
     dateData = date.split('/');
     const infreq = infrequency / count;
     calendar.push({
-      title: `${infreq}%`,
+      title: infreq.toFixed(0) + '%',
       date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
       display: 'list-item',
       color: defineColor(infreq),
