@@ -14,8 +14,12 @@ export const dashSchoolServerService = async (
     where: { school_id, status: 'OPENED' },
   });
 
+  const stundents = await prisma.classStudent.count({
+    where: { school_id, year_id, is_active: true },
+  });
+
   if (!date) {
-    return { school_infreq, frequencyOpen };
+    return { school_infreq, frequencyOpen, stundents };
   }
 
   const frequenciesData = await prisma.frequency.findMany({
@@ -38,8 +42,9 @@ export const dashSchoolServerService = async (
       school_infreq,
       frequencyOpen,
       classTotal,
+      stundents,
     };
   }
 
-  return { frequencies, school_infreq, frequencyOpen };
+  return { frequencies, school_infreq, frequencyOpen, stundents };
 };

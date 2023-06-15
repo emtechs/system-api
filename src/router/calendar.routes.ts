@@ -8,6 +8,7 @@ import {
   createYearController,
   exportYearController,
   listCalendarController,
+  listCalendarFrequencyController,
   listYearController,
   retrieveYearController,
 } from '../controllers';
@@ -19,6 +20,12 @@ calendarRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(YearCreateSchema),
   createYearController,
+);
+
+calendarRouter.get(
+  '/frequency/:year_id/:school_id/:class_id',
+  verifyUserIsAuthenticated,
+  listCalendarFrequencyController,
 );
 
 calendarRouter.get('/year', verifyUserIsAuthenticated, listYearController);

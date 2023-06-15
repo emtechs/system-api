@@ -9,19 +9,17 @@ const defineColor = (infreq: number) => {
   return '#d32f2f';
 };
 
-export const listCalendarService = async (
+export const listCalendarFrequencyService = async (
   year_id: string,
-  { take, start_date, end_date, school_id }: ICalendarQuery,
+  school_id: string,
+  class_id: string,
+  { take, start_date, end_date }: ICalendarQuery,
 ) => {
   let date_time = {};
   let dateData: string[];
   let whereData = {};
 
   if (take) take = +take;
-
-  if (school_id) {
-    whereData = { ...whereData, school_id };
-  }
 
   if (end_date) {
     dateData = end_date.split('/');
@@ -43,7 +41,14 @@ export const listCalendarService = async (
     };
   }
 
-  whereData = { ...whereData, status: 'CLOSED', date_time, year_id };
+  whereData = {
+    ...whereData,
+    status: 'CLOSED',
+    date_time,
+    year_id,
+    class_id,
+    school_id,
+  };
 
   const frequenciesData = await prisma.frequency.findMany({
     take,
@@ -83,12 +88,6 @@ export const listCalendarService = async (
       date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
       display: 'list-item',
       color: defineColor(infreq),
-    });
-    calendar.push({
-      title: `${count}`,
-      date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
-      display: 'list-item',
-      color: '#0288d1',
     });
   });
 
