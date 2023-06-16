@@ -4,8 +4,12 @@ import { IQuery } from './global.interfaces';
 
 export type IYearRequest = z.infer<typeof YearCreateSchema>;
 
+export interface IMonth {
+  name: string;
+  month: number;
+}
+
 export interface ICalendarQuery extends IQuery {
-  start_date?: string;
-  end_date?: string;
+  month?: string;
   school_id?: string;
 }

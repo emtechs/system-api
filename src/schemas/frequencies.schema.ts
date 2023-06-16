@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
+  name: z.string(),
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),

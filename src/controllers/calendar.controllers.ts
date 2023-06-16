@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   createYearService,
   exportYearService,
+  importMonthService,
   listCalendarFrequencyService,
   listCalendarService,
   listYearService,
@@ -11,6 +12,11 @@ import {
 export const createYearController = async (req: Request, res: Response) => {
   const year = await createYearService(req.body);
   return res.status(201).json(year);
+};
+
+export const importMonthController = async (req: Request, res: Response) => {
+  const months = await importMonthService(req.file);
+  return res.status(201).json(months);
 };
 
 export const listCalendarController = async (req: Request, res: Response) => {

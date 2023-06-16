@@ -81,6 +81,15 @@ CREATE TABLE "years" (
 );
 
 -- CreateTable
+CREATE TABLE "months" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(30) NOT NULL,
+    "month" INTEGER NOT NULL,
+
+    CONSTRAINT "months_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "classes" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
@@ -104,11 +113,11 @@ CREATE TABLE "class_school" (
 CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
     "date" VARCHAR(50) NOT NULL,
-    "date_time" DATE NOT NULL,
     "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "month_id" TEXT NOT NULL,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
@@ -176,6 +185,12 @@ CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 CREATE UNIQUE INDEX "years_year_key" ON "years"("year");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
 
 -- CreateIndex
@@ -204,6 +219,9 @@ ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;

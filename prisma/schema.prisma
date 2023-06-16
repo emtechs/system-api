@@ -103,6 +103,15 @@ model Year{
   @@map("years")
 }
 
+model Month{
+  id String @id @default(uuid())
+  name String @db.VarChar(30) @unique
+  month Int @db.Integer @unique
+  frequencies Frequency[]
+
+  @@map("months")
+}
+
 model Class{
   id String @id @default(uuid())
   name String @db.VarChar(254) @unique
@@ -136,11 +145,12 @@ enum StatusFrequency{
 model Frequency{
   id String @id @default(uuid())
   date String @db.VarChar(50)
-  date_time DateTime @db.Date
   status StatusFrequency @default(OPENED)
   created_at DateTime @default(now())
   finished_at Float @default(0)
   infreq Float @default(0)
+  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id String
   class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String

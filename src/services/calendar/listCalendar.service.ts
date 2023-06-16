@@ -11,42 +11,21 @@ const defineColor = (infreq: number) => {
 
 export const listCalendarService = async (
   year_id: string,
-  { take, start_date, end_date, school_id }: ICalendarQuery,
+  { month, school_id }: ICalendarQuery,
 ) => {
-  let date_time = {};
-  let dateData: string[];
   let whereData = {};
 
-  if (take) take = +take;
-
-  if (school_id) {
-    whereData = { ...whereData, school_id };
-  }
-
-  if (end_date) {
-    dateData = end_date.split('/');
-    date_time = {
-      ...date_time,
-      lte: new Date(
-        `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
-      ).toISOString(),
+  if (month)
+    whereData = {
+      ...whereData,
+      month: { name: { contains: month, mode: 'insensitive' } },
     };
-  }
 
-  if (start_date) {
-    dateData = start_date.split('/');
-    date_time = {
-      ...date_time,
-      gte: new Date(
-        `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
-      ).toISOString(),
-    };
-  }
+  if (school_id) whereData = { ...whereData, school_id };
 
-  whereData = { ...whereData, status: 'CLOSED', date_time, year_id };
+  whereData = { ...whereData, status: 'CLOSED', year_id };
 
   const frequenciesData = await prisma.frequency.findMany({
-    take,
     where: {
       ...whereData,
     },
@@ -76,7 +55,7 @@ export const listCalendarService = async (
         count++;
       }
     });
-    dateData = date.split('/');
+    const dateData = date.split('/');
     const infreq = infrequency / count;
     calendar.push({
       title: infreq.toFixed(0) + '%',

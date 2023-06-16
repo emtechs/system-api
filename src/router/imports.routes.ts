@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   importClassController,
+  importMonthController,
   importSchoolController,
   importStudentAllController,
   importStudentController,
@@ -30,6 +31,13 @@ importRouter.post(
   verifyUserIsAuthenticated,
   uploadCsv.single('file'),
   importClassController,
+);
+
+importRouter.post(
+  '/month',
+  verifyUserIsAuthenticated,
+  uploadCsv.single('file'),
+  importMonthController,
 );
 
 importRouter.post(

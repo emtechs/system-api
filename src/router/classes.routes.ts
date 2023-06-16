@@ -3,6 +3,7 @@ import {
   createClassController,
   createClassSchoolController,
   createClassStudentController,
+  dashClassController,
   exportClassController,
   listClassController,
   listClassSchoolController,
@@ -73,6 +74,12 @@ classRouter.get(
   '/:class_id/:school_id/:year_id',
   verifyUserIsAuthenticated,
   retrieveClassSchoolController,
+);
+
+classRouter.get(
+  '/:class_id/:school_id/:year_id/dash',
+  verifyUserIsAuthenticated,
+  dashClassController,
 );
 
 classRouter.patch(

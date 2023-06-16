@@ -12,6 +12,7 @@ import {
   listClassSchoolService,
   createClassSchoolService,
   listClassStudentService,
+  dashClassService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -37,6 +38,16 @@ export const createClassStudentController = async (
 ) => {
   const classStudent = await createClassStudentService(req.body, req.params.id);
   return res.status(201).json(classStudent);
+};
+
+export const dashClassController = async (req: Request, res: Response) => {
+  const dash = await dashClassService(
+    req.params.class_id,
+    req.params.school_id,
+    req.params.year_id,
+    req.query,
+  );
+  return res.json(dash);
 };
 
 export const importClassController = async (req: Request, res: Response) => {
