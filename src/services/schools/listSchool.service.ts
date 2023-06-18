@@ -176,7 +176,7 @@ export const listSchoolService = async ({
     };
   }
 
-  const [schools, total] = await Promise.all([
+  const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
       take,
       skip,
@@ -196,7 +196,31 @@ export const listSchoolService = async ({
       },
     }),
     prisma.school.count({ where: { ...whereData } }),
+    prisma.school.findMany({
+      where: { ...whereData },
+      orderBy,
+      include: {
+        director: true,
+        classes: {
+          include: {
+            class: true,
+            students: {
+              where: { is_active: true },
+              include: { student: true },
+            },
+          },
+        },
+      },
+    }),
   ]);
+
+  const schoolsData = schoolsLabel.map((el) => {
+    return {
+      id: el.id,
+      label: el.name,
+      ...el,
+    };
+  });
 
   if (year_id) {
     const schoolsReturn = await schoolArrParseFrequency(schools, year_id);
@@ -204,6 +228,7 @@ export const listSchoolService = async ({
     const schoolsSchema = SchoolArraySchema.parse(schoolsReturn);
 
     return {
+      schools: schoolsData,
       total,
       result: schoolsSchema,
     };
@@ -211,8 +236,5 @@ export const listSchoolService = async ({
 
   const schoolsSchema = SchoolArraySchema.parse(schools);
 
-  return {
-    total,
-    result: schoolsSchema,
-  };
+  return { schools: schoolsData, total, result: schoolsSchema };
 };
