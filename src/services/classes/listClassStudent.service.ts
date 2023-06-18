@@ -67,24 +67,25 @@ export const listClassStudentService = async (
 
   whereData = { ...whereData, is_active: true, year_id };
 
-  const classStudent = await prisma.classStudent.findMany({
-    take,
-    skip,
-    where: {
-      ...whereData,
-    },
-    include: {
-      student: true,
-      class: { include: { class: true, school: true } },
-    },
-    orderBy,
-  });
-
-  const total = await prisma.classStudent.count({
-    where: {
-      ...whereData,
-    },
-  });
+  const [classStudent, total] = await Promise.all([
+    prisma.classStudent.findMany({
+      take,
+      skip,
+      where: {
+        ...whereData,
+      },
+      include: {
+        student: true,
+        class: { include: { class: true, school: true } },
+      },
+      orderBy,
+    }),
+    prisma.classStudent.count({
+      where: {
+        ...whereData,
+      },
+    }),
+  ]);
 
   if (is_infreq) {
     const classesSchema = await studentClassParseFrequency(

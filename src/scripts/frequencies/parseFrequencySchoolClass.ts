@@ -1,5 +1,11 @@
 import { ClassSchool, ClassStudent, School, Student } from '@prisma/client';
-import prisma from '../../prisma';
+import {
+  classFindUnique,
+  justifiedCount,
+  missedCount,
+  presentedCount,
+  studentFindUnique,
+} from './calculateFrequency';
 
 const parseFrequencySchool = async (
   id: string,
@@ -7,73 +13,20 @@ const parseFrequencySchool = async (
   school_id: string,
   class_id: string,
 ) => {
-  const user = await prisma.student.findUnique({ where: { id } });
+  const [student, classData, presented, justified, missed] = await Promise.all([
+    studentFindUnique(id),
+    classFindUnique(class_id),
+    presentedCount(id, year_id),
+    justifiedCount(id, year_id),
+    missedCount(id, year_id),
+  ]);
 
-  const classData = await prisma.class.findUnique({ where: { id: class_id } });
-
-  const presentedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'PRESENTED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const justifiedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'JUSTIFIED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const missedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'MISSED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const presented = presentedCount._count.frequencies;
-  const justified = justifiedCount._count.frequencies;
-  const missed = missedCount._count.frequencies;
   const total_frequencies = presented + justified + missed;
   const infrequency =
     total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
 
   return {
-    ...user,
+    ...student,
     presented,
     justified,
     missed,
@@ -125,10 +78,7 @@ export const schoolClassParseFrequency = async (
     });
   });
 
-  const students = await studentsSchoolParseFrequency(
-    studentsData,
-    year_id,
-  );
+  const students = await studentsSchoolParseFrequency(studentsData, year_id);
 
   const total_students = studentsData.length;
 

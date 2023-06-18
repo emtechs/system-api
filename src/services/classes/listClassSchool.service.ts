@@ -81,32 +81,33 @@ export const listClassSchoolService = async (
 
   whereData = { ...whereData, year_id };
 
-  const classes = await prisma.classSchool.findMany({
-    take,
-    skip,
-    where: {
-      ...whereData,
-    },
-    orderBy,
-    include: {
-      class: true,
-      school: true,
-      _count: {
-        select: {
-          frequencies: { where: { status: 'CLOSED' } },
-          students: { where: { is_active: true } },
+  const [classes, total] = await Promise.all([
+    prisma.classSchool.findMany({
+      take,
+      skip,
+      where: {
+        ...whereData,
+      },
+      orderBy,
+      include: {
+        class: true,
+        school: true,
+        _count: {
+          select: {
+            frequencies: { where: { status: 'CLOSED' } },
+            students: { where: { is_active: true } },
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.classSchool.count({
+      where: {
+        ...whereData,
+      },
+    }),
+  ]);
 
   const classesSchema = ClassSchoolArraySchema.parse(classes);
-
-  const total = await prisma.classSchool.count({
-    where: {
-      ...whereData,
-    },
-  });
 
   return {
     total,

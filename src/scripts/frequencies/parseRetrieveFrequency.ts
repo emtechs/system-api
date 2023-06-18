@@ -10,90 +10,37 @@ import {
   Student,
   User,
 } from '@prisma/client';
-import prisma from '../../prisma';
 import { classParseRetrieveFrequency } from './parseRetrieveFrequencyClass';
 import { schoolParseRetrieveFrequency } from './parseRetrieveFrequencySchool';
+import {
+  frequencyFindUnique,
+  justifiedCount,
+  missedCount,
+  presentedCount,
+  studentFindUnique,
+} from './calculateFrequency';
 
 const parseFrequencyFreq = async (
   id: string,
   frequencyStudent_id: string,
   year_id: string,
 ) => {
-  const user = await prisma.student.findUnique({ where: { id } });
+  const [student, presented, justified, missed, frequency] = await Promise.all([
+    studentFindUnique(id),
+    presentedCount(id, year_id),
+    justifiedCount(id, year_id),
+    missedCount(id, year_id),
+    frequencyFindUnique(frequencyStudent_id),
+  ]);
 
-  const presentedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'PRESENTED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const justifiedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'JUSTIFIED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const missedCount = await prisma.student.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      _count: {
-        select: {
-          frequencies: {
-            where: {
-              frequency: { AND: { status: 'CLOSED', year_id } },
-              status: 'MISSED',
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const presented = presentedCount._count.frequencies;
-  const justified = justifiedCount._count.frequencies;
-  const missed = missedCount._count.frequencies;
   const total_frequencies = presented + justified + missed;
   const infrequency =
     total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
-
-  const frequency = await prisma.frequencyStudent.findUnique({
-    where: {
-      id: frequencyStudent_id,
-    },
-    select: { status: true, justification: true, updated_at: true },
-  });
-
   const { justification, status, updated_at } = frequency;
   const infreq_stu = status === 'MISSED' ? 100 : 0;
 
   return {
-    ...user,
+    ...student,
     status,
     justification,
     updated_at,
@@ -150,14 +97,11 @@ export const freqParseRetrieveFrequency = async (
     (student) => frequency.id === student.frequency_id,
   );
 
-  const students = await studentsFreqParseFrequency(studentsData, year_id);
-
-  const classData = await classParseRetrieveFrequency(frequency.class, year_id);
-
-  const school = await schoolParseRetrieveFrequency(
-    frequency.class.school,
-    year_id,
-  );
+  const [students, classData, school] = await Promise.all([
+    studentsFreqParseFrequency(studentsData, year_id),
+    classParseRetrieveFrequency(frequency.class, year_id),
+    schoolParseRetrieveFrequency(frequency.class.school, year_id),
+  ]);
 
   let some = 0;
   students.forEach((student) => (some += student.infreq_stu));

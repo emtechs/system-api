@@ -10,27 +10,23 @@ import {
   Student,
   User,
 } from '@prisma/client';
-import prisma from '../../prisma';
+import { frequencyFindUnique, studentFindUnique } from './calculateFrequency';
 
 const parseFrequencyFreq = async (
   id: string,
   frequencyStudent_id: string,
   frequency_id: string,
 ) => {
-  const user = await prisma.student.findUnique({ where: { id } });
-
-  const frequency = await prisma.frequencyStudent.findUnique({
-    where: {
-      id: frequencyStudent_id,
-    },
-    select: { status: true, justification: true, updated_at: true },
-  });
+  const [student, frequency] = await Promise.all([
+    studentFindUnique(id),
+    frequencyFindUnique(frequencyStudent_id),
+  ]);
 
   const { justification, status, updated_at } = frequency;
   const infrequency = status === 'MISSED' ? 100 : 0;
 
   return {
-    ...user,
+    ...student,
     status,
     justification,
     updated_at,

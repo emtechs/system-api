@@ -63,26 +63,27 @@ export const listUserService = async (
 
   whereData = { ...whereData, NOT: { id } };
 
-  const users = await prisma.user.findMany({
-    take,
-    skip,
-    where: { ...whereData },
-    orderBy,
-    include: {
-      director_school: true,
-      work_school: {
-        include: {
-          school: true,
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      take,
+      skip,
+      where: { ...whereData },
+      orderBy,
+      include: {
+        director_school: true,
+        work_school: {
+          include: {
+            school: true,
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.user.count({
+      where: { ...whereData },
+    }),
+  ]);
 
   const usersSchema = UserArraySchema.parse(users);
-
-  const total = await prisma.user.count({
-    where: { ...whereData },
-  });
 
   return {
     total,

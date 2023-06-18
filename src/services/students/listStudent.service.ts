@@ -17,27 +17,30 @@ export const listStudentService = async ({
   if (skip) skip = +skip;
   if (infreq) infreq = +infreq;
 
+  let whereClassesEvery = {};
+
   if (is_list) {
-    const students = await prisma.student.findMany({
-      take,
-      skip,
-      where: { infreq: { gte: infreq ? infreq : 0 } },
-      orderBy: { name: 'asc' },
-      include: {
-        classes: {
-          where: { AND: { year_id, is_active: true } },
-          include: {
-            class: { include: { class: true, school: true, year: true } },
+    const [students, total] = await Promise.all([
+      prisma.student.findMany({
+        take,
+        skip,
+        where: { infreq: { gte: infreq ? infreq : 0 } },
+        orderBy: { name: 'asc' },
+        include: {
+          classes: {
+            where: { AND: { year_id, is_active: true } },
+            include: {
+              class: { include: { class: true, school: true, year: true } },
+            },
           },
         },
-      },
-    });
+      }),
+      prisma.student.count({
+        where: { infreq: { gte: infreq ? infreq : 0 } },
+      }),
+    ]);
 
     const studentsSchema = StudentArraySchema.parse(students);
-
-    const total = await prisma.student.count({
-      where: { infreq: { gte: infreq ? infreq : 0 } },
-    });
 
     return {
       total,
@@ -51,72 +54,35 @@ export const listStudentService = async ({
   if (is_active) {
     switch (is_active) {
     case 'true':
-      students = await prisma.student.findMany({
-        take,
-        skip,
-        where: { classes: { every: { is_active: true } } },
-        orderBy: { name: 'asc' },
-      });
-
-      total = await prisma.student.count({
-        where: { classes: { every: { is_active: true } } },
-      });
-
-      return {
-        total,
-        result: students,
-      };
+      whereClassesEvery = { ...whereClassesEvery, is_active: true };
+      break;
 
     case 'false':
-      students = await prisma.student.findMany({
-        take,
-        skip,
-        where: { classes: { every: { is_active: false } } },
-        orderBy: { name: 'asc' },
-      });
-
-      total = await prisma.student.count({
-        where: { classes: { every: { is_active: false } } },
-      });
-
-      return {
-        total,
-        result: students,
-      };
+      whereClassesEvery = { ...whereClassesEvery, is_active: false };
+      break;
     }
   }
 
-  if (school_id) {
-    students = await prisma.student.findMany({
-      take,
-      skip,
-      where: { classes: { every: { school_id } } },
-      orderBy: { name: 'asc' },
-    });
-
-    total = await prisma.student.count({
-      where: { classes: { every: { school_id } } },
-    });
-
-    return {
-      total,
-      result: students,
-    };
-  }
+  if (school_id) whereClassesEvery = { ...whereClassesEvery, school_id };
 
   if (year_id) {
-    students = await prisma.student.findMany({
-      take,
-      skip,
-      where: { AND: { classes: { every: { school_id } }, infreq: { gt: 0 } } },
-      orderBy: { infreq: 'desc' },
-    });
+    [students, total] = await Promise.all([
+      prisma.student.findMany({
+        take,
+        skip,
+        where: {
+          AND: { classes: { every: { school_id } }, infreq: { gt: 0 } },
+        },
+        orderBy: { infreq: 'desc' },
+      }),
+      prisma.student.count({
+        where: {
+          AND: { classes: { every: { school_id } }, infreq: { gt: 0 } },
+        },
+      }),
+    ]);
 
     const studentsReturn = await studentsParseFrequency(students, year_id);
-
-    total = await prisma.student.count({
-      where: { AND: { classes: { every: { school_id } }, infreq: { gt: 0 } } },
-    });
 
     return {
       total,
@@ -124,15 +90,19 @@ export const listStudentService = async ({
     };
   }
 
-  students = await prisma.student.findMany({
-    take,
-    skip,
-    orderBy: { name: 'asc' },
-  });
+  [students, total] = await Promise.all([
+    prisma.student.findMany({
+      take,
+      skip,
+      where: { classes: { every: { ...whereClassesEvery } } },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.student.count({
+      where: { classes: { every: { ...whereClassesEvery } } },
+    }),
+  ]);
 
   const studentsSchema = StudentArraySchema.parse(students);
-
-  total = await prisma.student.count();
 
   return {
     total,

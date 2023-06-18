@@ -5,18 +5,19 @@ export const dashSchoolServerService = async (
   school_id: string,
   { date, year_id }: ISchoolQuery,
 ) => {
-  const { infreq: school_infreq } = await prisma.school.findUnique({
-    where: { id: school_id },
-    select: { infreq: true },
-  });
-
-  const frequencyOpen = await prisma.frequency.count({
-    where: { school_id, status: 'OPENED' },
-  });
-
-  const stundents = await prisma.classStudent.count({
-    where: { school_id, year_id, is_active: true },
-  });
+  const [{ infreq: school_infreq }, frequencyOpen, stundents] =
+    await Promise.all([
+      prisma.school.findUnique({
+        where: { id: school_id },
+        select: { infreq: true },
+      }),
+      prisma.frequency.count({
+        where: { school_id, status: 'OPENED' },
+      }),
+      prisma.classStudent.count({
+        where: { school_id, year_id, is_active: true },
+      }),
+    ]);
 
   if (!date) {
     return { school_infreq, frequencyOpen, stundents };

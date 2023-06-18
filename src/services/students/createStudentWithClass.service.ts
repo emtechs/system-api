@@ -5,22 +5,23 @@ export const createStudentWithClassService = async (
   { name, registry, class_id, school_id }: IStudentWithClassRequest,
   year_id: string,
 ) => {
-  const student = await prisma.student.create({
-    data: {
-      name,
-      registry,
-    },
-  });
-
-  const classSchool = await prisma.classSchool.findUnique({
-    where: {
-      class_id_school_id_year_id: {
-        class_id,
-        school_id,
-        year_id,
+  const [student, classSchool] = await Promise.all([
+    prisma.student.create({
+      data: {
+        name,
+        registry,
       },
-    },
-  });
+    }),
+    prisma.classSchool.findUnique({
+      where: {
+        class_id_school_id_year_id: {
+          class_id,
+          school_id,
+          year_id,
+        },
+      },
+    }),
+  ]);
 
   if (!classSchool) {
     await prisma.classSchool.create({

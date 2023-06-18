@@ -6,6 +6,7 @@ import {
   exportUserController,
   listServerController,
   listUserController,
+  listWorkSchoolController,
   profileUserController,
   retrieveUserController,
   retrieveUserWithCpfController,
@@ -36,6 +37,8 @@ userRouter.get(
 userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController);
 
 userRouter.get('/export', verifyUserIsAuthenticated, exportUserController);
+
+userRouter.get('/schools', verifyUserIsAuthenticated, listWorkSchoolController);
 
 userRouter.get(
   '/cpf/:cpf',

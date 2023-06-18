@@ -10,6 +10,7 @@ import {
   importUserService,
   dashUserService,
   listServerService,
+  listWorkSchoolService,
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -25,6 +26,11 @@ export const listServerController = async (req: Request, res: Response) => {
 export const listUserController = async (req: Request, res: Response) => {
   const users = await listUserService(req.query, req.user.id);
   return res.json(users);
+};
+
+export const listWorkSchoolController = async (req: Request, res: Response) => {
+  const servers = await listWorkSchoolService(req.user.id, req.query);
+  return res.json(servers);
 };
 
 export const retrieveUserController = async (req: Request, res: Response) => {

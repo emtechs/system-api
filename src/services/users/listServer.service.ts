@@ -69,17 +69,18 @@ export const listServerService = async (
     server_id,
   };
 
-  const servers = await prisma.schoolServer.findMany({
-    take,
-    skip,
-    where: {
-      ...whereData,
-    },
-    include: { school: true },
-    orderBy,
-  });
-
-  const total = await prisma.schoolServer.count({ where: { ...whereData } });
+  const [servers, total] = await Promise.all([
+    prisma.schoolServer.findMany({
+      take,
+      skip,
+      where: {
+        ...whereData,
+      },
+      include: { school: true },
+      orderBy,
+    }),
+    prisma.schoolServer.count({ where: { ...whereData } }),
+  ]);
 
   const serversSchema = ServerArraySchema.parse(servers);
 

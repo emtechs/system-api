@@ -54,29 +54,30 @@ export const listFrequencyService = async ({
   if (year_id) objData = { ...objData, year_id };
 
   if (is_dash) {
-    const frequencies = await prisma.frequency.findMany({
-      take,
-      skip,
-      where: { status: 'OPENED' },
-      include: {
-        _count: true,
-        user: true,
-        class: { include: { school: true, year: true, class: true } },
-        students: {
-          include: { student: true },
-          orderBy: { student: { name: 'asc' } },
+    const [frequencies, total] = await Promise.all([
+      prisma.frequency.findMany({
+        take,
+        skip,
+        where: { status: 'OPENED' },
+        include: {
+          _count: true,
+          user: true,
+          class: { include: { school: true, year: true, class: true } },
+          students: {
+            include: { student: true },
+            orderBy: { student: { name: 'asc' } },
+          },
         },
-      },
-      orderBy: { created_at: 'desc' },
-    });
+        orderBy: { created_at: 'desc' },
+      }),
+      prisma.frequency.count({
+        where: { status: 'OPENED' },
+      }),
+    ]);
 
     const frequenciesReturn = await freqArrParseFrequency(frequencies);
 
     const frequencySchema = FrequencyInfreqArraySchema.parse(frequenciesReturn);
-
-    const total = await prisma.frequency.count({
-      where: { status: 'OPENED' },
-    });
 
     return {
       total,
@@ -84,25 +85,26 @@ export const listFrequencyService = async ({
     };
   }
 
-  const frequencies = await prisma.frequency.findMany({
-    take,
-    skip,
-    where: { AND: { ...objData } },
-    include: {
-      _count: true,
-      user: true,
-      class: { include: { school: true, year: true, class: true } },
-      students: {
-        include: { student: true },
-        orderBy: { student: orderByStudent },
+  const [frequencies, total] = await Promise.all([
+    prisma.frequency.findMany({
+      take,
+      skip,
+      where: { AND: { ...objData } },
+      include: {
+        _count: true,
+        user: true,
+        class: { include: { school: true, year: true, class: true } },
+        students: {
+          include: { student: true },
+          orderBy: { student: orderByStudent },
+        },
       },
-    },
-    orderBy,
-  });
-
-  const total = await prisma.frequency.count({
-    where: { AND: { ...objData } },
-  });
+      orderBy,
+    }),
+    prisma.frequency.count({
+      where: { AND: { ...objData } },
+    }),
+  ]);
 
   if (is_infreq) {
     const frequenciesReturn = await freqArrParseFrequency(frequencies);
