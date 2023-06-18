@@ -1,10 +1,6 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import {
-  ClassSchoolArraySchema,
-  ClassSchoolFrequencyArraySchema,
-} from '../../schemas';
-import { classArrParseFrequency } from '../../scripts';
+import { ClassSchoolArraySchema } from '../../schemas';
 
 export const listClassSchoolWithSchoolService = async (
   school_id: string,
@@ -22,6 +18,28 @@ export const listClassSchoolWithSchoolService = async (
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
+
+  let whereData = {};
+
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      whereData = { ...whereData, class: { is_active: true } };
+      break;
+
+    case 'false':
+      whereData = { ...whereData, class: { is_active: false } };
+      break;
+    }
+  }
+
+  if (year_id) whereData = { ...whereData, year_id };
+
+  if (infreq) {
+    infreq = +infreq;
+
+    whereData = { ...whereData, infreq: { gte: infreq } };
+  }
 
   if (is_dash) {
     let orderBy = {};
@@ -85,112 +103,14 @@ export const listClassSchoolWithSchoolService = async (
     };
   }
 
-  if (year_id) {
-    if (is_active) {
-      const [classes, total] = await Promise.all([
-        prisma.classSchool.findMany({
-          take,
-          skip,
-          where: {
-            AND: {
-              class: { is_active: true },
-              school_id,
-              year_id,
-              infreq: { gte: Number(infreq ? infreq : 0) },
-            },
-          },
-          orderBy: { class: { name: 'asc' } },
-          include: {
-            school: true,
-            year: true,
-            class: true,
-            students: { include: { student: true } },
-            _count: {
-              select: {
-                frequencies: { where: { status: 'CLOSED' } },
-                students: true,
-              },
-            },
-          },
-        }),
-        prisma.classSchool.count({
-          where: {
-            AND: {
-              class: { is_active: true },
-              school_id,
-              year_id,
-              infreq: { gte: Number(infreq ? infreq : 0) },
-            },
-          },
-        }),
-      ]);
-
-      const classesReturn = await classArrParseFrequency(classes, year_id);
-
-      const classesSchema =
-        ClassSchoolFrequencyArraySchema.parse(classesReturn);
-
-      return {
-        total,
-        result: classesSchema,
-      };
-    }
-
-    const [classes, total] = await Promise.all([
-      prisma.classSchool.findMany({
-        take,
-        skip,
-        where: {
-          AND: {
-            school_id,
-            year_id,
-            infreq: { gte: Number(infreq ? infreq : 0) },
-          },
-        },
-        orderBy: { class: { name: 'asc' } },
-        include: {
-          school: true,
-          year: true,
-          class: true,
-          students: { include: { student: true } },
-          _count: {
-            select: {
-              frequencies: { where: { status: 'CLOSED' } },
-              students: true,
-            },
-          },
-        },
-      }),
-      prisma.classSchool.count({
-        where: {
-          AND: {
-            school_id,
-            year_id,
-            infreq: { gte: Number(infreq ? infreq : 0) },
-          },
-        },
-      }),
-    ]);
-
-    const classesReturn = await classArrParseFrequency(classes, year_id);
-
-    const classesSchema = ClassSchoolFrequencyArraySchema.parse(classesReturn);
-
-    return {
-      total,
-      result: classesSchema,
-    };
-  }
+  whereData = { ...whereData, school_id };
 
   const [classes, total] = await Promise.all([
     prisma.classSchool.findMany({
       take,
       skip,
       where: {
-        AND: {
-          school_id,
-          infreq: { gte: Number(infreq ? infreq : 0) },
-        },
+        ...whereData,
       },
       orderBy: { class: { name: 'asc' } },
       include: {
@@ -208,17 +128,23 @@ export const listClassSchoolWithSchoolService = async (
     }),
     prisma.classSchool.count({
       where: {
-        AND: {
-          school_id,
-          infreq: { gte: Number(infreq ? infreq : 0) },
-        },
+        ...whereData,
       },
     }),
   ]);
 
   const classesSchema = ClassSchoolArraySchema.parse(classes);
 
+  const classesData = classesSchema.map((el) => {
+    return {
+      id: el.class.id,
+      label: el.class.name,
+      ...el,
+    };
+  });
+
   return {
+    classes: classesData,
     total,
     result: classesSchema,
   };
