@@ -20,6 +20,19 @@ export const listClassSchoolWithSchoolService = async (
   if (skip) skip = +skip;
 
   let whereData = {};
+  let orderBy = {};
+
+  if (order) {
+    switch (order) {
+    case 'name':
+      orderBy = { class: { name: by } };
+      break;
+
+    case 'infreq':
+      orderBy = { infreq: by };
+      break;
+    }
+  }
 
   if (is_active) {
     switch (is_active) {
@@ -41,30 +54,21 @@ export const listClassSchoolWithSchoolService = async (
     whereData = { ...whereData, infreq: { gte: infreq } };
   }
 
+  whereData = { ...whereData, school_id };
+
   if (is_dash) {
-    let orderBy = {};
-    if (order) {
-      switch (order) {
-      case 'name':
-        orderBy = { class: { name: by } };
-        break;
+    whereData = {
+      ...whereData,
+      class: { is_active: true },
+      frequencies: { none: { date, status: 'CLOSED' } },
+    };
 
-      case 'infreq':
-        orderBy = { infreq: by };
-        break;
-      }
-    }
-
-    const [classes, total] = await Promise.all([
+    const [classes, total, classesLabel] = await Promise.all([
       prisma.classSchool.findMany({
         take,
         skip,
         where: {
-          AND: {
-            school_id,
-            class: { is_active: true },
-            frequencies: { none: { date, status: 'CLOSED' } },
-          },
+          ...whereData,
         },
         orderBy,
         include: {
@@ -86,10 +90,28 @@ export const listClassSchoolWithSchoolService = async (
       }),
       prisma.classSchool.count({
         where: {
-          AND: {
-            school_id,
-            class: { is_active: true },
-            frequencies: { none: { date, status: 'CLOSED' } },
+          ...whereData,
+        },
+      }),
+      prisma.classSchool.findMany({
+        where: {
+          ...whereData,
+        },
+        orderBy,
+        include: {
+          school: true,
+          year: true,
+          class: true,
+          students: {
+            include: {
+              student: { include: { classes: { where: { is_active: true } } } },
+            },
+          },
+          _count: {
+            select: {
+              frequencies: { where: { status: 'CLOSED' } },
+              students: { where: { is_active: true } },
+            },
           },
         },
       }),
@@ -97,13 +119,20 @@ export const listClassSchoolWithSchoolService = async (
 
     const classesSchema = ClassSchoolArraySchema.parse(classes);
 
+    const classesData = ClassSchoolArraySchema.parse(classesLabel).map((el) => {
+      return {
+        id: el.class.id,
+        label: el.class.name,
+        ...el,
+      };
+    });
+
     return {
+      classes: classesData,
       total,
       result: classesSchema,
     };
   }
-
-  whereData = { ...whereData, school_id };
 
   const [classes, total, classesLabel] = await Promise.all([
     prisma.classSchool.findMany({
@@ -153,7 +182,7 @@ export const listClassSchoolWithSchoolService = async (
 
   const classesSchema = ClassSchoolArraySchema.parse(classes);
 
-  const classesData = classesLabel.map((el) => {
+  const classesData = ClassSchoolArraySchema.parse(classesLabel).map((el) => {
     return {
       id: el.class.id,
       label: el.class.name,

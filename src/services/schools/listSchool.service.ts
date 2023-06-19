@@ -214,7 +214,7 @@ export const listSchoolService = async ({
     }),
   ]);
 
-  const schoolsData = schoolsLabel.map((el) => {
+  const schoolsData = SchoolArraySchema.parse(schoolsLabel).map((el) => {
     return {
       id: el.id,
       label: el.name,

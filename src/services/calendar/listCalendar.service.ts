@@ -14,6 +14,7 @@ export const listCalendarService = async (
   { month, school_id }: ICalendarQuery,
 ) => {
   let whereData = {};
+  let classTotal = 0;
 
   if (month)
     whereData = {
@@ -21,7 +22,12 @@ export const listCalendarService = async (
       month: { name: { contains: month, mode: 'insensitive' } },
     };
 
-  if (school_id) whereData = { ...whereData, school_id };
+  if (school_id) {
+    whereData = { ...whereData, school_id };
+    classTotal = await prisma.classSchool.count({
+      where: { school_id, year_id },
+    });
+  }
 
   whereData = { ...whereData, status: 'CLOSED', year_id };
 
@@ -42,6 +48,7 @@ export const listCalendarService = async (
     date: string;
     display: 'list-item';
     color: '#388e3c' | '#f57c00' | '#d32f2f' | '#0288d1';
+    classNames: string[];
   }[] = [];
 
   const dates = [...new Set(frequenciesData.map((el) => el.date))];
@@ -62,12 +69,14 @@ export const listCalendarService = async (
       date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
       display: 'list-item',
       color: defineColor(infreq),
+      classNames: classTotal === count ? ['allFrequency'] : [],
     });
     calendar.push({
       title: `${count}`,
       date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
       display: 'list-item',
       color: '#0288d1',
+      classNames: classTotal === count ? ['allFrequency'] : [],
     });
   });
 
