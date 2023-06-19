@@ -31,6 +31,12 @@ export const dashSchoolServerService = async (
     },
   });
 
+  let day_infreq = 0;
+
+  frequenciesData.forEach((el) => {
+    day_infreq += el.infreq;
+  });
+
   const frequencies = frequenciesData.length;
 
   if (year_id) {
@@ -38,8 +44,20 @@ export const dashSchoolServerService = async (
       where: { school_id, year_id },
     });
 
+    if (frequencies === 0)
+      return {
+        frequencies,
+        school_infreq,
+        frequencyOpen,
+        classTotal,
+        stundents,
+      };
+
+    day_infreq = day_infreq / frequencies;
+
     return {
       frequencies,
+      day_infreq,
       school_infreq,
       frequencyOpen,
       classTotal,
@@ -47,5 +65,21 @@ export const dashSchoolServerService = async (
     };
   }
 
-  return { frequencies, school_infreq, frequencyOpen, stundents };
+  if (frequencies === 0)
+    return {
+      frequencies,
+      school_infreq,
+      frequencyOpen,
+      stundents,
+    };
+
+  day_infreq = day_infreq / frequencies;
+
+  return {
+    frequencies,
+    day_infreq,
+    school_infreq,
+    frequencyOpen,
+    stundents,
+  };
 };
