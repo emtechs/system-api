@@ -72,7 +72,7 @@ export const listCalendarService = async (
       classNames: classTotal === count ? ['allFrequency'] : [],
     });
     calendar.push({
-      title: `${count}/${classTotal}`,
+      title: school_id ? `${count}/${classTotal}` : `${count}`,
       date: `${dateData[2]}-${dateData[1]}-${dateData[0]}`,
       display: 'list-item',
       color: '#0288d1',
