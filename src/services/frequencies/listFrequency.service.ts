@@ -33,7 +33,7 @@ export const listFrequencyService = async ({
       break;
 
     case 'date':
-      orderBy = { date: by };
+      orderBy = { date_time: by };
       break;
 
     case 'finished_at':
