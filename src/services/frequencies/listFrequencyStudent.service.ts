@@ -7,8 +7,11 @@ import {
 
 export const listFrequencyStudentService = async (
   frequency_id: string,
-  { is_alter, isNot_presented, order, by }: IFrequencyStudentQuery,
+  { is_alter, isNot_presented, order, by, skip, take }: IFrequencyStudentQuery,
 ) => {
+  if (take) take = +take;
+  if (skip) skip = +skip;
+
   let whereData = {};
   let orderBy = {};
 
@@ -38,6 +41,8 @@ export const listFrequencyStudentService = async (
       },
     }),
     prisma.frequencyStudent.findMany({
+      take,
+      skip,
       where: { ...whereData },
       include: {
         student: true,
