@@ -37,7 +37,12 @@ export interface IFrequencyQuery extends IQuery {
   date?: string;
   class_id?: string;
   year_id?: string;
-  is_infreq?: boolean;
+  is_infreq?: string;
   is_dash?: string;
   school_id?: string;
+}
+
+export interface IFrequencyStudentQuery extends IQuery {
+  is_alter?: string;
+  isNot_presented?: string;
 }

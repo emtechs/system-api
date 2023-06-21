@@ -33,15 +33,17 @@ const ClassSchema = z.object({
 
 const StudentSchema = z.object({
   id: z.string(),
+  name: z.string(),
+  registry: z.string(),
+  infreq: z.number(),
+});
+
+const StudentFrequencySchema = z.object({
+  id: z.string(),
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  student: z.object({
-    id: z.string(),
-    name: z.string(),
-    registry: z.string(),
-    infreq: z.number(),
-  }),
+  student: StudentSchema,
 });
 
 export const FrequencyReturnSchema = z.object({
@@ -53,7 +55,7 @@ export const FrequencyReturnSchema = z.object({
   infreq: z.number(),
   user: UserSchema.optional(),
   class: ClassSchema.optional(),
-  students: StudentSchema.array().optional(),
+  students: StudentFrequencySchema.array().optional(),
   _count: z.object({ students: z.number() }).optional(),
 });
 
@@ -86,6 +88,17 @@ export const FrequencyStudentCreateSchema = z.object({
   justification: z.string().optional(),
   frequency_id: z.string().uuid(),
 });
+
+export const FrequencyStudentReturnSchema = z.object({
+  id: z.string(),
+  status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
+  justification: z.string().nullable(),
+  updated_at: z.string().nullable(),
+  frequency: FrequencyReturnSchema,
+  student: StudentSchema,
+});
+
+export const FrequencyStudentArraySchema = FrequencyStudentReturnSchema.array();
 
 export const FrequencyStudentUpdateSchema = z
   .object({

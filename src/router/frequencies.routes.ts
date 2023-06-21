@@ -44,7 +44,7 @@ frequencyRouter.patch(
 );
 
 frequencyRouter.get(
-  '/student',
+  '/:id/student',
   verifyUserIsAuthenticated,
   listFrequencyStudentController,
 );

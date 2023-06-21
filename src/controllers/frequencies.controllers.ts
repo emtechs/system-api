@@ -52,7 +52,10 @@ export const listFrequencyStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequencies = await listFrequencyStudentService();
+  const frequencies = await listFrequencyStudentService(
+    req.params.id,
+    req.query,
+  );
   return res.json(frequencies);
 };
 
