@@ -1,6 +1,9 @@
 import prisma from '../../prisma';
 import { IFrequencyStudentQuery } from '../../interfaces';
-import { FrequencyStudentArraySchema } from '../../schemas';
+import {
+  FrequencyReturnSchema,
+  FrequencyStudentArraySchema,
+} from '../../schemas';
 
 export const listFrequencyStudentService = async (
   frequency_id: string,
@@ -27,10 +30,18 @@ export const listFrequencyStudentService = async (
 
   whereData = { ...whereData, frequency_id };
 
-  const [frequencies, total] = await Promise.all([
+  const [frequency, frequencies, total] = await Promise.all([
+    prisma.frequency.findUnique({
+      where: { id: frequency_id },
+      include: {
+        class: { include: { class: true } },
+      },
+    }),
     prisma.frequencyStudent.findMany({
       where: { ...whereData },
-      include: { frequency: true, student: true },
+      include: {
+        student: true,
+      },
       orderBy,
     }),
     prisma.frequencyStudent.count({
@@ -38,7 +49,9 @@ export const listFrequencyStudentService = async (
     }),
   ]);
 
+  const frequencyReturn = FrequencyReturnSchema.parse(frequency);
+
   const frequencySchema = FrequencyStudentArraySchema.parse(frequencies);
 
-  return { total, result: frequencySchema };
+  return { total, frequency: frequencyReturn, result: frequencySchema };
 };

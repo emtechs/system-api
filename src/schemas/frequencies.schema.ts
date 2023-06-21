@@ -25,9 +25,9 @@ const UserSchema = z.object({
 });
 
 const ClassSchema = z.object({
-  year: z.object({ id: z.string(), year: z.string() }),
-  school: z.object({ id: z.string(), name: z.string() }),
-  class: z.object({ id: z.string(), name: z.string() }),
+  year: z.object({ id: z.string(), year: z.string() }).optional(),
+  school: z.object({ id: z.string(), name: z.string() }).optional(),
+  class: z.object({ id: z.string(), name: z.string() }).optional(),
   infreq: z.number(),
 });
 
@@ -94,7 +94,6 @@ export const FrequencyStudentReturnSchema = z.object({
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().nullable(),
   updated_at: z.string().nullable(),
-  frequency: FrequencyReturnSchema,
   student: StudentSchema,
 });
 

@@ -8,7 +8,6 @@ export const updateFrequencyStudentService = async (
   const frequency = await prisma.frequencyStudent.update({
     where: { id },
     data: { justification, status, updated_at },
-    include: { frequency: true, student: true },
   });
 
   return frequency;
