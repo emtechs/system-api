@@ -5,6 +5,7 @@ import {
   importMonthService,
   listCalendarFrequencyService,
   listCalendarService,
+  listCalendarStudentService,
   listYearService,
   retrieveYearService,
 } from '../services';
@@ -32,6 +33,17 @@ export const listCalendarFrequencyController = async (
     req.params.year_id,
     req.params.school_id,
     req.params.class_id,
+    req.query,
+  );
+  return res.json(calendar);
+};
+
+export const listCalendarStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const calendar = await listCalendarStudentService(
+    req.params.student_id,
     req.query,
   );
   return res.json(calendar);
