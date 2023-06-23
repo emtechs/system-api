@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^4.16.0",
+    "@prisma/client": "^4.16.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.37.2",
     "csv-parse": "^5.4.0",
@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.43.0",
-    "prisma": "^4.16.0",
+    "prisma": "^4.16.1",
     "tsx": "^3.12.7",
     "typescript": "^5.1.3"
   }
