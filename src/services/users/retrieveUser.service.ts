@@ -15,9 +15,7 @@ export const retrieveUserService = async (id: string) => {
     },
   });
 
-  if (!user) {
-    throw new AppError('user not found', 404);
-  }
+  if (!user) throw new AppError('user not found', 404);
 
   return UserReturnSchema.parse(user);
 };

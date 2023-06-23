@@ -19,21 +19,19 @@ export const updateUserService = async (
   role_user: IRole,
 ) => {
   if (role) {
-    if (role_user !== 'ADMIN') {
+    if (role_user !== 'ADMIN')
       throw new AppError('User is not allowed to change his role', 400);
-    }
   }
 
   if (dash) {
-    if (role_user !== 'ADMIN') {
+    if (role_user !== 'ADMIN')
       throw new AppError('User is not allowed to change his dash', 400);
-    }
   }
 
   if (is_active) {
-    if (role_user !== 'ADMIN') {
+    if (role_user !== 'ADMIN')
       throw new AppError('User is not allowed to change his is_active', 400);
-    }
+
     await prisma.schoolServer.deleteMany({ where: { server_id: id } });
   }
 
@@ -46,9 +44,7 @@ export const updateUserService = async (
       }
       password = hashSync(password, 10);
     }
-  } else if (password) {
-    password = hashSync(password, 10);
-  }
+  } else if (password) password = hashSync(password, 10);
 
   if (role === 'SERV') {
     try {
@@ -62,14 +58,13 @@ export const updateUserService = async (
         include: { director_school: true },
       });
 
-      if (user.director_school) {
+      if (user.director_school)
         user.director_school.forEach(async (el) => {
           await prisma.school.update({
             where: { id: el.id },
             data: { director: { disconnect: true } },
           });
         });
-      }
 
       return UserReturnSchema.parse(user);
     } catch {

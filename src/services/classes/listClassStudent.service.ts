@@ -24,13 +24,9 @@ export const listClassStudentService = async (
   let whereStudent = {};
   let orderBy = {};
 
-  if (class_id) {
-    whereData = { ...whereData, class_id };
-  }
+  if (class_id) whereData = { ...whereData, class_id };
 
-  if (school_id) {
-    whereData = { ...whereData, school_id };
-  }
+  if (school_id) whereData = { ...whereData, school_id };
 
   if (name) {
     whereStudent = {

@@ -27,9 +27,8 @@ export const loadStudents = (
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete students[0];
         resolve(students);
       })
@@ -60,9 +59,8 @@ export const loadStudentsAll = (
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete students[0];
         resolve(students);
       })

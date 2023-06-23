@@ -15,6 +15,7 @@ import {
 } from '../controllers';
 import {
   validateSchemaMiddleware,
+  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares';
 import {
@@ -37,6 +38,7 @@ classRouter.post(
 classRouter.post(
   '/:year_id/:school_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   validateSchemaMiddleware(ClassSchoolCreateSchema),
   createClassSchoolController,
 );
@@ -73,12 +75,14 @@ classRouter.get(
 classRouter.get(
   '/:class_id/:school_id/:year_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   retrieveClassSchoolController,
 );
 
 classRouter.get(
   '/:class_id/:school_id/:year_id/dash',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   dashClassController,
 );
 

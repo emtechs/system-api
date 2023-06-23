@@ -12,30 +12,24 @@ export const sendEmailRecoveryService = async ({
       where: { login },
     });
 
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
+    if (!user) throw new AppError('User not found', 404);
 
-    if (!user.is_active) {
+    if (!user.is_active)
       throw new AppError(
         'No active account found with the given credentials',
         401,
       );
-    }
 
-    if (!user.email) {
-      throw new AppError('no email registered');
-    }
+    if (!user.email) throw new AppError('no email registered');
 
     let token = await prisma.token.findUnique({ where: { user_id: user.id } });
-    if (!token) {
+    if (!token)
       token = await prisma.token.create({
         data: {
           user_id: user.id,
           token: randomBytes(32).toString('hex'),
         },
       });
-    }
 
     const link = `${process.env.BASE_URL}/password/${user.id}/${token.token}`;
 
@@ -73,9 +67,9 @@ export const sendEmailRecoveryService = async ({
 
     return 'password reset link sent to your email account';
   } catch (err) {
-    if (err instanceof AppError) {
+    if (err instanceof AppError)
       throw new AppError(err.message, err.statusCode);
-    }
+
     throw new AppError(
       'Unfortunately, the email could not be sent, we apologize for the inconvenience and ask that you try again later.',
       404,

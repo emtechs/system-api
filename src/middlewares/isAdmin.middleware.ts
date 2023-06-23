@@ -6,9 +6,7 @@ export const verifyIsAdmin = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (req.user.role === 'ADMIN') {
-    return next();
-  }
+  if (req.user.role === 'ADMIN') return next();
 
   throw new AppError('Missing permissions', 401);
 };

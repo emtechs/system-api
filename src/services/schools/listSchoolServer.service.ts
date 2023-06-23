@@ -56,6 +56,7 @@ export const listSchoolServerService = async (
       ...whereServer,
       name: { contains: name, mode: 'insensitive' },
     };
+
   whereData = {
     ...whereData,
     server: { ...whereServer },

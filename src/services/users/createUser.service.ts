@@ -102,9 +102,7 @@ export const createUserService = async (
     return UserReturnSchema.parse(server);
   }
 
-  if (user) {
-    throw new AppError('user already exists', 409);
-  }
+  if (user) throw new AppError('user already exists', 409);
 
   password = hashSync(password, 10);
 

@@ -54,9 +54,7 @@ const infrequencyClass = (
 ) => {
   let some = 0;
   students.forEach((student) => {
-    if (student.class_id === class_id) {
-      some += student.infrequency;
-    }
+    if (student.class_id === class_id) some += student.infrequency;
   });
   return some / count_students;
 };

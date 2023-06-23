@@ -75,9 +75,7 @@ export const listClassSchoolService = async (
     }
   }
 
-  if (school_id) {
-    whereData = { ...whereData, school_id };
-  }
+  if (school_id) whereData = { ...whereData, school_id };
 
   whereData = { ...whereData, year_id };
 

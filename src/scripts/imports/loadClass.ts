@@ -18,9 +18,8 @@ export const loadClasses = (file: Express.Multer.File): Promise<IClass[]> => {
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete classes[0];
         resolve(classes);
       })

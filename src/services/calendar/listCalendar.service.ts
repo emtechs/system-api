@@ -39,9 +39,7 @@ export const listCalendarService = async (
 
   const frequencies = frequenciesData.length;
 
-  if (frequencies === 0) {
-    return [];
-  }
+  if (frequencies === 0) return [];
 
   const calendar: {
     title: string;

@@ -7,9 +7,7 @@ export const createImageProfileService = async (
   user_id: string,
 ) => {
   let image = await prisma.image.findFirst({ where: { user_id } });
-  if (image) {
-    throw new AppError('image profile already exists', 409);
-  }
+  if (image) throw new AppError('image profile already exists', 409);
 
   const data = {
     name,

@@ -19,9 +19,7 @@ export const dashSchoolServerService = async (
       }),
     ]);
 
-  if (!date) {
-    return { school_infreq, frequencyOpen, stundents };
-  }
+  if (!date) return { school_infreq, frequencyOpen, stundents };
 
   const frequenciesData = await prisma.frequency.findMany({
     where: {

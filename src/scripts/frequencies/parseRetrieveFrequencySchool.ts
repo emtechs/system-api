@@ -31,9 +31,7 @@ export const schoolParseRetrieveFrequency = async (
   })[] = [];
   school.classes.forEach((classes) => {
     classes.students.forEach((student) => {
-      if (school.id === student.school_id) {
-        studentsData.push(student);
-      }
+      if (school.id === student.school_id) studentsData.push(student);
     });
   });
 

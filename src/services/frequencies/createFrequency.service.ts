@@ -18,9 +18,7 @@ export const createFrequencyService = async (
     where: { date, class_id, school_id, year_id },
   });
 
-  if (frequencyData) {
-    return FrequencyReturnSchema.parse(frequencyData);
-  }
+  if (frequencyData) return FrequencyReturnSchema.parse(frequencyData);
 
   const frequency = await prisma.frequency.create({
     data: {

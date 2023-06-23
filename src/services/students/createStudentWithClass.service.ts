@@ -23,11 +23,10 @@ export const createStudentWithClassService = async (
     }),
   ]);
 
-  if (!classSchool) {
+  if (!classSchool)
     await prisma.classSchool.create({
       data: { class_id, school_id, year_id },
     });
-  }
 
   const classStudent = await prisma.classStudent.findUnique({
     where: {
@@ -40,11 +39,10 @@ export const createStudentWithClassService = async (
     },
   });
 
-  if (!classStudent) {
+  if (!classStudent)
     await prisma.classStudent.create({
       data: { class_id, school_id, year_id, student_id: student.id },
     });
-  }
 
   return student;
 };

@@ -11,16 +11,13 @@ export const updatePasswordService = async (
   token: string,
 ) => {
   const userFind = await prisma.user.findUnique({ where: { id } });
-  if (!userFind) {
-    throw new AppError('Invalid link or expired', 400);
-  }
+  if (!userFind) throw new AppError('Invalid link or expired', 400);
 
   const tokenFind = await prisma.token.findFirst({
     where: { token },
   });
-  if (!tokenFind || tokenFind.user_id !== id) {
+  if (!tokenFind || tokenFind.user_id !== id)
     throw new AppError('Invalid link or expired', 400);
-  }
 
   password = hashSync(password, 10);
   const user = await prisma.user.update({

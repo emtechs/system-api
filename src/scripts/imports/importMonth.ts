@@ -4,9 +4,8 @@ import prisma from '../../prisma';
 const verifyMonth = async ({ month, name }: IMonth) => {
   const MonthData = await prisma.month.findUnique({ where: { month } });
   let elem = MonthData;
-  if (!MonthData) {
-    elem = await prisma.month.create({ data: { month, name } });
-  }
+  if (!MonthData) elem = await prisma.month.create({ data: { month, name } });
+
   return elem;
 };
 

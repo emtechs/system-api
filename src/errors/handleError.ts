@@ -8,15 +8,13 @@ export const errorHandler = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (error instanceof AppError) {
+  if (error instanceof AppError)
     return res.status(error.statusCode).json({
       message: error.message,
     });
-  }
 
-  if (error instanceof ZodError) {
+  if (error instanceof ZodError)
     return res.status(400).json({ message: error.flatten().fieldErrors });
-  }
 
   console.log(error);
 

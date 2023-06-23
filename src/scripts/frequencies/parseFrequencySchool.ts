@@ -47,9 +47,7 @@ const infrequencySchool = (
 ) => {
   let some = 0;
   students.forEach((student) => {
-    if (student.school_id === school_id) {
-      some += student.infrequency;
-    }
+    if (student.school_id === school_id) some += student.infrequency;
   });
   return total_students === 0 ? 0 : some / total_students;
 };
@@ -69,9 +67,7 @@ export const schoolParseFrequency = async (
   })[] = [];
   school.classes.forEach((classes) => {
     classes.students.forEach((student) => {
-      if (student.school_id === school.id) {
-        studentsData.push(student);
-      }
+      if (student.school_id === school.id) studentsData.push(student);
     });
   });
 

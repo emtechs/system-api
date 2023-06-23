@@ -13,6 +13,7 @@ import {
 } from '../controllers';
 import {
   validateSchemaMiddleware,
+  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares';
 import { SchoolCreateSchema, SchoolUpdateSchema } from '../schemas';
@@ -62,5 +63,6 @@ schoolRouter.delete(
 schoolRouter.delete(
   '/:school_id/server/:server_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   deleteSchoolServerController,
 );

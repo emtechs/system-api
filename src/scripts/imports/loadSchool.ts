@@ -19,9 +19,8 @@ export const loadSchool = (file: Express.Multer.File): Promise<ISchool[]> => {
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete schools[0];
         resolve(schools);
       })

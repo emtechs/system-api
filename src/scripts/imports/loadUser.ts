@@ -20,9 +20,8 @@ export const loadUser = (file: Express.Multer.File): Promise<IUser[]> => {
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete users[0];
         resolve(users);
       })

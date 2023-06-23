@@ -12,14 +12,13 @@ const verifyStudent = async ({
     where: { registry },
   });
 
-  if (!student) {
+  if (!student)
     student = await prisma.student.create({
       data: {
         name,
         registry,
       },
     });
-  }
 
   const classSchool = await prisma.classSchool.findUnique({
     where: {
@@ -31,11 +30,10 @@ const verifyStudent = async ({
     },
   });
 
-  if (!classSchool) {
+  if (!classSchool)
     await prisma.classSchool.create({
       data: { class_id, school_id, year_id },
     });
-  }
 
   const classStudent = await prisma.classStudent.findUnique({
     where: {
@@ -48,11 +46,10 @@ const verifyStudent = async ({
     },
   });
 
-  if (!classStudent) {
+  if (!classStudent)
     await prisma.classStudent.create({
       data: { class_id, school_id, year_id, student_id: student.id },
     });
-  }
 
   return student;
 };

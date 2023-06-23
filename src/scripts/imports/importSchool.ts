@@ -4,10 +4,9 @@ import prisma from '../../prisma';
 const verifySchool = async ({ name, director_id }: ISchool) => {
   const schoolData = await prisma.school.findUnique({ where: { name } });
   let school = schoolData;
-  if (!schoolData) {
-    school = await prisma.school.create({ data: { name } });
-  }
-  if (director_id) {
+  if (!schoolData) school = await prisma.school.create({ data: { name } });
+
+  if (director_id)
     await prisma.school.update({
       where: { name },
       data: {
@@ -17,7 +16,7 @@ const verifySchool = async ({ name, director_id }: ISchool) => {
         },
       },
     });
-  }
+
   return school;
 };
 

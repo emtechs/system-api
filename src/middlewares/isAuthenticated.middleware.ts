@@ -10,16 +10,12 @@ export const verifyUserIsAuthenticated = async (
 ) => {
   let authorization = req.headers.authorization;
 
-  if (!authorization) {
-    throw new AppError('Not authorized', 401);
-  }
+  if (!authorization) throw new AppError('Not authorized', 401);
 
   authorization = authorization.split(' ')[1];
 
   jwt.verify(authorization, process.env.SECRET_KEY!, (error, decoded: any) => {
-    if (error) {
-      throw new AppError(error.message, 400);
-    }
+    if (error) throw new AppError(error.message, 400);
 
     req.user = {
       id: decoded.sub,
@@ -31,9 +27,7 @@ export const verifyUserIsAuthenticated = async (
     where: { AND: { id: req.user.id, is_active: true } },
   });
 
-  if (!user) {
-    throw new AppError('Not authorized', 401);
-  }
+  if (!user) throw new AppError('Not authorized', 401);
 
   return next();
 };

@@ -8,10 +8,9 @@ export const deleteSchoolServerService = async (
     where: { school_id_server_id: { school_id, server_id } },
   });
 
-  if (schoolServer.role === 'DIRET') {
+  if (schoolServer.role === 'DIRET')
     await prisma.school.update({
       where: { id: school_id },
       data: { director: { disconnect: true } },
     });
-  }
 };

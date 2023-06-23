@@ -19,9 +19,8 @@ export const loadMonth = (file: Express.Multer.File): Promise<IMonth[]> => {
         });
       })
       .on('end', () => {
-        if (process.env.APP_URL) {
-          fs.promises.unlink(file.path);
-        }
+        if (process.env.APP_URL) fs.promises.unlink(file.path);
+
         delete months[0];
         resolve(months);
       })
