@@ -10,6 +10,12 @@ CREATE TYPE "StatusFrequency" AS ENUM ('OPENED', 'CLOSED');
 -- CreateEnum
 CREATE TYPE "StatusStudent" AS ENUM ('PRESENTED', 'MISSED', 'JUSTIFIED');
 
+-- CreateEnum
+CREATE TYPE "SortFrequencyHistory" AS ENUM ('RELEASED', 'CHANGED', 'APPROVED');
+
+-- CreateEnum
+CREATE TYPE "StatusFrequencyHistory" AS ENUM ('ACCEPTED', 'IN_ANALYSIS', 'REFUSED');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -164,6 +170,19 @@ CREATE TABLE "frequency_student" (
     CONSTRAINT "frequency_student_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "frequency_history" (
+    "id" TEXT NOT NULL,
+    "sort" "SortFrequencyHistory" NOT NULL DEFAULT 'RELEASED',
+    "status" "StatusFrequencyHistory" NOT NULL DEFAULT 'IN_ANALYSIS',
+    "status_frequency" "StatusStudent" NOT NULL,
+    "created_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "frequency_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "frequency_history_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_login_key" ON "users"("login");
 
@@ -241,3 +260,9 @@ ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_f
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequency_student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
