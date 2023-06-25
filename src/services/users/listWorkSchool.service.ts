@@ -1,12 +1,39 @@
-import { IQuery } from '../../interfaces';
+import { IQuery, IRequestUser } from '../../interfaces';
 import prisma from '../../prisma';
 
 export const listWorkSchoolService = async (
-  server_id: string,
+  { id: server_id, role }: IRequestUser,
   { take, skip }: IQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
+
+  if (role === 'ADMIN') {
+    const [schoolsData, total] = await Promise.all([
+      prisma.school.findMany({
+        take,
+        skip,
+        where: { is_active: true },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.school.count({
+        where: { is_active: true },
+      }),
+    ]);
+
+    const schools = schoolsData.map((el) => {
+      return {
+        label: el.name,
+        ...el,
+      };
+    });
+
+    return { schools, total, result: { school: schoolsData } };
+  }
 
   const where = { server_id, school: { is_active: true } };
   const school = { select: { id: true, name: true } };

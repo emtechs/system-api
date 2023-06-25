@@ -6,6 +6,11 @@ export type IRole = 'ADMIN' | 'SERV' | 'DIRET' | 'SECRET';
 
 export type IDash = 'COMMON' | 'SCHOOL' | 'ORGAN' | 'ADMIN';
 
+export interface IRequestUser {
+  id: string;
+  role: IRole;
+}
+
 export interface IUser {
   login: string;
   name: string;

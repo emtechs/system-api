@@ -1,13 +1,10 @@
 import * as express from 'express';
-import { IDash, IRole } from '../../interfaces';
+import { IRequestUser } from '../../interfaces';
 
 declare global {
   namespace Express {
     interface Request {
-      user: {
-        id: string;
-        role: IRole;
-      };
+      user: IRequestUser;
     }
   }
 }
