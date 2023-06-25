@@ -3,6 +3,7 @@ import prisma from '../../prisma';
 
 export const dashStudentService = async (
   student_id: string,
+  year_id: string,
   { month }: ICalendarQuery,
 ) => {
   let whereData = {};
@@ -19,22 +20,15 @@ export const dashStudentService = async (
     status: 'CLOSED',
   };
 
-  const [frequencies, { infreq: stundent_infreq }, frequencyOpen, stundents] =
-    await Promise.all([
-      prisma.frequency.count({
-        where: { ...whereData },
-      }),
-      prisma.student.findUnique({
-        where: { id: student_id },
-        select: { infreq: true },
-      }),
-      prisma.frequency.count({
-        where: { school_id, class_id, year_id, status: 'OPENED' },
-      }),
-      prisma.classStudent.count({
-        where: { school_id, year_id, class_id, is_active: true },
-      }),
-    ]);
+  const [frequencies, { value: stundent_infreq }] = await Promise.all([
+    prisma.frequency.count({
+      where: { ...whereData },
+    }),
+    prisma.studentInfrequency.findUnique({
+      where: { year_id_student_id: { student_id, year_id } },
+      select: { value: true },
+    }),
+  ]);
 
-  return { frequencies, stundent_infreq, frequencyOpen, stundents };
+  return { frequencies, stundent_infreq };
 };

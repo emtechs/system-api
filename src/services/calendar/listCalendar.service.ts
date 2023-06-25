@@ -56,7 +56,7 @@ export const listCalendarService = async (
     let count = 0;
     frequenciesData.forEach((el) => {
       if (el.date === date) {
-        infrequency += el.infreq;
+        infrequency += el.infrequency;
         count++;
       }
     });

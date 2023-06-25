@@ -23,7 +23,7 @@ export const dashClassService = async (
     school_id,
   };
 
-  const [frequencies, { infreq: class_infreq }, frequencyOpen, stundents] =
+  const [frequencies, { infrequency: class_infreq }, frequencyOpen, stundents] =
     await Promise.all([
       prisma.frequency.count({
         where: {
@@ -32,7 +32,7 @@ export const dashClassService = async (
       }),
       prisma.classSchool.findUnique({
         where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
-        select: { infreq: true },
+        select: { infrequency: true },
       }),
       prisma.frequency.count({
         where: { school_id, class_id, year_id, status: 'OPENED' },

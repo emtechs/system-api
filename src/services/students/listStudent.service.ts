@@ -24,7 +24,11 @@ export const listStudentService = async ({
       prisma.student.findMany({
         take,
         skip,
-        where: { infreq: { gte: infreq ? infreq : 0 } },
+        where: {
+          infrequencies: {
+            every: { value: { gte: infreq ? infreq : 0 }, year_id },
+          },
+        },
         orderBy: { name: 'asc' },
         include: {
           classes: {
@@ -36,7 +40,9 @@ export const listStudentService = async ({
         },
       }),
       prisma.student.count({
-        where: { infreq: { gte: infreq ? infreq : 0 } },
+        where: {
+          infrequencies: { every: { value: { gte: infreq ? infreq : 0 } } },
+        },
       }),
     ]);
 
@@ -71,13 +77,15 @@ export const listStudentService = async ({
         take,
         skip,
         where: {
-          AND: { classes: { every: { school_id } }, infreq: { gt: 0 } },
+          classes: { every: { school_id } },
+          infrequencies: { every: { value: { gt: 0 } } },
         },
-        orderBy: { infreq: 'desc' },
+        include: { infrequencies: { orderBy: { value: 'desc' } } },
       }),
       prisma.student.count({
         where: {
-          AND: { classes: { every: { school_id } }, infreq: { gt: 0 } },
+          classes: { every: { school_id } },
+          infrequencies: { every: { value: { gt: 0 } } },
         },
       }),
     ]);

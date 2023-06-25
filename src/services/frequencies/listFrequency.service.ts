@@ -41,7 +41,7 @@ export const listFrequencyService = async ({
       break;
 
     case 'infreq':
-      orderBy = { infreq: by };
+      orderBy = { infrequency: by };
       break;
     }
     if (order === 'name') orderByStudent = { name: by };

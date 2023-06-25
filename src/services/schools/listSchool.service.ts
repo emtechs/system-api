@@ -21,6 +21,7 @@ export const listSchoolService = async ({
 
   let whereData = {};
   let orderBy = {};
+  let orderByInfreq = {};
 
   if (order) {
     switch (order) {
@@ -33,7 +34,8 @@ export const listSchoolService = async ({
       break;
 
     case 'infreq':
-      orderBy = { infreq: by };
+      orderBy = { name: by };
+      orderByInfreq = { value: by };
       break;
     }
   }
@@ -43,7 +45,10 @@ export const listSchoolService = async ({
 
   if (infreq) {
     infreq = +infreq;
-    whereData = { ...whereData, infreq: { gte: infreq } };
+    whereData = {
+      ...whereData,
+      infrequencies: { every: { value: { gte: infreq } } },
+    };
   }
 
   if (is_active) {
@@ -67,6 +72,7 @@ export const listSchoolService = async ({
         skip,
         where: { ...whereData },
         orderBy,
+        include: { infrequencies: { orderBy: orderByInfreq } },
       }),
       prisma.school.count({ where: { ...whereData } }),
     ]);
@@ -85,14 +91,12 @@ export const listSchoolService = async ({
         take,
         skip,
         where: {
-          AND: {
-            is_active: true,
-            infreq: { gt: 0 },
-            classes: { every: { year_id } },
-          },
+          is_active: true,
+          infrequencies: { every: { value: { gt: 0 }, year_id } },
+          classes: { every: { year_id } },
         },
-        orderBy: { infreq: 'desc' },
         include: {
+          infrequencies: { orderBy: { value: 'desc' } },
           director: true,
           classes: {
             include: {
@@ -100,17 +104,15 @@ export const listSchoolService = async ({
               class: true,
               students: { include: { student: true } },
             },
-            orderBy: { infreq: 'desc' },
+            orderBy: { infrequency: 'desc' },
           },
         },
       }),
       prisma.school.count({
         where: {
-          AND: {
-            is_active: true,
-            infreq: { gt: 0 },
-            classes: { every: { year_id } },
-          },
+          is_active: true,
+          infrequencies: { every: { value: { gt: 0 }, year_id } },
+          classes: { every: { year_id } },
         },
       }),
     ]);

@@ -33,7 +33,7 @@ const YearSchema = z.object({
 });
 
 const ClassSchoolSchema = z.object({
-  infreq: z.number(),
+  infrequency: z.number(),
   class: ClassAndSchoolSchema,
   school: ClassAndSchoolSchema,
   year: YearSchema,
@@ -44,7 +44,6 @@ export const StudentReturnSchema = z.object({
   name: z.string(),
   registry: z.string(),
   created_at: z.date(),
-  infreq: z.number(),
   classes: z.object({ class: ClassSchoolSchema }).array().optional(),
 });
 

@@ -3,12 +3,12 @@ import prisma from '../../prisma';
 import { createFrequencyHistory } from '../../scripts';
 
 export const updateInfrequencyService = async (
-  { infreq }: IFrequencyUpdateRequest,
+  { infrequency }: IFrequencyUpdateRequest,
   id: string,
 ) => {
   const frequency = await prisma.frequency.update({
     where: { id },
-    data: { infreq },
+    data: { infrequency },
     include: { students: true },
   });
 

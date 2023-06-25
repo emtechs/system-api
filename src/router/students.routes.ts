@@ -46,15 +46,15 @@ studentRouter.get(
 studentRouter.get('/:id', verifyUserIsAuthenticated, retrieveStudentController);
 
 studentRouter.patch(
-  '',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(StudentUpdateManySchema),
-  updateManyStudentController,
-);
-
-studentRouter.patch(
   '/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentUpdateSchema),
   updateStudentController,
+);
+
+studentRouter.patch(
+  '/infreq/:year_id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(StudentUpdateManySchema),
+  updateManyStudentController,
 );

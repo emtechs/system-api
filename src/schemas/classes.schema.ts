@@ -49,7 +49,7 @@ export const ClassArraySchema = ClassReturnSchema.array();
 
 export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
-  infreq: z.number(),
+  infrequency: z.number(),
   school: z.object({ id: z.string(), name: z.string() }).optional(),
   year: z.object({ id: z.string(), year: z.string() }).optional(),
   students: z
@@ -69,7 +69,7 @@ export const ClassSchoolArraySchema = ClassSchoolReturnSchema.array();
 
 export const ClassSchoolFrequencyReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
-  infreq: z.number(),
+  infrequency: z.number(),
   school: z.object({ id: z.string(), name: z.string() }),
   year: z.object({ id: z.string(), year: z.string() }),
   students: z
@@ -85,7 +85,7 @@ export const ClassSchoolFrequencyReturnSchema = z.object({
     })
     .array(),
   _count: z.object({ frequencies: z.number(), students: z.number() }),
-  infrequency: z.number(),
+  infreq: z.number(),
 });
 
 export const ClassSchoolFrequencyArraySchema =
@@ -102,7 +102,6 @@ export const ClassStudentReturnSchema = z.object({
     id: z.string(),
     name: z.string(),
     registry: z.string(),
-    infreq: z.number(),
   }),
 });
 

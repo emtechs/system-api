@@ -23,6 +23,7 @@ export const listClassStudentService = async (
   let whereData = {};
   let whereStudent = {};
   let orderBy = {};
+  let orderByStudent = {};
 
   if (class_id) whereData = { ...whereData, class_id };
 
@@ -40,7 +41,7 @@ export const listClassStudentService = async (
     infreq = +infreq;
     whereStudent = {
       ...whereStudent,
-      infreq: { gte: infreq },
+      infrequencies: { every: { value: { gte: 0 }, year_id } },
     };
     whereData = { ...whereData, student: whereStudent };
   }
@@ -56,7 +57,8 @@ export const listClassStudentService = async (
       break;
 
     case 'infreq':
-      orderBy = { student: { infreq: by } };
+      orderBy = { student: { name: by } };
+      orderByStudent = { value: by };
       break;
     }
   }
@@ -71,7 +73,7 @@ export const listClassStudentService = async (
         ...whereData,
       },
       include: {
-        student: true,
+        student: { include: { infrequencies: { orderBy: orderByStudent } } },
         class: { include: { class: true, school: true } },
       },
       orderBy,

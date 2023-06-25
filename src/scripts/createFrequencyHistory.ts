@@ -8,7 +8,7 @@ const verifyFrequencyHistory = async (
 ) => {
   const frequencyHistory = await prisma.frequencyHistory.create({
     data: {
-      status_frequency: status,
+      status_student: status,
       created_at,
       frequency_id: id,
       justification,

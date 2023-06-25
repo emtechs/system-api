@@ -78,7 +78,7 @@ model School{
   director_id String?
   servers SchoolServer[]
   classes ClassSchool[]
-  infrequencies Infrequency[]
+  infrequencies SchoolInfrequency[]
 
   @@map("schools")
 }
@@ -100,7 +100,7 @@ model Student{
   created_at DateTime @default(now())
   classes ClassStudent[]
   frequencies FrequencyStudent[]
-  infrequencies Infrequency[]
+  infrequencies StudentInfrequency[]
 
   @@map("students")
 }
@@ -126,25 +126,12 @@ model Frequency{
   @@map("frequencies")
 }
 
-model Infrequency{
-  id String @id @default(uuid())
-  value Float @default(0)
-  frequencies Int @default(0)
-  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id String
-  school School? @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String?
-  student Student? @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id String?
-
-  @@map("infrequencies")
-}
-
 model Year{
   id String @id @default(uuid())
   year String @db.VarChar(10) @unique
   classes ClassSchool[]
-  infrequencies Infrequency[]
+  infrequencies_school SchoolInfrequency[]
+  infrequencies_student StudentInfrequency[]
 
   @@map("years")
 }
@@ -168,6 +155,18 @@ model SchoolServer{
 
   @@id([school_id, server_id])
   @@map("school_server")
+}
+
+model SchoolInfrequency{
+  value Float @default(0)
+  frequencies Int @default(0)
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+
+   @@id([year_id, school_id])
+  @@map("school_infrequency")
 }
 
 model ClassSchool{
@@ -199,6 +198,18 @@ model ClassStudent{
 
   @@id([class_id, school_id, year_id, student_id])
   @@map("class_student")
+}
+
+model StudentInfrequency{
+  value Float @default(0)
+  frequencies Int @default(0)
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String
+
+  @@id([year_id, student_id])
+  @@map("student_infrequency")
 }
 
 model FrequencyStudent{

@@ -14,7 +14,7 @@ export const FrequencyUpdateSchema = z
   .object({
     status: z.enum(['OPENED', 'CLOSED']).optional(),
     finished_at: z.number(),
-    infreq: z.number(),
+    infrequency: z.number(),
   })
   .partial();
 
@@ -28,14 +28,13 @@ const ClassSchema = z.object({
   year: z.object({ id: z.string(), year: z.string() }).optional(),
   school: z.object({ id: z.string(), name: z.string() }).optional(),
   class: z.object({ id: z.string(), name: z.string() }).optional(),
-  infreq: z.number(),
+  infrequency: z.number(),
 });
 
 const StudentSchema = z.object({
   id: z.string(),
   name: z.string(),
   registry: z.string(),
-  infreq: z.number(),
 });
 
 const StudentFrequencySchema = z.object({
@@ -52,7 +51,7 @@ export const FrequencyReturnSchema = z.object({
   status: z.string(),
   created_at: z.date(),
   finished_at: z.number(),
-  infreq: z.number(),
+  infrequency: z.number(),
   user: UserSchema.optional(),
   class: ClassSchema.optional(),
   students: StudentFrequencySchema.array().optional(),
@@ -65,11 +64,11 @@ const StudentInfreqSchema = z.object({
   id: z.string(),
   name: z.string(),
   registry: z.string(),
-  infreq: z.number(),
+  infrequency: z.number(),
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  infrequency: z.number(),
+  infreq: z.number(),
   frequencyStudent_id: z.string(),
 });
 

@@ -25,7 +25,11 @@ export const retrieveClassSchoolService = async (
         students: {
           include: { student: true },
           orderBy: { student: { name: 'asc' } },
-          where: { student: { infreq: { gt: 0 } } },
+          where: {
+            student: {
+              infrequencies: { every: { value: { gt: 0 }, year_id } },
+            },
+          },
         },
         _count: { select: { frequencies: true, students: true } },
       },

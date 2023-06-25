@@ -6,12 +6,7 @@ export const importStudentService = async (
   school_id: string,
   year_id: string,
 ) => {
-  const students = await loadStudents(
-    file,
-    class_id,
-    school_id,
-    year_id,
-  );
+  const students = await loadStudents(file, class_id, school_id, year_id);
 
   return await importStudent(students);
 };

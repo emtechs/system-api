@@ -17,8 +17,18 @@ export const updateClassSchoolService = async ({
       },
     },
     data: {
-      infreq: class_infreq,
-      school: { update: { infreq: school_infreq } },
+      infrequency: class_infreq,
+      school: {
+        update: {
+          infrequencies: {
+            upsert: {
+              where: { year_id_school_id: { school_id, year_id } },
+              create: { value: school_infreq, year_id },
+              update: { value: school_infreq },
+            },
+          },
+        },
+      },
     },
   });
 

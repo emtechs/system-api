@@ -64,7 +64,7 @@ export const updateManyStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const student = await updateManyStudentService(req.body);
+  const student = await updateManyStudentService(req.body, req.params.year_id);
   return res.json(student);
 };
 

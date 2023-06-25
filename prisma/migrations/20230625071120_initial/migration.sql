@@ -83,18 +83,6 @@ CREATE TABLE "frequencies" (
 );
 
 -- CreateTable
-CREATE TABLE "infrequencies" (
-    "id" TEXT NOT NULL,
-    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "frequencies" INTEGER NOT NULL DEFAULT 0,
-    "year_id" TEXT NOT NULL,
-    "school_id" TEXT,
-    "student_id" TEXT,
-
-    CONSTRAINT "infrequencies_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "years" (
     "id" TEXT NOT NULL,
     "year" VARCHAR(10) NOT NULL,
@@ -122,6 +110,16 @@ CREATE TABLE "school_server" (
 );
 
 -- CreateTable
+CREATE TABLE "school_infrequency" (
+    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "frequencies" INTEGER NOT NULL DEFAULT 0,
+    "year_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
+
+    CONSTRAINT "school_infrequency_pkey" PRIMARY KEY ("year_id","school_id")
+);
+
+-- CreateTable
 CREATE TABLE "class_school" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
@@ -143,6 +141,16 @@ CREATE TABLE "class_student" (
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "class_student_pkey" PRIMARY KEY ("class_id","school_id","year_id","student_id")
+);
+
+-- CreateTable
+CREATE TABLE "student_infrequency" (
+    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "frequencies" INTEGER NOT NULL DEFAULT 0,
+    "year_id" TEXT NOT NULL,
+    "student_id" TEXT NOT NULL,
+
+    CONSTRAINT "student_infrequency_pkey" PRIMARY KEY ("year_id","student_id")
 );
 
 -- CreateTable
@@ -240,19 +248,16 @@ ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_server_id_fkey" FOREIGN KEY ("server_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -268,6 +273,12 @@ ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_yea
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "student_infrequency" ADD CONSTRAINT "student_infrequency_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "student_infrequency" ADD CONSTRAINT "student_infrequency_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;

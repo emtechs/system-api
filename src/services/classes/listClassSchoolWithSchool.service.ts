@@ -29,7 +29,7 @@ export const listClassSchoolWithSchoolService = async (
       break;
 
     case 'infreq':
-      orderBy = { infreq: by };
+      orderBy = { infrequency: by };
       break;
     }
   }
@@ -51,7 +51,7 @@ export const listClassSchoolWithSchoolService = async (
   if (infreq) {
     infreq = +infreq;
 
-    whereData = { ...whereData, infreq: { gte: infreq } };
+    whereData = { ...whereData, infrequency: { gte: infreq } };
   }
 
   whereData = { ...whereData, school_id };
