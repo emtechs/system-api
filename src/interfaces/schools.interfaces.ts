@@ -17,7 +17,6 @@ export interface ISchoolUpdate {
 
 export interface ISchoolQuery extends IQuery {
   is_active?: 'true' | 'false';
-  is_dash?: string;
   year_id?: string;
   is_listSchool?: string;
   is_director?: string;
