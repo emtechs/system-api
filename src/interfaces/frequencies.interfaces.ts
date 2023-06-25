@@ -20,6 +20,12 @@ export interface IFrequencyRequest {
   }[];
 }
 
+export interface IFrequencyHistoryCreate {
+  id: string;
+  status: IStatusStudent;
+  justification?: string;
+}
+
 export type IFrequencyUpdateRequest = z.infer<typeof FrequencyUpdateSchema>;
 
 export type IStatusStudent = 'PRESENTED' | 'MISSED' | 'JUSTIFIED';

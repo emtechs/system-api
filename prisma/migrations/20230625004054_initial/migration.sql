@@ -176,6 +176,7 @@ CREATE TABLE "frequency_history" (
     "sort" "SortFrequencyHistory" NOT NULL DEFAULT 'RELEASED',
     "status" "StatusFrequencyHistory" NOT NULL DEFAULT 'IN_ANALYSIS',
     "status_frequency" "StatusStudent" NOT NULL,
+    "justification" TEXT,
     "created_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "frequency_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,

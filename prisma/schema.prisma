@@ -228,6 +228,7 @@ model FrequencyHistory{
   sort SortFrequencyHistory @default(RELEASED)
   status StatusFrequencyHistory @default(IN_ANALYSIS)
   status_frequency StatusStudent
+  justification String? @db.Text
   created_at Float @default(0)
   frequency FrequencyStudent @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
   frequency_id String
