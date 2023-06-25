@@ -19,7 +19,16 @@ export const StudentUpdateSchema = z
   .partial();
 
 export const StudentUpdateManySchema = z.object({
-  students: z.object({ id: z.string().uuid(), infreq: z.number() }).array(),
+  students: z
+    .object({
+      id: z.string().uuid(),
+      value: z.number(),
+      presences: z.number(),
+      justified: z.number(),
+      absences: z.number(),
+      frequencies: z.number(),
+    })
+    .array(),
 });
 
 const ClassAndSchoolSchema = z.object({

@@ -28,6 +28,7 @@ export const ClassSchoolUpdateSchema = z.object({
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),
   class_infreq: z.number(),
+  school_frequencies: z.number(),
   school_infreq: z.number(),
 });
 

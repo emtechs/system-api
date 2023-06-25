@@ -202,6 +202,9 @@ model ClassStudent{
 
 model StudentInfrequency{
   value Float @default(0)
+  presences Int @default(0)
+  justified Int @default(0)
+  absences Int @default(0)
   frequencies Int @default(0)
   year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
   year_id String

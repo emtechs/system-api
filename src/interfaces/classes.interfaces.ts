@@ -17,6 +17,7 @@ export interface IClassSchoolUpdateRequest {
   class_id: string;
   school_id: string;
   year_id: string;
+  school_frequencies: number;
   school_infreq: number;
   class_infreq: number;
 }

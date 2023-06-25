@@ -10,6 +10,7 @@ import {
   Student,
   User,
 } from '@prisma/client';
+import prisma from '../../prisma';
 import { classParseRetrieveFrequency } from './parseRetrieveFrequencyClass';
 import { schoolParseRetrieveFrequency } from './parseRetrieveFrequencySchool';
 import {
@@ -25,17 +26,17 @@ const parseFrequencyFreq = async (
   frequencyStudent_id: string,
   year_id: string,
 ) => {
-  const [student, presented, justified, missed, frequency] = await Promise.all([
-    studentFindUnique(id),
-    presentedCount(id, year_id),
-    justifiedCount(id, year_id),
-    missedCount(id, year_id),
-    frequencyFindUnique(frequencyStudent_id),
-  ]);
+  const [student, presences, justified, absences, frequency] =
+    await Promise.all([
+      studentFindUnique(id),
+      presentedCount(id, year_id),
+      justifiedCount(id, year_id),
+      missedCount(id, year_id),
+      frequencyFindUnique(frequencyStudent_id),
+    ]);
 
-  const total_frequencies = presented + justified + missed;
-  const infrequency =
-    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
+  const frequencies = presences + justified + absences;
+  const infrequency = frequencies === 0 ? 0 : (absences / frequencies) * 100;
   const { justification, status, updated_at } = frequency;
   const infreq_stu = status === 'MISSED' ? 100 : 0;
 
@@ -44,8 +45,12 @@ const parseFrequencyFreq = async (
     status,
     justification,
     updated_at,
-    infreq_stu: Number(infreq_stu.toFixed(2)),
+    infreq_stu,
     frequencyStudent_id,
+    presences,
+    justified,
+    absences,
+    frequencies,
     infrequency: Number(infrequency.toFixed(2)),
   };
 };
@@ -97,10 +102,18 @@ export const freqParseRetrieveFrequency = async (
     (student) => frequency.id === student.frequency_id,
   );
 
-  const [students, classData, school] = await Promise.all([
+  const [
+    students,
+    { infrequency: class_infreq },
+    { infrequency: school_infreq },
+    school_frequencies,
+  ] = await Promise.all([
     studentsFreqParseFrequency(studentsData, year_id),
     classParseRetrieveFrequency(frequency.class, year_id),
     schoolParseRetrieveFrequency(frequency.class.school, year_id),
+    prisma.frequency.count({
+      where: { year_id, school_id: frequency.school_id, status: 'CLOSED' },
+    }),
   ]);
 
   let some = 0;
@@ -112,8 +125,9 @@ export const freqParseRetrieveFrequency = async (
     ...frequency,
     students,
     infreq: Number(infrequency.toFixed(2)),
-    class_infreq: classData.infrequency,
-    school_infreq: school.infrequency,
+    class_infreq,
+    school_frequencies,
+    school_infreq,
   };
   return result;
 };

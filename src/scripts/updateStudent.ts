@@ -2,7 +2,7 @@ import { IStudentUpdate } from '../interfaces';
 import prisma from '../prisma';
 
 const verifyStudent = async (
-  { id, infreq }: IStudentUpdate,
+  { id, absences, frequencies, justified, presences, value }: IStudentUpdate,
   year_id: string,
 ) => {
   const student = await prisma.student.update({
@@ -11,8 +11,15 @@ const verifyStudent = async (
       infrequencies: {
         upsert: {
           where: { year_id_student_id: { student_id: id, year_id } },
-          create: { value: infreq, year_id },
-          update: { value: infreq },
+          create: {
+            absences,
+            frequencies,
+            justified,
+            presences,
+            value,
+            year_id,
+          },
+          update: { absences, frequencies, justified, presences, value },
         },
       },
     },

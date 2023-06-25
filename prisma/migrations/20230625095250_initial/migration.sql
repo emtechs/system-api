@@ -146,6 +146,9 @@ CREATE TABLE "class_student" (
 -- CreateTable
 CREATE TABLE "student_infrequency" (
     "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "presences" INTEGER NOT NULL DEFAULT 0,
+    "justified" INTEGER NOT NULL DEFAULT 0,
+    "absences" INTEGER NOT NULL DEFAULT 0,
     "frequencies" INTEGER NOT NULL DEFAULT 0,
     "year_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,

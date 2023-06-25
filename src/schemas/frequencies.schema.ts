@@ -64,17 +64,22 @@ const StudentInfreqSchema = z.object({
   id: z.string(),
   name: z.string(),
   registry: z.string(),
-  infrequency: z.number(),
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
   frequencyStudent_id: z.string(),
+  presences: z.number(),
+  justified: z.number(),
+  absences: z.number(),
+  frequencies: z.number(),
+  infrequency: z.number(),
 });
 
 export const FrequencyInfreqReturnSchema = FrequencyReturnSchema.extend({
   students: StudentInfreqSchema.array(),
   infreq: z.number(),
   class_infreq: z.number().optional(),
+  school_frequencies: z.number().optional(),
   school_infreq: z.number().optional(),
 });
 

@@ -19,7 +19,11 @@ export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
 export type IStudentUpdateRequest = z.infer<typeof StudentUpdateSchema>;
 
 export interface IStudentUpdate {
-  infreq: number;
+  value: number;
+  presences: number;
+  justified: number;
+  absences: number;
+  frequencies: number;
   id: string;
 }
 
