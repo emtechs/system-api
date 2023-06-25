@@ -74,7 +74,7 @@ const StudentInfreqSchema = z.object({
 
 export const FrequencyInfreqReturnSchema = FrequencyReturnSchema.extend({
   students: StudentInfreqSchema.array(),
-  infrequency: z.number(),
+  infreq: z.number(),
   class_infreq: z.number().optional(),
   school_infreq: z.number().optional(),
 });

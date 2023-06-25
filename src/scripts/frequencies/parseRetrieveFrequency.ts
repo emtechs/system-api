@@ -111,10 +111,9 @@ export const freqParseRetrieveFrequency = async (
   const result = {
     ...frequency,
     students,
-    infrequency: Number(infrequency.toFixed(2)),
+    infreq: Number(infrequency.toFixed(2)),
     class_infreq: classData.infrequency,
     school_infreq: school.infrequency,
-    infreq: school.infrequency,
   };
   return result;
 };
