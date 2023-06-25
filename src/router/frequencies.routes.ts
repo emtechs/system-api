@@ -36,17 +36,17 @@ frequencyRouter.get(
   retrieveFrequencyController,
 );
 
+frequencyRouter.get(
+  '/:id/student',
+  verifyUserIsAuthenticated,
+  listFrequencyStudentController,
+);
+
 frequencyRouter.patch(
   '/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyUpdateSchema),
   updateFrequencyController,
-);
-
-frequencyRouter.get(
-  '/:id/student',
-  verifyUserIsAuthenticated,
-  listFrequencyStudentController,
 );
 
 frequencyRouter.patch(

@@ -68,7 +68,6 @@ const StudentInfreqSchema = z.object({
   status: z.enum(['PRESENTED', 'MISSED', 'JUSTIFIED']),
   justification: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  infreq: z.number(),
   frequencyStudent_id: z.string(),
 });
 
