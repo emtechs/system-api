@@ -34,48 +34,64 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "images" (
-    "id" TEXT NOT NULL,
-    "name" VARCHAR(200) NOT NULL,
-    "size" INTEGER NOT NULL,
-    "url" TEXT NOT NULL,
-    "key" VARCHAR(200) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" TEXT NOT NULL,
-
-    CONSTRAINT "images_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "token" (
-    "id" TEXT NOT NULL,
-    "token" VARCHAR(200) NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "token_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "schools" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "director_id" TEXT,
-    "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "schools_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "school_server" (
-    "school_id" TEXT NOT NULL,
-    "server_id" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'SERV',
-    "dash" "Dash" NOT NULL DEFAULT 'COMMON',
+CREATE TABLE "classes" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(254) NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "school_server_pkey" PRIMARY KEY ("school_id","server_id")
+    CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "students" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(254) NOT NULL,
+    "registry" VARCHAR(50) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "students_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "frequencies" (
+    "id" TEXT NOT NULL,
+    "date" VARCHAR(50) NOT NULL,
+    "date_time" DATE NOT NULL,
+    "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "month_id" TEXT NOT NULL,
+    "class_id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "infrequencies" (
+    "id" TEXT NOT NULL,
+    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "frequencies" INTEGER NOT NULL DEFAULT 0,
+    "year_id" TEXT NOT NULL,
+    "school_id" TEXT,
+    "student_id" TEXT,
+
+    CONSTRAINT "infrequencies_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -96,13 +112,13 @@ CREATE TABLE "months" (
 );
 
 -- CreateTable
-CREATE TABLE "classes" (
-    "id" TEXT NOT NULL,
-    "name" VARCHAR(254) NOT NULL,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE "school_server" (
+    "school_id" TEXT NOT NULL,
+    "server_id" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'SERV',
+    "dash" "Dash" NOT NULL DEFAULT 'COMMON',
 
-    CONSTRAINT "classes_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "school_server_pkey" PRIMARY KEY ("school_id","server_id")
 );
 
 -- CreateTable
@@ -110,38 +126,9 @@ CREATE TABLE "class_school" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
-    "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","year_id")
-);
-
--- CreateTable
-CREATE TABLE "frequencies" (
-    "id" TEXT NOT NULL,
-    "date" VARCHAR(50) NOT NULL,
-    "date_time" DATE NOT NULL,
-    "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "month_id" TEXT NOT NULL,
-    "class_id" TEXT NOT NULL,
-    "school_id" TEXT NOT NULL,
-    "year_id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-
-    CONSTRAINT "frequencies_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "students" (
-    "id" TEXT NOT NULL,
-    "name" VARCHAR(254) NOT NULL,
-    "registry" VARCHAR(50) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "infreq" DOUBLE PRECISION NOT NULL DEFAULT 0,
-
-    CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -175,13 +162,36 @@ CREATE TABLE "frequency_history" (
     "id" TEXT NOT NULL,
     "sort" "SortFrequencyHistory" NOT NULL DEFAULT 'RELEASED',
     "status" "StatusFrequencyHistory" NOT NULL DEFAULT 'IN_ANALYSIS',
-    "status_frequency" "StatusStudent" NOT NULL,
+    "status_student" "StatusStudent" NOT NULL,
     "justification" TEXT,
     "created_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "frequency_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequency_history_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "images" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
+    "size" INTEGER NOT NULL,
+    "url" TEXT NOT NULL,
+    "key" VARCHAR(200) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "images_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "token" (
+    "id" TEXT NOT NULL,
+    "token" VARCHAR(200) NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "token_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -191,16 +201,13 @@ CREATE UNIQUE INDEX "users_login_key" ON "users"("login");
 CREATE UNIQUE INDEX "users_cpf_key" ON "users"("cpf");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
-
--- CreateIndex
-CREATE UNIQUE INDEX "images_user_id_key" ON "images"("user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "token_user_id_key" ON "token"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "students_registry_key" ON "students"("registry");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "years_year_key" ON "years"("year");
@@ -212,19 +219,34 @@ CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
 CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "classes_name_key" ON "classes"("name");
+CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "students_registry_key" ON "students"("registry");
+CREATE UNIQUE INDEX "images_user_id_key" ON "images"("user_id");
 
--- AddForeignKey
-ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "token" ADD CONSTRAINT "token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "token_user_id_key" ON "token"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "schools" ADD CONSTRAINT "schools_director_id_fkey" FOREIGN KEY ("director_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "infrequencies" ADD CONSTRAINT "infrequencies_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -240,15 +262,6 @@ ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "class_school" ADD CONSTRAINT "class_school_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -267,3 +280,9 @@ ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_frequency_id_f
 
 -- AddForeignKey
 ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "token" ADD CONSTRAINT "token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

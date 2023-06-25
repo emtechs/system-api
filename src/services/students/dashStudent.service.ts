@@ -1,10 +1,8 @@
 import { ICalendarQuery } from '../../interfaces';
 import prisma from '../../prisma';
 
-export const dashClassService = async (
-  class_id: string,
-  school_id: string,
-  year_id: string,
+export const dashStudentService = async (
+  student_id: string,
   { month }: ICalendarQuery,
 ) => {
   let whereData = {};
@@ -17,21 +15,17 @@ export const dashClassService = async (
 
   whereData = {
     ...whereData,
+    students: { every: { student_id } },
     status: 'CLOSED',
-    year_id,
-    class_id,
-    school_id,
   };
 
-  const [frequencies, { infreq: class_infreq }, frequencyOpen, stundents] =
+  const [frequencies, { infreq: stundent_infreq }, frequencyOpen, stundents] =
     await Promise.all([
       prisma.frequency.count({
-        where: {
-          ...whereData,
-        },
+        where: { ...whereData },
       }),
-      prisma.classSchool.findUnique({
-        where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
+      prisma.student.findUnique({
+        where: { id: student_id },
         select: { infreq: true },
       }),
       prisma.frequency.count({
@@ -42,5 +36,5 @@ export const dashClassService = async (
       }),
     ]);
 
-  return { frequencies, class_infreq, frequencyOpen, stundents };
+  return { frequencies, stundent_infreq, frequencyOpen, stundents };
 };

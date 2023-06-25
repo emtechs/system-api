@@ -37,5 +37,4 @@ export interface IClassQuery extends IQuery {
   date?: string;
   is_infreq?: string;
   name?: string;
-  month?: string;
 }

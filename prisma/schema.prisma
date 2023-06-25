@@ -24,6 +24,29 @@ enum Dash{
   ADMIN
 }
 
+enum StatusFrequency{
+  OPENED
+  CLOSED
+}
+
+enum StatusStudent{
+  PRESENTED
+  MISSED
+  JUSTIFIED
+}
+
+enum SortFrequencyHistory{
+  RELEASED
+  CHANGED
+  APPROVED
+}
+
+enum StatusFrequencyHistory{
+  ACCEPTED
+  IN_ANALYSIS
+  REFUSED
+}
+
 model User{
   id String @id @default(uuid())
   name String @db.VarChar(254)
@@ -44,6 +67,167 @@ model User{
   frequency_history FrequencyHistory[]
 
   @@map("users")
+}
+
+model School{
+  id String @id @default(uuid())
+  name String @db.VarChar(254) @unique
+  is_active Boolean @default(true)
+  created_at DateTime @default(now())
+  director User? @relation(fields: [director_id], references: [id], onDelete: SetNull)
+  director_id String?
+  servers SchoolServer[]
+  classes ClassSchool[]
+  infrequencies Infrequency[]
+
+  @@map("schools")
+}
+
+model Class{
+  id String @id @default(uuid())
+  name String @db.VarChar(254) @unique
+  is_active Boolean @default(true)
+  created_at DateTime @default(now())
+  schools ClassSchool[]
+
+  @@map("classes")
+}
+
+model Student{
+  id String @id @default(uuid())
+  name String @db.VarChar(254)
+  registry String @db.VarChar(50) @unique
+  created_at DateTime @default(now())
+  classes ClassStudent[]
+  frequencies FrequencyStudent[]
+  infrequencies Infrequency[]
+
+  @@map("students")
+}
+
+model Frequency{
+  id String @id @default(uuid())
+  date String @db.VarChar(50)
+  date_time DateTime @db.Date
+  status StatusFrequency @default(OPENED)
+  created_at DateTime @default(now())
+  finished_at Float @default(0)
+  infrequency Float @default(0)
+  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id String
+  class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  class_id String
+  school_id String
+  year_id String
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
+  students FrequencyStudent[]
+
+  @@map("frequencies")
+}
+
+model Infrequency{
+  id String @id @default(uuid())
+  value Float @default(0)
+  frequencies Int @default(0)
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
+  school School? @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String?
+  student Student? @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String?
+
+  @@map("infrequencies")
+}
+
+model Year{
+  id String @id @default(uuid())
+  year String @db.VarChar(10) @unique
+  classes ClassSchool[]
+  infrequencies Infrequency[]
+
+  @@map("years")
+}
+
+model Month{
+  id String @id @default(uuid())
+  name String @db.VarChar(30) @unique
+  month Int @db.Integer @unique
+  frequencies Frequency[]
+
+  @@map("months")
+}
+
+model SchoolServer{
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  server User @relation(fields: [server_id], references: [id], onDelete: Cascade)
+  server_id String
+  role Role @default(SERV)
+  dash Dash @default(COMMON)
+
+  @@id([school_id, server_id])
+  @@map("school_server")
+}
+
+model ClassSchool{
+  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id String
+  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
+  infrequency Float @default(0)
+  students ClassStudent[]
+  frequencies Frequency[]
+
+  @@id([class_id, school_id, year_id])
+  @@map("class_school")
+}
+
+model ClassStudent{
+  class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  class_id String
+  school_id String
+  year_id String
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String
+  is_active Boolean @default(true)
+  justify_disabled String? @db.Text
+  created_at DateTime @default(now())
+  finished_at Float @default(0)
+
+  @@id([class_id, school_id, year_id, student_id])
+  @@map("class_student")
+}
+
+model FrequencyStudent{
+  id String @id @default(uuid())
+  status StatusStudent @default(PRESENTED)
+  justification String? @db.Text
+  updated_at String? @db.VarChar(200)
+  frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  frequency_id String
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id String
+  historic FrequencyHistory[]
+
+  @@map("frequency_student")
+}
+
+model FrequencyHistory{
+  id String @id @default(uuid())
+  sort SortFrequencyHistory @default(RELEASED)
+  status StatusFrequencyHistory @default(IN_ANALYSIS)
+  status_student StatusStudent
+  justification String? @db.Text
+  created_at Float @default(0)
+  frequency FrequencyStudent @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  frequency_id String
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
+
+  @@map("frequency_history")
 }
 
 model Image{
@@ -67,173 +251,4 @@ model Token{
   created_at DateTime @default(now())
 
   @@map("token")
-}
-
-model School{
-  id String @id @default(uuid())
-  name String @db.VarChar(254) @unique
-  is_active Boolean @default(true)
-  created_at DateTime @default(now())
-  director User? @relation(fields: [director_id], references: [id], onDelete: SetNull)
-  director_id String?
-  infreq Float @default(0)
-  servers SchoolServer[]
-  classes ClassSchool[]
-
-  @@map("schools")
-}
-
-model SchoolServer{
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
-  server User @relation(fields: [server_id], references: [id], onDelete: Cascade)
-  server_id String
-  role Role @default(SERV)
-  dash Dash @default(COMMON)
-
-  @@id([school_id, server_id])
-  @@map("school_server")
-}
-
-model Year{
-  id String @id @default(uuid())
-  year String @db.VarChar(10) @unique
-  classes ClassSchool[]
-
-  @@map("years")
-}
-
-model Month{
-  id String @id @default(uuid())
-  name String @db.VarChar(30) @unique
-  month Int @db.Integer @unique
-  frequencies Frequency[]
-
-  @@map("months")
-}
-
-model Class{
-  id String @id @default(uuid())
-  name String @db.VarChar(254) @unique
-  is_active Boolean @default(true)
-  created_at DateTime @default(now())
-  schools ClassSchool[]
-
-  @@map("classes")
-}
-
-model ClassSchool{
-  class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
-  class_id String
-  school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id String
-  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id String
-  infreq Float @default(0)
-  students ClassStudent[]
-  frequencies Frequency[]
-
-  @@id([class_id, school_id, year_id])
-  @@map("class_school")
-}
-
-enum StatusFrequency{
-  OPENED
-  CLOSED
-}
-
-model Frequency{
-  id String @id @default(uuid())
-  date String @db.VarChar(50)
-  date_time DateTime @db.Date
-  status StatusFrequency @default(OPENED)
-  created_at DateTime @default(now())
-  finished_at Float @default(0)
-  infreq Float @default(0)
-  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
-  month_id String
-  class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
-  class_id String
-  school_id String
-  year_id String
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id String
-  students FrequencyStudent[]
-
-  @@map("frequencies")
-}
-
-model Student{
-  id String @id @default(uuid())
-  name String @db.VarChar(254)
-  registry String @db.VarChar(50) @unique
-  created_at DateTime @default(now())
-  infreq Float @default(0)
-  classes ClassStudent[]
-  frequencies FrequencyStudent[]
-
-  @@map("students")
-}
-
-model ClassStudent{
-  class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
-  class_id String
-  school_id String
-  year_id String
-  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id String
-  is_active Boolean @default(true)
-  justify_disabled String? @db.Text
-  created_at DateTime @default(now())
-  finished_at Float @default(0)
-
-  @@id([class_id, school_id, year_id, student_id])
-  @@map("class_student")
-}
-
-enum StatusStudent{
-  PRESENTED
-  MISSED
-  JUSTIFIED
-}
-
-model FrequencyStudent{
-  id String @id @default(uuid())
-  status StatusStudent @default(PRESENTED)
-  justification String? @db.Text
-  updated_at String? @db.VarChar(200)
-  frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
-  frequency_id String
-  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id String
-  historic FrequencyHistory[]
-
-  @@map("frequency_student")
-}
-
-enum SortFrequencyHistory{
-  RELEASED
-  CHANGED
-  APPROVED
-}
-
-enum StatusFrequencyHistory{
-  ACCEPTED
-  IN_ANALYSIS
-  REFUSED
-}
-
-model FrequencyHistory{
-  id String @id @default(uuid())
-  sort SortFrequencyHistory @default(RELEASED)
-  status StatusFrequencyHistory @default(IN_ANALYSIS)
-  status_frequency StatusStudent
-  justification String? @db.Text
-  created_at Float @default(0)
-  frequency FrequencyStudent @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
-  frequency_id String
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id String
-
-  @@map("frequency_history")
 }
