@@ -32,7 +32,13 @@ export const listWorkSchoolService = async (
       };
     });
 
-    return { schools, total, result: { school: schoolsData } };
+    const result = schoolsData.map((el) => {
+      return {
+        school: { ...el },
+      };
+    });
+
+    return { schools, total, result };
   }
 
   const where = { server_id, school: { is_active: true } };
