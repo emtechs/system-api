@@ -33,15 +33,26 @@ export const dashSchoolServerService = async (
   const frequencies = frequenciesData.length;
 
   if (year_id) {
-    const [classTotal, { value: school_infreq }] = await Promise.all([
+    const [classTotal, schoolInfrequency] = await Promise.all([
       prisma.classSchool.count({
         where: { school_id, year_id },
       }),
       prisma.schoolInfrequency.findUnique({
         where: { year_id_school_id: { school_id, year_id } },
-        select: { value: true },
       }),
     ]);
+
+    let school_infreq = 0;
+
+    if (!schoolInfrequency) {
+      const { value } = await prisma.schoolInfrequency.create({
+        data: { school_id, year_id },
+        select: { value: true },
+      });
+      school_infreq = value;
+    } else {
+      school_infreq = schoolInfrequency.value;
+    }
 
     if (frequencies === 0)
       return {
