@@ -128,6 +128,7 @@ model Frequency{
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
   students FrequencyStudent[]
+  periods FrequencyPeriod[]
 
   @@map("frequencies")
 }
@@ -158,6 +159,7 @@ model Period{
   date_final DateTime @db.Date
   year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
   year_id String
+  frequencies FrequencyPeriod[]
   infrequencies_school SchoolInfrequency[]
   infrequencies_class ClassSchoolInfrequency[]
   infrequencies_student StudentInfrequency[]
@@ -206,6 +208,16 @@ model ClassStudent{
 
   @@id([class_id, school_id, year_id, student_id])
   @@map("class_student")
+}
+
+model FrequencyPeriod{
+  period Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
+  period_id String
+  frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  frequency_id String
+
+  @@id([period_id, frequency_id])
+  @@map("frequency_period")
 }
 
 model FrequencyStudent{

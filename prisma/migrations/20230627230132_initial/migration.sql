@@ -148,6 +148,14 @@ CREATE TABLE "class_student" (
 );
 
 -- CreateTable
+CREATE TABLE "frequency_period" (
+    "period_id" TEXT NOT NULL,
+    "frequency_id" TEXT NOT NULL,
+
+    CONSTRAINT "frequency_period_pkey" PRIMARY KEY ("period_id","frequency_id")
+);
+
+-- CreateTable
 CREATE TABLE "frequency_student" (
     "id" TEXT NOT NULL,
     "status" "StatusStudent" NOT NULL DEFAULT 'PRESENTED',
@@ -299,6 +307,12 @@ ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_yea
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequency_period" ADD CONSTRAINT "frequency_period_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "frequency_period" ADD CONSTRAINT "frequency_period_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
