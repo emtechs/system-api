@@ -16,7 +16,7 @@ export const listClassDashService = async (
     const dateData = date.split('/');
     const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`);
     const whereInfrequencies = {
-      some: {
+      every: {
         period: {
           category: 'ANO',
           date_initial: { lte: date_time },
