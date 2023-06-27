@@ -100,6 +100,24 @@ CREATE TABLE "months" (
 );
 
 -- CreateTable
+CREATE TABLE "two_months" (
+    "month_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "two_months_pkey" PRIMARY KEY ("month_id","year_id")
+);
+
+-- CreateTable
+CREATE TABLE "semesters" (
+    "month_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "semesters_pkey" PRIMARY KEY ("month_id","year_id")
+);
+
+-- CreateTable
 CREATE TABLE "school_server" (
     "school_id" TEXT NOT NULL,
     "server_id" TEXT NOT NULL,
@@ -249,6 +267,18 @@ ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "two_months" ADD CONSTRAINT "two_months_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "two_months" ADD CONSTRAINT "two_months_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "semesters" ADD CONSTRAINT "semesters_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "semesters" ADD CONSTRAINT "semesters_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;

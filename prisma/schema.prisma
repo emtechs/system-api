@@ -47,11 +47,6 @@ enum StatusFrequencyHistory{
   REFUSED
 }
 
-enum NamePeriod{
-  BIMESTRE
-  SEMESTRE
-}
-
 model User{
   id String @id @default(uuid())
   name String @db.VarChar(254)
@@ -134,7 +129,8 @@ model Frequency{
 model Year{
   id String @id @default(uuid())
   year String @db.VarChar(10) @unique
-  periods Period[]
+  two_months TwoMonths[]
+  semesters Semester[]
   classes ClassSchool[]
   infrequencies_school SchoolInfrequency[]
   infrequencies_student StudentInfrequency[]
@@ -146,22 +142,33 @@ model Month{
   id String @id @default(uuid())
   name String @db.VarChar(30) @unique
   month Int @db.Integer @unique
-  periods Period[]
+  two_months TwoMonths[]
+  semesters Semester[]
   frequencies Frequency[]
 
   @@map("months")
 }
 
-model Period{
+model TwoMonths{
   month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
   month_id String
   year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
   year_id String
-  name NamePeriod
-  description String @db.VarChar(50)
+  name String @db.VarChar(50)
 
   @@id([month_id, year_id])
-  @@map("periods")
+  @@map("two_months")
+}
+
+model Semester{
+  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id String
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
+  name String @db.VarChar(50)
+
+  @@id([month_id, year_id])
+  @@map("semesters")
 }
 
 model SchoolServer{
