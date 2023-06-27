@@ -9,6 +9,7 @@ import {
   importSchoolService,
   listSchoolServerService,
   listSchoolService,
+  reportSchoolService,
   retrieveSchoolService,
   updateSchoolService,
 } from '../services';
@@ -22,7 +23,7 @@ export const dashSchoolServerController = async (
   req: Request,
   res: Response,
 ) => {
-  const dash = await dashSchoolServerService(req.params.id, req.query);
+  const dash = await dashSchoolServerService(req.params.school_id, req.query);
   return res.json(dash);
 };
 
@@ -45,17 +46,22 @@ export const listSchoolServerController = async (
   req: Request,
   res: Response,
 ) => {
-  const servers = await listSchoolServerService(req.params.id, req.query);
+  const servers = await listSchoolServerService(req.params.school_id, req.query);
   return res.json(servers);
 };
 
+export const reportSchoolController = async (req: Request, res: Response) => {
+  const report = await reportSchoolService(req.params.school_id, req.params.year_id);
+  return res.json(report);
+};
+
 export const retrieveSchoolController = async (req: Request, res: Response) => {
-  const school = await retrieveSchoolService(req.params.id, req.query);
+  const school = await retrieveSchoolService(req.params.school_id, req.query);
   return res.json(school);
 };
 
 export const updateSchoolController = async (req: Request, res: Response) => {
-  const school = await updateSchoolService(req.body, req.params.id);
+  const school = await updateSchoolService(req.body, req.params.school_id);
   return res.json(school);
 };
 
@@ -63,12 +69,12 @@ export const deleteDirectorSchoolController = async (
   req: Request,
   res: Response,
 ) => {
-  await deleteDirectorSchoolService(req.params.id);
+  await deleteDirectorSchoolService(req.params.school_id);
   return res.status(204).json({});
 };
 
 export const deleteSchoolController = async (req: Request, res: Response) => {
-  await deleteSchoolService(req.params.id);
+  await deleteSchoolService(req.params.school_id);
   return res.status(204).json({});
 };
 
