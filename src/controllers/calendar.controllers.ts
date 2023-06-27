@@ -6,6 +6,7 @@ import {
   listCalendarFrequencyService,
   listCalendarService,
   listCalendarStudentService,
+  listPeriodService,
   listYearService,
   retrieveYearService,
 } from '../services';
@@ -13,6 +14,11 @@ import {
 export const createYearController = async (req: Request, res: Response) => {
   const year = await createYearService(req.body);
   return res.status(201).json(year);
+};
+
+export const exportYearController = async (req: Request, res: Response) => {
+  const years = await exportYearService();
+  return res.json(years);
 };
 
 export const importMonthController = async (req: Request, res: Response) => {
@@ -49,6 +55,11 @@ export const listCalendarStudentController = async (
   return res.json(calendar);
 };
 
+export const listPeriodController = async (req: Request, res: Response) => {
+  const periods = await listPeriodService();
+  return res.json(periods);
+};
+
 export const listYearController = async (req: Request, res: Response) => {
   const years = await listYearService();
   return res.json(years);
@@ -57,9 +68,4 @@ export const listYearController = async (req: Request, res: Response) => {
 export const retrieveYearController = async (req: Request, res: Response) => {
   const year = await retrieveYearService(req.params.year);
   return res.json(year);
-};
-
-export const exportYearController = async (req: Request, res: Response) => {
-  const years = await exportYearService();
-  return res.json(years);
 };

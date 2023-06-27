@@ -1,5 +1,5 @@
 export * from './createSchool.service';
-export * from './dashSchoolServer.service';
+export * from './dashSchool.service';
 export * from './deleteDirectorSchool.service';
 export * from './deleteSchool.service';
 export * from './deleteSchoolServer.service';

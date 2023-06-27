@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {
   createSchoolService,
-  dashSchoolServerService,
+  dashSchoolService,
   deleteDirectorSchoolService,
   deleteSchoolServerService,
   deleteSchoolService,
@@ -19,11 +19,12 @@ export const createSchoolController = async (req: Request, res: Response) => {
   return res.status(201).json(school);
 };
 
-export const dashSchoolServerController = async (
-  req: Request,
-  res: Response,
-) => {
-  const dash = await dashSchoolServerService(req.params.school_id, req.query);
+export const dashSchoolController = async (req: Request, res: Response) => {
+  const dash = await dashSchoolService(
+    req.params.school_id,
+    req.params.year_id,
+    req.query,
+  );
   return res.json(dash);
 };
 
@@ -46,12 +47,18 @@ export const listSchoolServerController = async (
   req: Request,
   res: Response,
 ) => {
-  const servers = await listSchoolServerService(req.params.school_id, req.query);
+  const servers = await listSchoolServerService(
+    req.params.school_id,
+    req.query,
+  );
   return res.json(servers);
 };
 
 export const reportSchoolController = async (req: Request, res: Response) => {
-  const report = await reportSchoolService(req.params.school_id, req.params.year_id);
+  const report = await reportSchoolService(
+    req.params.school_id,
+    req.params.year_id,
+  );
   return res.json(report);
 };
 
