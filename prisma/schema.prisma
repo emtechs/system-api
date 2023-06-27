@@ -134,6 +134,7 @@ model Frequency{
 model Year{
   id String @id @default(uuid())
   year String @db.VarChar(10) @unique
+  periods Period[]
   classes ClassSchool[]
   infrequencies_school SchoolInfrequency[]
   infrequencies_student StudentInfrequency[]
@@ -152,11 +153,14 @@ model Month{
 }
 
 model Period{
-  id String @id @default(uuid())
+  month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id String
+  year Year @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id String
   name NamePeriod
-  description String @db.VarChar(50) @unique
-  months Month[]
+  description String @db.VarChar(50)
 
+  @@id([month_id, year_id])
   @@map("periods")
 }
 
