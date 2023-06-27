@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
   createSchoolController,
-  dashSchoolServerController,
+  dashSchoolController,
   deleteDirectorSchoolController,
   deleteSchoolController,
   deleteSchoolServerController,
@@ -45,9 +45,9 @@ schoolRouter.get(
 );
 
 schoolRouter.get(
-  '/:school_id/dash/server',
+  '/:school_id/dash/:year_id',
   verifyUserIsAuthenticated,
-  dashSchoolServerController,
+  dashSchoolController,
 );
 
 schoolRouter.get(

@@ -11,6 +11,7 @@ import {
   listCalendarController,
   listCalendarFrequencyController,
   listCalendarStudentController,
+  listPeriodController,
   listYearController,
   retrieveYearController,
 } from '../controllers';
@@ -36,6 +37,8 @@ calendarRouter.get(
   verifyUserIsAuthenticated,
   listCalendarStudentController,
 );
+
+calendarRouter.get('/period', verifyUserIsAuthenticated, listPeriodController);
 
 calendarRouter.get('/year', verifyUserIsAuthenticated, listYearController);
 
