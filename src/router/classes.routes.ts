@@ -6,6 +6,7 @@ import {
   dashClassController,
   exportClassController,
   listClassController,
+  listClassDashController,
   listClassSchoolController,
   listClassSchoolWithSchoolController,
   listClassStudentController,
@@ -55,9 +56,17 @@ classRouter.get('', verifyUserIsAuthenticated, listClassController);
 classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
 
 classRouter.get(
-  '/school/:id',
+  '/school/:school_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   listClassSchoolWithSchoolController,
+);
+
+classRouter.get(
+  '/school/:school_id/dash/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  listClassDashController,
 );
 
 classRouter.get(

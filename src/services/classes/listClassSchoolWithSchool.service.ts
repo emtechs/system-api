@@ -4,17 +4,7 @@ import { ClassSchoolArraySchema } from '../../schemas';
 
 export const listClassSchoolWithSchoolService = async (
   school_id: string,
-  {
-    is_active,
-    year_id,
-    infreq,
-    is_dash,
-    date,
-    take,
-    skip,
-    order,
-    by,
-  }: IClassQuery,
+  { is_active, year_id, infreq, take, skip, order, by }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -56,84 +46,6 @@ export const listClassSchoolWithSchoolService = async (
 
   whereData = { ...whereData, school_id };
 
-  if (is_dash) {
-    whereData = {
-      ...whereData,
-      class: { is_active: true },
-      frequencies: { none: { date, status: 'CLOSED' } },
-    };
-
-    const [classes, total, classesLabel] = await Promise.all([
-      prisma.classSchool.findMany({
-        take,
-        skip,
-        where: {
-          ...whereData,
-        },
-        orderBy,
-        include: {
-          school: true,
-          year: true,
-          class: true,
-          students: {
-            include: {
-              student: { include: { classes: { where: { is_active: true } } } },
-            },
-          },
-          _count: {
-            select: {
-              frequencies: { where: { status: 'CLOSED' } },
-              students: { where: { is_active: true } },
-            },
-          },
-        },
-      }),
-      prisma.classSchool.count({
-        where: {
-          ...whereData,
-        },
-      }),
-      prisma.classSchool.findMany({
-        where: {
-          ...whereData,
-        },
-        orderBy,
-        include: {
-          school: true,
-          year: true,
-          class: true,
-          students: {
-            include: {
-              student: { include: { classes: { where: { is_active: true } } } },
-            },
-          },
-          _count: {
-            select: {
-              frequencies: { where: { status: 'CLOSED' } },
-              students: { where: { is_active: true } },
-            },
-          },
-        },
-      }),
-    ]);
-
-    const classesSchema = ClassSchoolArraySchema.parse(classes);
-
-    const classesData = ClassSchoolArraySchema.parse(classesLabel).map((el) => {
-      return {
-        id: el.class.id,
-        label: el.class.name,
-        ...el,
-      };
-    });
-
-    return {
-      classes: classesData,
-      total,
-      result: classesSchema,
-    };
-  }
-
   const [classes, total, classesLabel] = await Promise.all([
     prisma.classSchool.findMany({
       take,
@@ -141,7 +53,7 @@ export const listClassSchoolWithSchoolService = async (
       where: {
         ...whereData,
       },
-      orderBy: { class: { name: 'asc' } },
+      orderBy,
       include: {
         school: true,
         year: true,
