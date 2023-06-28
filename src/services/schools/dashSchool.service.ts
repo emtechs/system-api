@@ -39,19 +39,21 @@ export const dashSchoolService = async (
       },
       select: { infrequency: true },
     }),
-    prisma.period.findFirst({
+    prisma.schoolInfrequency.findFirst({
       where: {
-        category: 'ANO',
-        date_initial: { lte: date_time },
-        date_final: { gte: date_time },
-        infrequencies_school: { some: { school_id } },
-        year_id,
+        school_id,
+        period: {
+          category: 'ANO',
+          date_initial: { lte: date_time },
+          date_final: { gte: date_time },
+          year_id,
+        },
       },
-      select: { infrequencies_school: { select: { value: true } } },
+      select: { value: true },
     }),
   ]);
 
-  if (period_ano) school_infreq = period_ano.infrequencies_school[0].value;
+  if (period_ano) school_infreq = period_ano.value;
 
   frequenciesData.forEach((el) => {
     day_infreq += el.infrequency;
