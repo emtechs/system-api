@@ -10,6 +10,7 @@ import {
   listSchoolController,
   listSchoolServerController,
   reportSchoolController,
+  retrieveSchoolClassController,
   retrieveSchoolController,
   updateSchoolController,
 } from '../controllers';
@@ -42,18 +43,28 @@ schoolRouter.get(
 schoolRouter.get(
   '/:school_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   retrieveSchoolController,
 );
 
 schoolRouter.get(
   '/:school_id/server',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   listSchoolServerController,
+);
+
+schoolRouter.get(
+  '/:school_id/year/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  retrieveSchoolClassController,
 );
 
 schoolRouter.get(
   '/:school_id/dash/:year_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   dashSchoolController,
 );
 
@@ -67,6 +78,7 @@ schoolRouter.get(
 schoolRouter.patch(
   '/:school_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   validateSchemaMiddleware(SchoolUpdateSchema),
   updateSchoolController,
 );
@@ -74,12 +86,14 @@ schoolRouter.patch(
 schoolRouter.delete(
   '/:school_id',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   deleteSchoolController,
 );
 
 schoolRouter.delete(
   '/:school_id/director',
   verifyUserIsAuthenticated,
+  verifyIsPermission,
   deleteDirectorSchoolController,
 );
 

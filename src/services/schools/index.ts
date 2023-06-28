@@ -10,4 +10,5 @@ export * from './listSchoolClass.service';
 export * from './listSchoolServer.service';
 export * from './reportSchool.service';
 export * from './retrieveSchool.service';
+export * from './retrieveSchoolClass.service';
 export * from './updateSchool.service';

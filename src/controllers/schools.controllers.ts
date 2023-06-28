@@ -11,6 +11,7 @@ import {
   listSchoolServerService,
   listSchoolService,
   reportSchoolService,
+  retrieveSchoolClassService,
   retrieveSchoolService,
   updateSchoolService,
 } from '../services';
@@ -73,6 +74,17 @@ export const reportSchoolController = async (req: Request, res: Response) => {
 
 export const retrieveSchoolController = async (req: Request, res: Response) => {
   const school = await retrieveSchoolService(req.params.school_id, req.query);
+  return res.json(school);
+};
+
+export const retrieveSchoolClassController = async (
+  req: Request,
+  res: Response,
+) => {
+  const school = await retrieveSchoolClassService(
+    req.params.school_id,
+    req.params.year_id,
+  );
   return res.json(school);
 };
 
