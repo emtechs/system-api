@@ -159,6 +159,7 @@ CREATE TABLE "frequency_period" (
 CREATE TABLE "frequency_student" (
     "id" TEXT NOT NULL,
     "status" "StatusStudent" NOT NULL DEFAULT 'PRESENTED',
+    "value" INTEGER NOT NULL DEFAULT 0,
     "justification" TEXT,
     "updated_at" VARCHAR(200),
     "frequency_id" TEXT NOT NULL,

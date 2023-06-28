@@ -22,6 +22,13 @@ export interface IClassSchoolUpdateRequest {
   class_infreq: number;
 }
 
+export interface IClassUpdateInfrequency {
+  class_id: string;
+  school_id: string;
+  year_id: string;
+  periods: { period_id: string }[];
+}
+
 export type IClassSchoolRequest = z.infer<typeof ClassSchoolCreateSchema>;
 
 export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>;

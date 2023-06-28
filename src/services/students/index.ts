@@ -6,5 +6,4 @@ export * from './importStudent.service';
 export * from './importStudentAll.service';
 export * from './listStudent.service';
 export * from './retrieveStudent.service';
-export * from './updateManyStudent.service';
 export * from './updateStudent.service';

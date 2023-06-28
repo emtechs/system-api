@@ -223,6 +223,7 @@ model FrequencyPeriod{
 model FrequencyStudent{
   id String @id @default(uuid())
   status StatusStudent @default(PRESENTED)
+  value Int @default(0)
   justification String? @db.Text
   updated_at String? @db.VarChar(200)
   frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)

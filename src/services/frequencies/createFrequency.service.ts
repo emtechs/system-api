@@ -3,15 +3,7 @@ import { IFrequencyRequest } from '../../interfaces';
 import { FrequencyReturnSchema } from '../../schemas';
 
 export const createFrequencyService = async (
-  {
-    date,
-    date_time,
-    name,
-    class_id,
-    school_id,
-    year_id,
-    students,
-  }: IFrequencyRequest,
+  { date, name, class_id, school_id, year_id, students }: IFrequencyRequest,
   user_id: string,
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
@@ -20,12 +12,12 @@ export const createFrequencyService = async (
 
   if (frequencyData) return FrequencyReturnSchema.parse(frequencyData);
 
-  const dateData = new Date(date_time);
+  const dateData = date.split('/');
+  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`);
 
   const whereData = {
     date_initial: { lte: date_time },
     date_final: { gte: date_time },
-    infrequencies_school: { some: { school_id } },
     year_id,
   };
 
@@ -48,7 +40,7 @@ export const createFrequencyService = async (
   const frequency = await prisma.frequency.create({
     data: {
       date,
-      date_time: dateData,
+      date_time,
       month: { connect: { name } },
       user: { connect: { id: user_id } },
       class: {

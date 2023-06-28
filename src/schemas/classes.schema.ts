@@ -32,6 +32,17 @@ export const ClassSchoolUpdateSchema = z.object({
   school_infreq: z.number(),
 });
 
+export const ClassUpdateInfrequency = z.object({
+  class_id: z.string().uuid(),
+  school_id: z.string().uuid(),
+  year_id: z.string().uuid(),
+  periods: z
+    .object({
+      period_id: z.string().uuid(),
+    })
+    .array(),
+});
+
 export const ClassReturnSchema = ClassCreateSchema.extend({
   id: z.string(),
   is_active: z.boolean(),

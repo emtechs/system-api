@@ -18,15 +18,15 @@ export const StudentUpdateSchema = z
   })
   .partial();
 
-export const StudentUpdateManySchema = z.object({
+export const StudentUpdateInfrequency = z.object({
   students: z
     .object({
-      id: z.string().uuid(),
-      value: z.number(),
-      presences: z.number(),
-      justified: z.number(),
-      absences: z.number(),
-      frequencies: z.number(),
+      student_id: z.string().uuid(),
+    })
+    .array(),
+  periods: z
+    .object({
+      period_id: z.string().uuid(),
     })
     .array(),
 });

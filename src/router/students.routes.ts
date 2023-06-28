@@ -5,7 +5,6 @@ import {
   exportStudentController,
   listStudentController,
   retrieveStudentController,
-  updateManyStudentController,
   updateStudentController,
 } from '../controllers';
 import {
@@ -15,7 +14,6 @@ import {
 import {
   StudentCreateSchema,
   StudentCreateWithClassSchema,
-  StudentUpdateManySchema,
   StudentUpdateSchema,
 } from '../schemas';
 
@@ -50,11 +48,4 @@ studentRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentUpdateSchema),
   updateStudentController,
-);
-
-studentRouter.patch(
-  '/infreq/:year_id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(StudentUpdateManySchema),
-  updateManyStudentController,
 );

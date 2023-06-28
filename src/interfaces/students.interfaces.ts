@@ -31,6 +31,11 @@ export interface IStudentUpdateMany {
   students: IStudentUpdate[];
 }
 
+export interface IStudentUpdateInfrequency {
+  students: { student_id: string }[];
+  periods: { period_id: string }[];
+}
+
 export type IStudentWithClassRequest = z.infer<
   typeof StudentCreateWithClassSchema
 >;

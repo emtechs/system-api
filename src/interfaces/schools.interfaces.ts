@@ -15,6 +15,11 @@ export interface ISchoolUpdate {
   id?: string;
 }
 
+export interface ISchoolUpdateInfrequency {
+  school_id: string;
+  periods: { period_id: string }[];
+}
+
 export interface ISchoolQuery extends IQuery {
   is_active?: 'true' | 'false';
   year_id?: string;

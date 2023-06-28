@@ -14,6 +14,15 @@ export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
 }).partial();
 
+export const SchoolUpdateInfrequency = z.object({
+  school_id: z.string().uuid(),
+  periods: z
+    .object({
+      period_id: z.string().uuid(),
+    })
+    .array(),
+});
+
 const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
