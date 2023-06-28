@@ -6,6 +6,7 @@ import {
   deleteSchoolController,
   deleteSchoolServerController,
   exportSchoolController,
+  listSchoolClassController,
   listSchoolController,
   listSchoolServerController,
   reportSchoolController,
@@ -31,6 +32,12 @@ schoolRouter.post(
 schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
 
 schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
+
+schoolRouter.get(
+  '/list/:year_id',
+  verifyUserIsAuthenticated,
+  listSchoolClassController,
+);
 
 schoolRouter.get(
   '/:school_id',
