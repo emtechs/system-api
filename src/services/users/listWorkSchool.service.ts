@@ -9,7 +9,7 @@ export const listWorkSchoolService = async (
   if (skip) skip = +skip;
 
   if (role === 'ADMIN') {
-    const [schoolsData, total] = await Promise.all([
+    const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
         take,
         skip,
@@ -23,9 +23,17 @@ export const listWorkSchoolService = async (
       prisma.school.count({
         where: { is_active: true },
       }),
+      prisma.school.findMany({
+        where: { is_active: true },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: { name: 'asc' },
+      }),
     ]);
 
-    const schools = schoolsData.map((el) => {
+    const schools = schoolsLabel.map((el) => {
       return {
         label: el.name,
         ...el,
