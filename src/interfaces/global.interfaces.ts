@@ -13,4 +13,5 @@ export interface IQuery {
   skip?: number;
   order?: IOrder;
   by?: 'asc' | 'desc';
+  is_active?: 'true' | 'false';
 }

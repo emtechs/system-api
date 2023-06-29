@@ -73,6 +73,14 @@ export const SchoolReturnSchema = z
 
 export const SchoolArraySchema = SchoolReturnSchema.array();
 
+export const SchoolServerReturnSchema = z.object({
+  role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
+  dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).optional(),
+  school: SchoolReturnSchema,
+});
+
+export const SchoolServerArraySchema = SchoolServerReturnSchema.array();
+
 export const SchoolListReturnSchema = z.object({
   id: z.string(),
   name: z.string(),

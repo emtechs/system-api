@@ -21,10 +21,8 @@ export interface ISchoolUpdateInfrequency {
 }
 
 export interface ISchoolQuery extends IQuery {
-  is_active?: 'true' | 'false';
   year_id?: string;
-  is_listSchool?: string;
-  is_director?: string;
+  is_director?: 'true' | 'false';
   infreq?: number;
   name?: string;
   date?: string;

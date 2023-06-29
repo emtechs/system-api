@@ -14,7 +14,12 @@ export const listSchoolService = async ({
   if (take) take = +take;
   if (skip) skip = +skip;
 
-  let whereData = {};
+  let where = {};
+  const select = {
+    id: true,
+    name: true,
+    director: { select: { id: true, cpf: true, name: true } },
+  };
   let orderBy = {};
 
   if (order) {
@@ -29,45 +34,45 @@ export const listSchoolService = async ({
     }
   }
 
-  if (name)
-    whereData = { ...whereData, name: { contains: name, mode: 'insensitive' } };
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
   if (is_active) {
     switch (is_active) {
     case 'true':
-      whereData = { ...whereData, is_active: true };
+      where = { ...where, is_active: true };
       break;
 
     case 'false':
-      whereData = { ...whereData, is_active: false };
+      where = { ...where, is_active: false };
       break;
     }
   }
 
-  if (is_director) whereData = { ...whereData, director_id: { equals: null } };
+  if (is_director) {
+    switch (is_director) {
+    case 'true':
+      where = { ...where, director_id: { not: { equals: null } } };
+      break;
+
+    case 'false':
+      where = { ...where, director_id: { equals: null } };
+      break;
+    }
+  }
 
   const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
       take,
       skip,
-      where: { ...whereData },
+      where,
+      select,
       orderBy,
-      select: {
-        id: true,
-        name: true,
-        director_id: true,
-        director: { select: { id: true, cpf: true, name: true } },
-      },
     }),
-    prisma.school.count({ where: { ...whereData } }),
+    prisma.school.count({ where }),
     prisma.school.findMany({
-      where: { ...whereData },
+      where,
+      select,
       orderBy: { name: 'asc' },
-      select: {
-        id: true,
-        name: true,
-        director: { select: { id: true, cpf: true, name: true } },
-      },
     }),
   ]);
 

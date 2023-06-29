@@ -13,7 +13,7 @@ export const UserCreateSchema = z.object({
 
 export const UserReturnSchema = UserCreateSchema.extend({
   id: z.string(),
-  email: z.string().email().nullable(),
+  email: z.string(),
   created_at: z.date(),
   is_active: z.boolean(),
   is_first_access: z.boolean(),

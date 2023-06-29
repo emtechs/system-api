@@ -1,5 +1,6 @@
 import { IQuery, IRequestUser } from '../../interfaces';
 import prisma from '../../prisma';
+import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
@@ -8,49 +9,44 @@ export const listWorkSchoolService = async (
   if (take) take = +take;
   if (skip) skip = +skip;
 
+  const select_school = {
+    id: true,
+    name: true,
+    director: { select: { id: true, cpf: true, name: true } },
+  };
+
   if (role === 'ADMIN') {
+    const where = { is_active: true };
+    const select = select_school;
+
     const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
         take,
         skip,
-        where: { is_active: true },
-        select: {
-          id: true,
-          name: true,
-        },
+        where,
+        select,
         orderBy: { name: 'asc' },
       }),
       prisma.school.count({
-        where: { is_active: true },
+        where,
       }),
       prisma.school.findMany({
-        where: { is_active: true },
-        select: {
-          id: true,
-          name: true,
-        },
+        where,
+        select,
         orderBy: { name: 'asc' },
       }),
     ]);
 
-    const schools = schoolsLabel.map((el) => {
-      return {
-        label: el.name,
-        ...el,
-      };
+    const schoolSchema = SchoolArraySchema.parse(schoolsData);
+
+    const result = schoolSchema.map((el) => {
+      return { school: el };
     });
 
-    const result = schoolsData.map((el) => {
-      return {
-        school: { ...el },
-      };
-    });
-
-    return { schools, total, result };
+    return { schools: SchoolArraySchema.parse(schoolsLabel), total, result };
   }
 
   const where = { server_id, school: { is_active: true } };
-  const school = { select: { id: true, name: true } };
 
   const [workSchools, total, schoolsData] = await Promise.all([
     prisma.schoolServer.findMany({
@@ -60,7 +56,7 @@ export const listWorkSchoolService = async (
       select: {
         role: true,
         dash: true,
-        school,
+        school: { select: select_school },
       },
       orderBy: { school: { name: 'asc' } },
     }),
@@ -69,18 +65,14 @@ export const listWorkSchoolService = async (
     }),
     prisma.schoolServer.findMany({
       where,
-      select: { school },
+      select: { school: { select: select_school } },
       orderBy: { school: { name: 'asc' } },
     }),
   ]);
 
-  const schools = schoolsData.map((el) => {
-    return {
-      id: el.school.id,
-      label: el.school.name,
-      ...el.school,
-    };
-  });
+  const schoolSchema = SchoolServerArraySchema.parse(schoolsData);
 
-  return { schools, total, result: workSchools };
+  const schools = schoolSchema.map((el) => el.school);
+
+  return { schools, total, result: SchoolServerArraySchema.parse(workSchools) };
 };

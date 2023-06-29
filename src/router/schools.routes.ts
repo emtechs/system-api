@@ -16,6 +16,7 @@ import {
 } from '../controllers';
 import {
   validateSchemaMiddleware,
+  verifyIsAdmin,
   verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares';
@@ -26,17 +27,24 @@ export const schoolRouter = Router();
 schoolRouter.post(
   '',
   verifyUserIsAuthenticated,
+  verifyIsAdmin,
   validateSchemaMiddleware(SchoolCreateSchema),
   createSchoolController,
 );
 
-schoolRouter.get('', verifyUserIsAuthenticated, listSchoolController);
+schoolRouter.get(
+  '',
+  verifyUserIsAuthenticated,
+  verifyIsAdmin,
+  listSchoolController,
+);
 
 schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
 
 schoolRouter.get(
   '/list/:year_id',
   verifyUserIsAuthenticated,
+  verifyIsAdmin,
   listSchoolClassController,
 );
 
