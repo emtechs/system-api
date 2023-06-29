@@ -18,6 +18,7 @@ export const listSchoolService = async ({
   const select = {
     id: true,
     name: true,
+    is_active: true,
     director: { select: { id: true, cpf: true, name: true } },
   };
   let orderBy = {};

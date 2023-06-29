@@ -1,5 +1,6 @@
 import { AppError } from '../../errors';
 import prisma from '../../prisma';
+import { schoolClassReturn } from '../../scripts';
 
 export const retrieveSchoolClassService = async (
   school_id: string,
@@ -18,8 +19,8 @@ export const retrieveSchoolClassService = async (
         select: {
           id: true,
           name: true,
-          director_id: true,
-          director: { select: { name: true, cpf: true } },
+          is_active: true,
+          director: { select: { id: true, name: true, cpf: true } },
           infrequencies: {
             where: { period: { year_id, category: 'ANO' } },
             select: { value: true },
@@ -38,28 +39,5 @@ export const retrieveSchoolClassService = async (
     },
   });
 
-  let director = { id: '', name: '', cpf: '' };
-  let infrequency = 0;
-
-  if (element.school.director)
-    director = {
-      id: element.school.director_id,
-      name: element.school.director.name,
-      cpf: element.school.director.cpf,
-    };
-
-  if (element.school.infrequencies.length > 0)
-    infrequency = element.school.infrequencies[0].value;
-
-  return {
-    id: element.school.id,
-    label: element.school.name,
-    name: element.school.name,
-    director,
-    classes: element.school._count.classes,
-    students: element._count.students,
-    frequencies: element._count.frequencies,
-    servers: element.school._count.servers,
-    infrequency,
-  };
+  return schoolClassReturn(element);
 };

@@ -1,6 +1,6 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { schoolClassReturn } from '../../scripts';
+import { schoolClassArrayReturn } from '../../scripts';
 
 export const listSchoolClassService = async (
   year_id: string,
@@ -55,6 +55,7 @@ export const listSchoolClassService = async (
           select: {
             id: true,
             name: true,
+            is_active: true,
             director: { select: { name: true, id: true, cpf: true } },
             infrequencies: {
               where: { period: { year_id, category: 'ANO' } },
@@ -82,6 +83,7 @@ export const listSchoolClassService = async (
           select: {
             id: true,
             name: true,
+            is_active: true,
             director: { select: { name: true, id: true, cpf: true } },
             infrequencies: {
               where: { period: { year_id, category: 'ANO' } },
@@ -104,8 +106,8 @@ export const listSchoolClassService = async (
   ]);
 
   return {
-    schools: schoolClassReturn(schoolsLabel),
+    schools: schoolClassArrayReturn(schoolsLabel),
     total: schoolsLabel.length,
-    result: schoolClassReturn(schoolsData),
+    result: schoolClassArrayReturn(schoolsData),
   };
 };

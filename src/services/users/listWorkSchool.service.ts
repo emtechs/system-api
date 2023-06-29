@@ -12,6 +12,7 @@ export const listWorkSchoolService = async (
   const select_school = {
     id: true,
     name: true,
+    is_active: true,
     director: { select: { id: true, cpf: true, name: true } },
   };
 

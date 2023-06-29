@@ -5,6 +5,7 @@ export const retrieveSchoolService = async (id: string) => {
   const select = {
     id: true,
     name: true,
+    is_active: true,
     director: { select: { id: true, cpf: true, name: true } },
   };
 

@@ -67,6 +67,7 @@ export const SchoolReturnSchema = z
     id: z.string().uuid(),
     label: z.string().optional(),
     name: z.string(),
+    is_active: z.boolean(),
     director: DirectorSchema.nullable().optional(),
   })
   .refine((fields) => (fields.label = fields.name));
