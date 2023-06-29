@@ -71,7 +71,11 @@ export const listSchoolServerService = async (
       where: {
         ...whereData,
       },
-      include: { server: true },
+      select: {
+        role: true,
+        dash: true,
+        server: { select: { id: true, name: true, cpf: true } },
+      },
       orderBy,
     }),
     prisma.schoolServer.count({ where: { ...whereData } }),

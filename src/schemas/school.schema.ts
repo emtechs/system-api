@@ -56,19 +56,20 @@ const ServerSchema = z.object({
 
 export const ServerArraySchema = ServerSchema.array();
 
-export const SchoolReturnSchema = z.object({
-  id: z.string(),
+const DirectorSchema = z.object({
+  id: z.string().uuid(),
   name: z.string(),
-  is_active: z.boolean(),
-  created_at: z.date(),
-  director: UserSchema.nullable().optional(),
-  servers: ServerSchema.array().optional(),
-  classes: ClassSchema.array().optional(),
-  students: StudentSchema.array().optional(),
-  infrequency: z.number().optional(),
-  total_students: z.number().optional(),
-  _count: z.object({ classes: z.number() }).optional(),
+  cpf: z.string(),
 });
+
+export const SchoolReturnSchema = z
+  .object({
+    id: z.string().uuid(),
+    label: z.string().optional(),
+    name: z.string(),
+    director: DirectorSchema.nullable().optional(),
+  })
+  .refine((fields) => (fields.label = fields.name));
 
 export const SchoolArraySchema = SchoolReturnSchema.array();
 

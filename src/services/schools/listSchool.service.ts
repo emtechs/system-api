@@ -1,14 +1,10 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { SchoolArraySchema, SchoolListArraySchema } from '../../schemas';
-import { schoolArrParseFrequency } from '../../scripts';
+import { SchoolArraySchema } from '../../schemas';
 
 export const listSchoolService = async ({
   name,
   is_active,
-  infreq,
-  year_id,
-  is_listSchool,
   is_director,
   take,
   skip,
@@ -20,7 +16,6 @@ export const listSchoolService = async ({
 
   let whereData = {};
   let orderBy = {};
-  let orderByInfreq = {};
 
   if (order) {
     switch (order) {
@@ -31,24 +26,11 @@ export const listSchoolService = async ({
     case 'director_name':
       orderBy = { director: { name: by } };
       break;
-
-    case 'infreq':
-      orderBy = { name: by };
-      orderByInfreq = { value: by };
-      break;
     }
   }
 
   if (name)
     whereData = { ...whereData, name: { contains: name, mode: 'insensitive' } };
-
-  if (infreq) {
-    infreq = +infreq;
-    whereData = {
-      ...whereData,
-      infrequencies: { every: { value: { gte: infreq } } },
-    };
-  }
 
   if (is_active) {
     switch (is_active) {
@@ -62,78 +44,7 @@ export const listSchoolService = async ({
     }
   }
 
-  if (is_director) {
-    whereData = { ...whereData, director_id: { equals: null } };
-
-    const [schools, total] = await Promise.all([
-      prisma.school.findMany({
-        take,
-        skip,
-        where: { ...whereData },
-        orderBy,
-        include: { infrequencies: { orderBy: orderByInfreq } },
-      }),
-      prisma.school.count({ where: { ...whereData } }),
-    ]);
-
-    const schoolsSchema = SchoolArraySchema.parse(schools);
-
-    return {
-      total,
-      result: schoolsSchema,
-    };
-  }
-
-  if (is_listSchool) {
-    const [schools, total] = await Promise.all([
-      prisma.school.findMany({
-        take,
-        skip,
-        where: { ...whereData },
-        orderBy,
-        include: {
-          director: true,
-          classes: {
-            where: { year_id },
-            include: {
-              _count: {
-                select: {
-                  students: { where: { is_active: true } },
-                  frequencies: true,
-                },
-              },
-            },
-          },
-          _count: { select: { classes: { where: { year_id } } } },
-        },
-      }),
-      prisma.school.count({
-        where: { ...whereData },
-      }),
-    ]);
-
-    const schoolsReturn = schools.map((el) => {
-      let num_students = 0;
-      let num_frequencies = 0;
-      el.classes.forEach((el) => {
-        num_students += el._count.students;
-        num_frequencies += el._count.frequencies;
-      });
-      return {
-        ...el,
-        num_students,
-        num_frequencies,
-        num_classes: el._count.classes,
-      };
-    });
-
-    const schoolsSchema = SchoolListArraySchema.parse(schoolsReturn);
-
-    return {
-      total,
-      result: schoolsSchema,
-    };
-  }
+  if (is_director) whereData = { ...whereData, director_id: { equals: null } };
 
   const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
@@ -141,59 +52,28 @@ export const listSchoolService = async ({
       skip,
       where: { ...whereData },
       orderBy,
-      include: {
-        director: true,
-        classes: {
-          include: {
-            class: true,
-            students: {
-              where: { is_active: true },
-              include: { student: true },
-            },
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        director_id: true,
+        director: { select: { id: true, cpf: true, name: true } },
       },
     }),
     prisma.school.count({ where: { ...whereData } }),
     prisma.school.findMany({
       where: { ...whereData },
-      orderBy,
-      include: {
-        director: true,
-        classes: {
-          include: {
-            class: true,
-            students: {
-              where: { is_active: true },
-              include: { student: true },
-            },
-          },
-        },
+      orderBy: { name: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        director: { select: { id: true, cpf: true, name: true } },
       },
     }),
   ]);
 
-  const schoolsData = SchoolArraySchema.parse(schoolsLabel).map((el) => {
-    return {
-      id: el.id,
-      label: el.name,
-      ...el,
-    };
-  });
-
-  if (year_id) {
-    const schoolsReturn = await schoolArrParseFrequency(schools, year_id);
-
-    const schoolsSchema = SchoolArraySchema.parse(schoolsReturn);
-
-    return {
-      schools: schoolsData,
-      total,
-      result: schoolsSchema,
-    };
-  }
-
-  const schoolsSchema = SchoolArraySchema.parse(schools);
-
-  return { schools: schoolsData, total, result: schoolsSchema };
+  return {
+    schools: SchoolArraySchema.parse(schoolsLabel),
+    total,
+    result: SchoolArraySchema.parse(schools),
+  };
 };

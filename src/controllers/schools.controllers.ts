@@ -73,7 +73,7 @@ export const reportSchoolController = async (req: Request, res: Response) => {
 };
 
 export const retrieveSchoolController = async (req: Request, res: Response) => {
-  const school = await retrieveSchoolService(req.params.school_id, req.query);
+  const school = await retrieveSchoolService(req.params.school_id);
   return res.json(school);
 };
 
