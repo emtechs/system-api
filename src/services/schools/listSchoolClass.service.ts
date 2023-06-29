@@ -1,5 +1,6 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
+import { schoolClassReturn } from '../../scripts';
 
 export const listSchoolClassService = async (
   year_id: string,
@@ -8,8 +9,8 @@ export const listSchoolClassService = async (
   if (skip) skip = +skip;
   if (take) take = +take;
 
-  let whereData = {};
-  let whereSchool = {};
+  let where = {};
+  let where_school = {};
   let orderBy = {};
 
   if (order) {
@@ -24,32 +25,30 @@ export const listSchoolClassService = async (
   }
 
   if (name)
-    whereSchool = {
-      ...whereSchool,
+    where_school = {
+      ...where_school,
       name: { contains: name, mode: 'insensitive' },
     };
 
   if (infreq)
-    whereSchool = {
-      ...whereSchool,
+    where_school = {
+      ...where_school,
       infrequencies: { some: { value: { gte: +infreq } } },
     };
 
-  whereSchool = { ...whereSchool, is_active: true };
+  where_school = { ...where_school, is_active: true };
 
-  whereData = {
-    ...whereData,
+  where = {
+    ...where,
     year_id,
-    school: { ...whereSchool },
+    school: { ...where_school },
   };
 
   const [schoolsData, schoolsLabel] = await Promise.all([
     prisma.classSchool.findMany({
       skip,
       take,
-      where: {
-        ...whereData,
-      },
+      where,
       distinct: ['school_id'],
       select: {
         school: {
@@ -76,9 +75,7 @@ export const listSchoolClassService = async (
       orderBy,
     }),
     prisma.classSchool.findMany({
-      where: {
-        ...whereData,
-      },
+      where,
       distinct: ['school_id'],
       select: {
         school: {
@@ -106,59 +103,9 @@ export const listSchoolClassService = async (
     }),
   ]);
 
-  const result = schoolsData.map((el) => {
-    let director = { id: '', name: '', cpf: '' };
-    let infrequency = 0;
-
-    if (el.school.director)
-      director = {
-        id: el.school.director.id,
-        name: el.school.director.name,
-        cpf: el.school.director.cpf,
-      };
-
-    if (el.school.infrequencies.length > 0)
-      infrequency = el.school.infrequencies[0].value;
-
-    return {
-      id: el.school.id,
-      label: el.school.name,
-      name: el.school.name,
-      director,
-      classes: el.school._count.classes,
-      students: el._count.students,
-      frequencies: el._count.frequencies,
-      servers: el.school._count.servers,
-      infrequency,
-    };
-  });
-
-  const schools = schoolsLabel.map((el) => {
-    let director = { id: '', name: '', cpf: '' };
-    let infrequency = 0;
-
-    if (el.school.director)
-      director = {
-        id: el.school.director.id,
-        name: el.school.director.name,
-        cpf: el.school.director.cpf,
-      };
-
-    if (el.school.infrequencies.length > 0)
-      infrequency = el.school.infrequencies[0].value;
-
-    return {
-      id: el.school.id,
-      label: el.school.name,
-      name: el.school.name,
-      director,
-      classes: el.school._count.classes,
-      students: el._count.students,
-      frequencies: el._count.frequencies,
-      servers: el.school._count.servers,
-      infrequency,
-    };
-  });
-
-  return { schools, total: schoolsLabel.length, result };
+  return {
+    schools: schoolClassReturn(schoolsLabel),
+    total: schoolsLabel.length,
+    result: schoolClassReturn(schoolsData),
+  };
 };
