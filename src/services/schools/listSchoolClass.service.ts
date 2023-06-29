@@ -79,10 +79,10 @@ export const listSchoolClassService = async (
   ]);
 
   const result = schools.map((el) => {
-    let director = '';
+    let director_name = '';
     let infrequency = 0;
 
-    if (el.school.director) director = el.school.director.name;
+    if (el.school.director) director_name = el.school.director.name;
 
     if (el.school.infrequencies.length > 0)
       infrequency = el.school.infrequencies[0].value;
@@ -90,7 +90,7 @@ export const listSchoolClassService = async (
     return {
       id: el.school.id,
       name: el.school.name,
-      director,
+      director_name,
       classes: el.school._count.classes,
       students: el._count.students,
       frequencies: el._count.frequencies,

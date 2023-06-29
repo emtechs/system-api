@@ -12,7 +12,7 @@ export const retrieveSchoolClassService = async (
           id: true,
           name: true,
           director_id: true,
-          director: { select: { name: true } },
+          director: { select: { name: true, cpf: true } },
           infrequencies: {
             where: { period: { year_id, category: 'ANO' } },
             select: { value: true },
@@ -29,10 +29,16 @@ export const retrieveSchoolClassService = async (
     },
   });
 
-  let director = '';
+  let director_id = '';
+  let director_name = '';
+  let director_cpf = '';
   let infrequency = 0;
 
-  if (element.school.director) director = element.school.director.name;
+  if (element.school.director) {
+    director_id = element.school.director_id;
+    director_name = element.school.director.name;
+    director_cpf = element.school.director.cpf;
+  }
 
   if (element.school.infrequencies.length > 0)
     infrequency = element.school.infrequencies[0].value;
@@ -40,8 +46,9 @@ export const retrieveSchoolClassService = async (
   return {
     id: element.school.id,
     name: element.school.name,
-    director_id: element.school.director_id,
-    director,
+    director_id,
+    director_name,
+    director_cpf,
     classes: element.school._count.classes,
     students: element._count.students,
     frequencies: element._count.frequencies,
