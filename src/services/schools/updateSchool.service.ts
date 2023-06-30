@@ -1,6 +1,7 @@
 import { hashSync } from 'bcryptjs';
 import { ISchoolUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
+import { SchoolReturnSchema } from '../../schemas';
 
 export const updateSchoolService = async (
   {
@@ -15,6 +16,13 @@ export const updateSchoolService = async (
   }: ISchoolUpdateRequest,
   id: string,
 ) => {
+  const select = {
+    id: true,
+    name: true,
+    is_active: true,
+    director: { select: { id: true, cpf: true, name: true } },
+  };
+
   if (login) {
     let user = await prisma.user.findUnique({
       where: { login },
@@ -46,15 +54,17 @@ export const updateSchoolService = async (
           },
         },
       },
+      select,
     });
 
-    return school;
+    return SchoolReturnSchema.parse(school);
   }
 
   const school = await prisma.school.update({
     where: { id },
     data: { name, is_active },
+    select,
   });
 
-  return school;
+  return SchoolReturnSchema.parse(school);
 };
