@@ -9,41 +9,47 @@ export const retrieveUserWithCpfService = async (
 ) => {
   if (school_id) {
     if (director) {
-      const server = await prisma.schoolServer.findFirst({
+      const [server, user] = await Promise.all([
+        prisma.schoolServer.findFirst({
+          where: {
+            server: { login },
+            school_id,
+            role: 'DIRET',
+          },
+        }),
+        prisma.user.findUnique({
+          where: { login },
+          select: { name: true, role: true },
+        }),
+      ]);
+
+      if (!user) return { name: '' };
+
+      if (server || user.role === 'ADMIN')
+        throw new AppError('user already exists', 409);
+
+      return user;
+    }
+
+    const [server, user] = await Promise.all([
+      prisma.schoolServer.findFirst({
         where: {
           server: { login },
           school_id,
-          role: 'DIRET',
         },
-        select: { server: { select: { name: true } } },
-      });
-
-      if (server) throw new AppError('user already exists', 409);
-
-      return await prisma.user.findUnique({
+      }),
+      prisma.user.findUnique({
         where: { login },
-        select: { name: true },
-      });
-    }
+        select: { name: true, role: true },
+      }),
+    ]);
 
-    const server = await prisma.schoolServer.findFirst({
-      where: { AND: { server: { login }, school_id } },
-      include: { server: true },
-    });
+    if (!user) return { name: '' };
 
-    if (!server && allNotServ) {
-      const user = await prisma.user.findFirst({
-        where: { AND: { login, role: { in: ['ADMIN', 'SECRET'] } } },
-      });
+    if (server || user.role === 'ADMIN')
+      throw new AppError('user already exists', 409);
 
-      if (!user) throw new AppError('user not found', 404);
-
-      return UserReturnSchema.parse(user);
-    }
-
-    if (!server) throw new AppError('user not found', 404);
-
-    return UserReturnSchema.parse(server.server);
+    return user;
   }
 
   if (allNotServ) {
