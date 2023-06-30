@@ -11,14 +11,19 @@ export const retrieveUserWithCpfService = async (
     if (director) {
       const server = await prisma.schoolServer.findFirst({
         where: {
-          AND: { server: { login }, school_id, role: 'DIRET' },
+          server: { login },
+          school_id,
+          role: 'DIRET',
         },
-        include: { server: true },
+        select: { server: { select: { name: true } } },
       });
 
-      if (!server) throw new AppError('user not found', 404);
+      if (server) throw new AppError('user already exists', 409);
 
-      return UserReturnSchema.parse(server);
+      return await prisma.user.findUnique({
+        where: { login },
+        select: { name: true },
+      });
     }
 
     const server = await prisma.schoolServer.findFirst({

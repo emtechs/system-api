@@ -4,14 +4,14 @@ import { ServerArraySchema } from '../../schemas';
 
 export const listSchoolServerService = async (
   school_id: string,
-  { is_active, name, take, skip, order, by }: ISchoolQuery,
+  { name, take, skip, order, by }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
-  let whereData = {};
+  let where = {};
   let orderBy = {};
-  let whereServer = {};
+  let where_server = {};
 
   if (order) {
     switch (order) {
@@ -21,56 +21,23 @@ export const listSchoolServerService = async (
     }
   }
 
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      whereServer = {
-        ...whereServer,
-        is_active: true,
-      };
-      whereData = {
-        ...whereData,
-        server: {
-          ...whereServer,
-        },
-      };
-      break;
-
-    case 'false':
-      whereServer = {
-        ...whereServer,
-        is_active: false,
-      };
-      whereData = {
-        ...whereData,
-        server: {
-          ...whereServer,
-        },
-      };
-      break;
-    }
-  }
-
   if (name)
-    whereServer = {
-      ...whereServer,
+    where_server = {
+      ...where_server,
       name: { contains: name, mode: 'insensitive' },
     };
 
-  whereData = {
-    ...whereData,
-    server: { ...whereServer },
+  where = {
+    ...where,
+    server: { ...where_server },
+    school_id,
   };
-
-  whereData = { ...whereData, school_id };
 
   const [servers, total] = await Promise.all([
     prisma.schoolServer.findMany({
       take,
       skip,
-      where: {
-        ...whereData,
-      },
+      where,
       select: {
         role: true,
         dash: true,
@@ -78,7 +45,7 @@ export const listSchoolServerService = async (
       },
       orderBy,
     }),
-    prisma.schoolServer.count({ where: { ...whereData } }),
+    prisma.schoolServer.count({ where }),
   ]);
 
   const serversSchema = ServerArraySchema.parse(servers);

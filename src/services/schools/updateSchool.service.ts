@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs';
-import { ISchoolUpdateRequest } from '../../interfaces';
+import { ISchoolQuery, ISchoolUpdateRequest } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolReturnSchema } from '../../schemas';
 
@@ -15,6 +15,7 @@ export const updateSchoolService = async (
     role,
   }: ISchoolUpdateRequest,
   id: string,
+  { director_id }: ISchoolQuery,
 ) => {
   const select = {
     id: true,
@@ -40,6 +41,13 @@ export const updateSchoolService = async (
         data: { cpf, login, name: name_diret, password },
       });
     }
+
+    if (director_id)
+      await prisma.schoolServer.delete({
+        where: {
+          school_id_server_id: { school_id: id, server_id: director_id },
+        },
+      });
 
     const school = await prisma.school.update({
       where: { id },

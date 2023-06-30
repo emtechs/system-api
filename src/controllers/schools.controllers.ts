@@ -89,7 +89,11 @@ export const retrieveSchoolClassController = async (
 };
 
 export const updateSchoolController = async (req: Request, res: Response) => {
-  const school = await updateSchoolService(req.body, req.params.school_id);
+  const school = await updateSchoolService(
+    req.body,
+    req.params.school_id,
+    req.query,
+  );
   return res.json(school);
 };
 
