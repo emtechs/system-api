@@ -1,6 +1,6 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { ServerArraySchema } from '../../schemas';
+import { SchoolServerArraySchema } from '../../schemas';
 
 export const listServerService = async (
   server_id: string,
@@ -9,9 +9,9 @@ export const listServerService = async (
   if (take) take = +take;
   if (skip) skip = +skip;
 
-  let whereData = {};
+  let where = {};
+  let where_school = {};
   let orderBy = {};
-  let whereSchool = {};
 
   if (order) {
     switch (order) {
@@ -24,68 +24,59 @@ export const listServerService = async (
   if (is_active) {
     switch (is_active) {
     case 'true':
-      whereSchool = {
-        ...whereSchool,
+      where_school = {
+        ...where_school,
         is_active: true,
-      };
-      whereData = {
-        ...whereData,
-        school: {
-          ...whereSchool,
-        },
       };
       break;
 
     case 'false':
-      whereSchool = {
-        ...whereSchool,
+      where_school = {
+        ...where_school,
         is_active: false,
-      };
-      whereData = {
-        ...whereData,
-        school: {
-          ...whereSchool,
-        },
       };
       break;
     }
   }
 
-  if (name) {
-    whereSchool = {
-      ...whereSchool,
+  if (name)
+    where_school = {
+      ...where_school,
       name: { contains: name, mode: 'insensitive' },
     };
-    whereData = {
-      ...whereData,
-      school: {
-        ...whereSchool,
-      },
-    };
-  }
 
-  whereData = {
-    ...whereData,
+  where = {
+    ...where,
+    school: {
+      ...where_school,
+    },
     server_id,
   };
 
-  const [servers, total] = await Promise.all([
+  const [servers, total, user] = await Promise.all([
     prisma.schoolServer.findMany({
       take,
       skip,
-      where: {
-        ...whereData,
+      where,
+      select: {
+        dash: true,
+        role: true,
+        school: { select: { name: true, id: true, is_active: true } },
       },
-      include: { school: true },
       orderBy,
     }),
-    prisma.schoolServer.count({ where: { ...whereData } }),
+    prisma.schoolServer.count({ where }),
+    prisma.user.findUnique({
+      where: { id: server_id },
+      select: { id: true, name: true },
+    }),
   ]);
 
-  const serversSchema = ServerArraySchema.parse(servers);
+  const serversSchema = SchoolServerArraySchema.parse(servers);
 
   return {
     total,
     result: serversSchema,
+    user,
   };
 };
