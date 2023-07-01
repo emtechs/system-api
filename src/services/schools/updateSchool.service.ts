@@ -54,11 +54,12 @@ export const updateSchoolService = async (
       data: {
         director_id: user.id,
         servers: {
-          connectOrCreate: {
+          upsert: {
             where: {
               school_id_server_id: { school_id: id, server_id: user.id },
             },
             create: { server_id: user.id, dash, role },
+            update: { dash, role },
           },
         },
       },
