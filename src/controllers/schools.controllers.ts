@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import {
+  createSchoolClassService,
   createSchoolServerService,
   createSchoolService,
   dashSchoolService,
@@ -19,6 +20,18 @@ import {
 
 export const createSchoolController = async (req: Request, res: Response) => {
   const school = await createSchoolService(req.body);
+  return res.status(201).json(school);
+};
+
+export const createSchoolClassController = async (
+  req: Request,
+  res: Response,
+) => {
+  const school = await createSchoolClassService(
+    req.body,
+    req.params.school_id,
+    req.params.year_id,
+  );
   return res.status(201).json(school);
 };
 

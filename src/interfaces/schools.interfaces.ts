@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  SchoolClassCreateSchema,
   SchoolCreateSchema,
   SchoolServerCreateSchema,
   SchoolUpdateSchema,
@@ -9,6 +10,8 @@ import { IQuery } from './global.interfaces';
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>;
 
 export type ISchoolServerRequest = z.infer<typeof SchoolServerCreateSchema>;
+
+export type ISchoolClassRequest = z.infer<typeof SchoolClassCreateSchema>;
 
 export type ISchoolUpdateRequest = z.infer<typeof SchoolUpdateSchema>;
 

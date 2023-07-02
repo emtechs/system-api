@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  createSchoolClassController,
   createSchoolController,
   createSchoolServerController,
   dashSchoolController,
@@ -22,6 +23,7 @@ import {
   verifyUserIsAuthenticated,
 } from '../middlewares';
 import {
+  SchoolClassCreateSchema,
   SchoolCreateSchema,
   SchoolServerCreateSchema,
   SchoolUpdateSchema,
@@ -43,6 +45,14 @@ schoolRouter.post(
   verifyIsAdmin,
   validateSchemaMiddleware(SchoolServerCreateSchema),
   createSchoolServerController,
+);
+
+schoolRouter.post(
+  '/:school_id/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  validateSchemaMiddleware(SchoolClassCreateSchema),
+  createSchoolClassController,
 );
 
 schoolRouter.get(

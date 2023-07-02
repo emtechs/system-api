@@ -8,6 +8,10 @@ export const SchoolServerCreateSchema = z.object({
   schools: z.object({ id: z.string().uuid() }).array(),
 });
 
+export const SchoolClassCreateSchema = z.object({
+  classes: z.object({ id: z.string().uuid() }).array(),
+});
+
 export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   is_active: z.boolean(),
   login: z.string(),
