@@ -1,21 +1,68 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
+import { ClassArraySchema } from '../../schemas';
 
-export const listClassService = async ({ is_active }: IClassQuery) => {
-  let classes = await prisma.class.findMany({
-    orderBy: { name: 'asc' },
-  });
+export const listClassService = async ({
+  is_active,
+  take,
+  skip,
+  order,
+  by,
+  school_id,
+  year_id,
+  name,
+}: IClassQuery) => {
+  if (take) take = +take;
+  if (skip) skip = +skip;
 
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      classes = classes.filter((el) => el.is_active === true);
-      break;
-    case 'false':
-      classes = classes.filter((el) => el.is_active === false);
+  let where = {};
+  const select = { id: true, name: true, is_active: true };
+  let orderBy = {};
+
+  if (year_id && school_id)
+    where = { ...where, schools: { none: { school_id, year_id } } };
+
+  if (order) {
+    switch (order) {
+    case 'name':
+      orderBy = { name: by };
       break;
     }
   }
 
-  return classes;
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
+
+  if (is_active) {
+    switch (is_active) {
+    case 'true':
+      where = { ...where, is_active: true };
+      break;
+
+    case 'false':
+      where = { ...where, is_active: false };
+      break;
+    }
+  }
+
+  const [classes, total, classesLabel] = await Promise.all([
+    prisma.class.findMany({
+      take,
+      skip,
+      where,
+      orderBy,
+      select,
+    }),
+    prisma.class.count({ where }),
+    prisma.class.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      select,
+    }),
+  ]);
+
+  return {
+    classes: ClassArraySchema.parse(classesLabel),
+    total,
+    result: ClassArraySchema.parse(classes),
+  };
 };

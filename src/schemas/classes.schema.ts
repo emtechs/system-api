@@ -43,19 +43,14 @@ export const ClassUpdateInfrequency = z.object({
     .array(),
 });
 
-export const ClassReturnSchema = ClassCreateSchema.extend({
-  id: z.string(),
-  is_active: z.boolean(),
-  created_at: z.date(),
-  school: z.object({
-    id: z.string(),
+export const ClassReturnSchema = z
+  .object({
+    id: z.string().uuid(),
+    label: z.string().optional(),
     name: z.string(),
-  }),
-  students: z
-    .object({ id: z.string(), name: z.string(), registry: z.string() })
-    .array(),
-  _count: z.object({ students: z.number() }),
-});
+    is_active: z.boolean(),
+  })
+  .refine((fields) => (fields.label = fields.name));
 
 export const ClassArraySchema = ClassReturnSchema.array();
 
