@@ -27,4 +27,5 @@ export interface ISchoolQuery extends IQuery {
   name?: string;
   date?: string;
   director_id?: string;
+  server_id?: string;
 }
