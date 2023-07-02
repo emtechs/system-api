@@ -3,7 +3,7 @@ import { IUserQuery, IUserRequest } from '../../interfaces';
 import { hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
 import { UserReturnSchema } from '../../schemas';
-import { updateSchool } from '../../scripts';
+import { updateSchoolDirector } from '../../scripts';
 
 export const createUserService = async (
   { login, name, password, cpf, role, dash, schools }: IUserRequest,
@@ -31,7 +31,7 @@ export const createUserService = async (
       });
     }
 
-    await updateSchool(schools, user.id);
+    await updateSchoolDirector(schools, user.id);
 
     return UserReturnSchema.parse(user);
   }
