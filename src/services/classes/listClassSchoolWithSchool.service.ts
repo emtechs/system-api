@@ -1,15 +1,16 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { ClassSchoolArraySchema } from '../../schemas';
+import { classReturn } from '../../scripts';
 
 export const listClassSchoolWithSchoolService = async (
   school_id: string,
-  { is_active, year_id, infreq, take, skip, order, by }: IClassQuery,
+  { year_id, infreq, take, skip, order, by, name }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
-  let whereData = {};
+  let where = {};
+  let where_class = {};
   let orderBy = {};
 
   if (order) {
@@ -17,94 +18,75 @@ export const listClassSchoolWithSchoolService = async (
     case 'name':
       orderBy = { class: { name: by } };
       break;
-
-    case 'infreq':
-      orderBy = { infrequency: by };
-      break;
     }
   }
-
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      whereData = { ...whereData, class: { is_active: true } };
-      break;
-
-    case 'false':
-      whereData = { ...whereData, class: { is_active: false } };
-      break;
-    }
-  }
-
-  if (year_id) whereData = { ...whereData, year_id };
 
   if (infreq) {
     infreq = +infreq;
-
-    whereData = { ...whereData, infrequency: { gte: infreq } };
+    where = { ...where, infrequencies: { some: { value: { gte: infreq } } } };
   }
 
-  whereData = { ...whereData, school_id };
+  where_class = { ...where_class, is_active: true };
+
+  if (name)
+    where_class = {
+      ...where_class,
+      name: { contains: name, mode: 'insensitive' },
+    };
+
+  if (year_id) where = { ...where, year_id };
+
+  where = { ...where, class: { ...where_class }, school_id };
 
   const [classes, total, classesLabel] = await Promise.all([
     prisma.classSchool.findMany({
       take,
       skip,
-      where: {
-        ...whereData,
-      },
+      where,
       orderBy,
-      include: {
-        school: true,
-        year: true,
-        class: true,
-        students: { include: { student: true } },
+      select: {
+        class: { select: { id: true, name: true } },
+        infrequencies: {
+          select: {
+            value: true,
+            period: { select: { name: true, category: true } },
+          },
+        },
         _count: {
           select: {
+            students: { where: { is_active: true } },
             frequencies: { where: { status: 'CLOSED' } },
-            students: true,
           },
         },
       },
     }),
     prisma.classSchool.count({
-      where: {
-        ...whereData,
-      },
+      where,
     }),
     prisma.classSchool.findMany({
-      where: {
-        ...whereData,
-      },
+      where,
       orderBy: { class: { name: 'asc' } },
-      include: {
-        school: true,
-        year: true,
-        class: true,
-        students: { include: { student: true } },
+      select: {
+        class: { select: { id: true, name: true } },
+        infrequencies: {
+          select: {
+            value: true,
+            period: { select: { name: true, category: true } },
+          },
+        },
         _count: {
           select: {
+            students: { where: { is_active: true } },
             frequencies: { where: { status: 'CLOSED' } },
-            students: true,
           },
         },
       },
     }),
   ]);
 
-  const classesSchema = ClassSchoolArraySchema.parse(classes);
-
-  const classesData = ClassSchoolArraySchema.parse(classesLabel).map((el) => {
-    return {
-      id: el.class.id,
-      label: el.class.name,
-      ...el,
-    };
-  });
-
   return {
-    classes: classesData,
+    classes: classReturn(classesLabel),
     total,
-    result: classesSchema,
+    result: classReturn(classes),
   };
 };

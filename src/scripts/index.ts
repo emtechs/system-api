@@ -1,3 +1,4 @@
+export * from './classReturn';
 export * from './frequencies';
 export * from './imports';
 export * from './createFrequencyHistory';

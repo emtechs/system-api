@@ -14,7 +14,10 @@ export const retrieveSchoolService = async (id: string) => {
       where: { id },
       select,
     }),
-    prisma.year.findMany({ where: { classes: { some: { school_id: id } } } }),
+    prisma.year.findMany({
+      where: { classes: { some: { school_id: id } } },
+      orderBy: { year: 'desc' },
+    }),
   ]);
 
   return {
