@@ -2,7 +2,7 @@ import prisma from '../../prisma';
 import { IUserQuery, IUserRequest } from '../../interfaces';
 import { hashSync } from 'bcryptjs';
 import { AppError } from '../../errors';
-import { UserReturnSchema } from '../../schemas';
+import { ServerSchema, UserReturnSchema } from '../../schemas';
 import { updateSchoolDirector } from '../../scripts';
 
 export const createUserService = async (
@@ -64,7 +64,16 @@ export const createUserService = async (
       },
     });
 
-    return UserReturnSchema.parse(user);
+    const server = await prisma.schoolServer.findUnique({
+      where: { school_id_server_id: { school_id, server_id: user.id } },
+      select: {
+        role: true,
+        dash: true,
+        server: { select: { id: true, name: true, cpf: true } },
+      },
+    });
+
+    return ServerSchema.parse(server);
   }
 
   switch (role) {
