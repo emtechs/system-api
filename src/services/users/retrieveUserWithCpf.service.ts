@@ -54,6 +54,7 @@ export const retrieveUserWithCpfService = async (
 
   if (allNotServ) {
     if (user) throw new AppError('user already exists', 409);
+    return { name: '' };
   }
 
   if (!user) throw new AppError('user not found', 404);
