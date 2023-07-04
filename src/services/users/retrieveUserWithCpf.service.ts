@@ -1,27 +1,25 @@
 import { AppError } from '../../errors';
 import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { UserReturnSchema } from '../../schemas';
 
 export const retrieveUserWithCpfService = async (
   login: string,
   { school_id, allNotServ, director }: IUserQuery,
 ) => {
+  const user = await prisma.user.findUnique({
+    where: { login },
+    select: { name: true, role: true },
+  });
+
   if (school_id) {
     if (director) {
-      const [server, user] = await Promise.all([
-        prisma.schoolServer.findFirst({
-          where: {
-            server: { login },
-            school_id,
-            role: 'DIRET',
-          },
-        }),
-        prisma.user.findUnique({
-          where: { login },
-          select: { name: true, role: true },
-        }),
-      ]);
+      const server = await prisma.schoolServer.findFirst({
+        where: {
+          server: { login },
+          school_id,
+          role: 'DIRET',
+        },
+      });
 
       if (!user) return { name: '' };
 
@@ -31,18 +29,12 @@ export const retrieveUserWithCpfService = async (
       return user;
     }
 
-    const [server, user] = await Promise.all([
-      prisma.schoolServer.findFirst({
-        where: {
-          server: { login },
-          school_id,
-        },
-      }),
-      prisma.user.findUnique({
-        where: { login },
-        select: { name: true, role: true },
-      }),
-    ]);
+    const server = await prisma.schoolServer.findFirst({
+      where: {
+        server: { login },
+        school_id,
+      },
+    });
 
     if (!user) return { name: '' };
 
@@ -52,21 +44,19 @@ export const retrieveUserWithCpfService = async (
     return user;
   }
 
-  if (allNotServ) {
-    const user = await prisma.user.findFirst({
-      where: { AND: { login, role: { in: ['ADMIN', 'SECRET'] } } },
-    });
+  if (director) {
+    if (!user) return { name: '' };
 
-    if (!user) throw new AppError('user not found', 404);
+    if (user.role === 'ADMIN') throw new AppError('user already exists', 409);
 
-    return UserReturnSchema.parse(user);
+    return user;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { login },
-  });
+  if (allNotServ) {
+    if (user) throw new AppError('user already exists', 409);
+  }
 
   if (!user) throw new AppError('user not found', 404);
 
-  return UserReturnSchema.parse(user);
+  return user;
 };

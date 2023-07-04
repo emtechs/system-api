@@ -1,6 +1,7 @@
 import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
+import { rolePtBr } from '../../scripts';
 
 export const listUserService = async (
   {
@@ -63,7 +64,7 @@ export const listUserService = async (
 
   whereData = { ...whereData, NOT: { id } };
 
-  const [users, total] = await Promise.all([
+  const [users, total, rolesData] = await Promise.all([
     prisma.user.findMany({
       take,
       skip,
@@ -81,12 +82,23 @@ export const listUserService = async (
     prisma.user.count({
       where: { ...whereData },
     }),
+    prisma.user.findMany({
+      where: { ...whereData },
+      distinct: ['role'],
+      orderBy: { role: 'asc' },
+      select: { role: true },
+    }),
   ]);
 
   const usersSchema = UserArraySchema.parse(users);
 
+  const roles = rolesData.map((el) => {
+    return { id: el.role, label: rolePtBr(el.role) };
+  });
+
   return {
     total,
     result: usersSchema,
+    roles,
   };
 };
