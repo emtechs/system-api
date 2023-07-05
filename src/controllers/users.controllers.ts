@@ -29,7 +29,11 @@ export const listUserController = async (req: Request, res: Response) => {
 };
 
 export const listWorkSchoolController = async (req: Request, res: Response) => {
-  const servers = await listWorkSchoolService(req.user, req.query);
+  const servers = await listWorkSchoolService(
+    req.params.year_id,
+    req.user,
+    req.query,
+  );
   return res.json(servers);
 };
 
