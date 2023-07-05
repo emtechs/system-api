@@ -4,12 +4,13 @@ import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
-  { take, skip, year_id }: ISchoolQuery,
+  { take, skip }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   let where = {};
+  let where_school = {};
 
   const select_school = {
     id: true,
@@ -18,12 +19,12 @@ export const listWorkSchoolService = async (
     director: { select: { id: true, cpf: true, name: true } },
   };
 
+  where_school = { ...where_school, is_active: true };
+
   if (role === 'ADMIN') {
     const select = select_school;
 
-    if (year_id) where = { ...where, classes: { some: { year_id } } };
-
-    where = { ...where, is_active: true };
+    where = where_school;
 
     const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
@@ -52,12 +53,7 @@ export const listWorkSchoolService = async (
     return { schools: SchoolArraySchema.parse(schoolsLabel), total, result };
   }
 
-  let where_school = {};
-
-  if (year_id)
-    where_school = { ...where_school, classes: { some: { year_id } } };
-
-  where = { ...where, server_id, school: { ...where_school, is_active: true } };
+  where = { ...where, server_id, school: where_school };
 
   const [workSchools, total, schoolsData] = await Promise.all([
     prisma.schoolServer.findMany({

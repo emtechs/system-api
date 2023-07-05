@@ -11,6 +11,7 @@ import {
   dashUserService,
   listServerService,
   listWorkSchoolService,
+  listWorkSchoolClassService,
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -30,6 +31,18 @@ export const listUserController = async (req: Request, res: Response) => {
 
 export const listWorkSchoolController = async (req: Request, res: Response) => {
   const servers = await listWorkSchoolService(req.user, req.query);
+  return res.json(servers);
+};
+
+export const listWorkSchoolClassController = async (
+  req: Request,
+  res: Response,
+) => {
+  const servers = await listWorkSchoolClassService(
+    req.params.year_id,
+    req.user,
+    req.query,
+  );
   return res.json(servers);
 };
 

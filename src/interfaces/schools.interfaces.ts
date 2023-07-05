@@ -38,3 +38,27 @@ export interface ISchoolQuery extends IQuery {
   director_id?: string;
   server_id?: string;
 }
+
+export interface ISchoolData {
+  school: {
+    id: string;
+    name: string;
+    is_active: boolean;
+    director: {
+      name: string;
+      id: string;
+      cpf: string;
+    };
+    infrequencies: {
+      value: number;
+    }[];
+    _count: {
+      classes: number;
+      servers: number;
+    };
+  };
+  _count: {
+    frequencies: number;
+    students: number;
+  };
+}
