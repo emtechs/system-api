@@ -6,6 +6,7 @@ import {
   exportUserController,
   listServerController,
   listUserController,
+  listWorkSchoolClassController,
   listWorkSchoolController,
   profileUserController,
   retrieveUserController,
@@ -38,10 +39,12 @@ userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController);
 
 userRouter.get('/export', verifyUserIsAuthenticated, exportUserController);
 
+userRouter.get('/schools', verifyUserIsAuthenticated, listWorkSchoolController);
+
 userRouter.get(
   '/schools/:year_id',
   verifyUserIsAuthenticated,
-  listWorkSchoolController,
+  listWorkSchoolClassController,
 );
 
 userRouter.get(

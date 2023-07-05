@@ -1,15 +1,10 @@
 import { IRequestUser, ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
-import {
-  classesArrSchoolClassReturn,
-  serverArrSchoolClassReturn,
-} from '../../scripts';
 
 export const listWorkSchoolService = async (
-  year_id: string,
   { id: server_id, role }: IRequestUser,
-  { take, skip, name }: ISchoolQuery,
+  { take, skip }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -24,52 +19,19 @@ export const listWorkSchoolService = async (
     director: { select: { id: true, cpf: true, name: true } },
   };
 
-  if (name)
-    where_school = {
-      ...where_school,
-      name: { contains: name, mode: 'insensitive' },
-    };
+  where_school = { ...where_school, is_active: true };
 
   if (role === 'ADMIN') {
-    where_school = {
-      ...where_school,
-      is_active: true,
-      classes: { some: { year_id } },
-    };
+    const select = select_school;
+
+    where = where_school;
 
     const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
         take,
         skip,
         where,
-        select: {
-          classes: {
-            distinct: ['school_id'],
-            select: {
-              school: {
-                select: {
-                  id: true,
-                  name: true,
-                  is_active: true,
-                  director: { select: { name: true, id: true, cpf: true } },
-                  infrequencies: {
-                    where: { period: { year_id, category: 'ANO' } },
-                    select: { value: true },
-                  },
-                  _count: {
-                    select: { classes: { where: { year_id } }, servers: true },
-                  },
-                },
-              },
-              _count: {
-                select: {
-                  frequencies: { where: { status: 'CLOSED', year_id } },
-                  students: { where: { is_active: true, year_id } },
-                },
-              },
-            },
-          },
-        },
+        select,
         orderBy: { name: 'asc' },
       }),
       prisma.school.count({
@@ -77,58 +39,21 @@ export const listWorkSchoolService = async (
       }),
       prisma.school.findMany({
         where,
-        select: {
-          classes: {
-            distinct: ['school_id'],
-            select: {
-              school: {
-                select: {
-                  id: true,
-                  name: true,
-                  is_active: true,
-                  director: { select: { name: true, id: true, cpf: true } },
-                  infrequencies: {
-                    where: { period: { year_id, category: 'ANO' } },
-                    select: { value: true },
-                  },
-                  _count: {
-                    select: { classes: { where: { year_id } }, servers: true },
-                  },
-                },
-              },
-              _count: {
-                select: {
-                  frequencies: { where: { status: 'CLOSED', year_id } },
-                  students: { where: { is_active: true, year_id } },
-                },
-              },
-            },
-          },
-        },
+        select,
         orderBy: { name: 'asc' },
       }),
     ]);
 
-    const schoolSchema = classesArrSchoolClassReturn(schoolsData);
+    const schoolSchema = SchoolArraySchema.parse(schoolsData);
 
     const result = schoolSchema.map((el) => {
       return { school: el };
     });
 
-    return {
-      schools: classesArrSchoolClassReturn(schoolsLabel),
-      total,
-      result,
-    };
+    return { schools: SchoolArraySchema.parse(schoolsLabel), total, result };
   }
 
-  where = {
-    ...where,
-    server_id,
-    school: {
-      ...where_school,
-    },
-  };
+  where = { ...where, server_id, school: where_school };
 
   const [workSchools, total, schoolsData] = await Promise.all([
     prisma.schoolServer.findMany({
@@ -138,39 +63,7 @@ export const listWorkSchoolService = async (
       select: {
         role: true,
         dash: true,
-        school: {
-          select: {
-            classes: {
-              distinct: ['school_id'],
-              select: {
-                school: {
-                  select: {
-                    id: true,
-                    name: true,
-                    is_active: true,
-                    director: { select: { name: true, id: true, cpf: true } },
-                    infrequencies: {
-                      where: { period: { year_id, category: 'ANO' } },
-                      select: { value: true },
-                    },
-                    _count: {
-                      select: {
-                        classes: { where: { year_id } },
-                        servers: true,
-                      },
-                    },
-                  },
-                },
-                _count: {
-                  select: {
-                    frequencies: { where: { status: 'CLOSED', year_id } },
-                    students: { where: { is_active: true, year_id } },
-                  },
-                },
-              },
-            },
-          },
-        },
+        school: { select: select_school },
       },
       orderBy: { school: { name: 'asc' } },
     }),
@@ -188,5 +81,5 @@ export const listWorkSchoolService = async (
 
   const schools = schoolSchema.map((el) => el.school);
 
-  return { schools, total, result: serverArrSchoolClassReturn(workSchools) };
+  return { schools, total, result: SchoolServerArraySchema.parse(workSchools) };
 };

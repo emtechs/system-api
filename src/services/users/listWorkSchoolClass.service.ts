@@ -1,20 +1,11 @@
-import {
-  IDash,
-  IRequestUser,
-  IRole,
-  ISchoolData,
-  ISchoolQuery,
-} from '../../interfaces';
+import { IRequestUser, ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { SchoolServerArraySchema } from '../../schemas';
 import {
   classesArrSchoolClassReturn,
-  schoolClassReturn,
-  schoolServerClassReturn,
   serverArrSchoolClassReturn,
 } from '../../scripts';
 
-export const listWorkSchoolService = async (
+export const listWorkSchoolClassService = async (
   year_id: string,
   { id: server_id, role }: IRequestUser,
   { take, skip, name }: ISchoolQuery,
@@ -40,7 +31,7 @@ export const listWorkSchoolService = async (
   if (role === 'ADMIN') {
     where = where_school;
 
-    const [schoolsData, total, schoolsLabel] = await Promise.all([
+    const [schoolsData, total] = await Promise.all([
       prisma.school.findMany({
         take,
         skip,
@@ -78,50 +69,11 @@ export const listWorkSchoolService = async (
       prisma.school.count({
         where,
       }),
-      prisma.school.findMany({
-        where,
-        select: {
-          classes: {
-            distinct: ['school_id'],
-            select: {
-              school: {
-                select: {
-                  id: true,
-                  name: true,
-                  is_active: true,
-                  director: { select: { name: true, id: true, cpf: true } },
-                  infrequencies: {
-                    where: { period: { year_id, category: 'ANO' } },
-                    select: { value: true },
-                  },
-                  _count: {
-                    select: { classes: { where: { year_id } }, servers: true },
-                  },
-                },
-              },
-              _count: {
-                select: {
-                  frequencies: { where: { status: 'CLOSED', year_id } },
-                  students: { where: { is_active: true, year_id } },
-                },
-              },
-            },
-          },
-        },
-        orderBy: { name: 'asc' },
-      }),
     ]);
 
-    const schoolSchema = classesArrSchoolClassReturn(schoolsData);
-
-    const result = schoolSchema.map((el) => {
-      return { school: el };
-    });
-
     return {
-      schools: classesArrSchoolClassReturn(schoolsLabel),
       total,
-      result,
+      result: classesArrSchoolClassReturn(schoolsData),
     };
   }
 
@@ -133,14 +85,12 @@ export const listWorkSchoolService = async (
     },
   };
 
-  const [workSchools, total, schoolsData] = await Promise.all([
+  const [schoolsData, total] = await Promise.all([
     prisma.schoolServer.findMany({
       take,
       skip,
       where,
       select: {
-        role: true,
-        dash: true,
         school: {
           select: {
             classes: {
@@ -180,50 +130,10 @@ export const listWorkSchoolService = async (
     prisma.schoolServer.count({
       where,
     }),
-    prisma.schoolServer.findMany({
-      where,
-      select: {
-        school: {
-          select: {
-            classes: {
-              distinct: ['school_id'],
-              select: {
-                school: {
-                  select: {
-                    id: true,
-                    name: true,
-                    is_active: true,
-                    director: { select: { name: true, id: true, cpf: true } },
-                    infrequencies: {
-                      where: { period: { year_id, category: 'ANO' } },
-                      select: { value: true },
-                    },
-                    _count: {
-                      select: {
-                        classes: { where: { year_id } },
-                        servers: true,
-                      },
-                    },
-                  },
-                },
-                _count: {
-                  select: {
-                    frequencies: { where: { status: 'CLOSED', year_id } },
-                    students: { where: { is_active: true, year_id } },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      orderBy: { school: { name: 'asc' } },
-    }),
   ]);
 
   return {
-    schools: serverArrSchoolClassReturn(schoolsData),
     total,
-    result: ,
+    result: serverArrSchoolClassReturn(schoolsData),
   };
 };
