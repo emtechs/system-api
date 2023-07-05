@@ -1,5 +1,5 @@
-import { ISchoolUpdate } from '../interfaces';
-import prisma from '../prisma';
+import { ISchoolUpdate } from '../../interfaces';
+import prisma from '../../prisma';
 
 const verifySchoolDirector = async (
   { id }: ISchoolUpdate,

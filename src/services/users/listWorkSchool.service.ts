@@ -1,13 +1,15 @@
-import { IQuery, IRequestUser } from '../../interfaces';
+import { IRequestUser, ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
-  { take, skip }: IQuery,
+  { take, skip, year_id }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
+
+  let where = {};
 
   const select_school = {
     id: true,
@@ -17,8 +19,11 @@ export const listWorkSchoolService = async (
   };
 
   if (role === 'ADMIN') {
-    const where = { is_active: true };
     const select = select_school;
+
+    if (year_id) where = { ...where, classes: { some: { year_id } } };
+
+    where = { ...where, is_active: true };
 
     const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
@@ -47,7 +52,12 @@ export const listWorkSchoolService = async (
     return { schools: SchoolArraySchema.parse(schoolsLabel), total, result };
   }
 
-  const where = { server_id, school: { is_active: true } };
+  let where_school = {};
+
+  if (year_id)
+    where_school = { ...where_school, classes: { some: { year_id } } };
+
+  where = { ...where, server_id, school: { ...where_school, is_active: true } };
 
   const [workSchools, total, schoolsData] = await Promise.all([
     prisma.schoolServer.findMany({

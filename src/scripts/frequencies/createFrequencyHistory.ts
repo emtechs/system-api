@@ -1,5 +1,5 @@
-import { IFrequencyHistoryCreate } from '../interfaces';
-import prisma from '../prisma';
+import { IFrequencyHistoryCreate } from '../../interfaces';
+import prisma from '../../prisma';
 
 const verifyFrequencyHistory = async (
   { id, status, justification }: IFrequencyHistoryCreate,
