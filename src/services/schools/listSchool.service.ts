@@ -1,7 +1,7 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema } from '../../schemas';
-import { verifySchoolClass } from '../../scripts';
+import { verifySchoolClassArr } from '../../scripts';
 
 export const listSchoolService = async ({
   name,
@@ -89,8 +89,8 @@ export const listSchoolService = async ({
   ]);
 
   return {
-    schools: SchoolArraySchema.parse(verifySchoolClass(schoolsLabel, year_id)),
+    schools: SchoolArraySchema.parse(verifySchoolClassArr(schoolsLabel, year_id)),
     total,
-    result: SchoolArraySchema.parse(verifySchoolClass(schools, year_id)),
+    result: SchoolArraySchema.parse(verifySchoolClassArr(schools, year_id)),
   };
 };

@@ -1,4 +1,30 @@
 export const verifySchoolClass = (
+  school: {
+    classes: {
+      year_id: string;
+    }[];
+    id: string;
+    name: string;
+    is_active: boolean;
+    director: {
+      id: string;
+      cpf: string;
+      name: string;
+    };
+  },
+  year_id_data = '',
+) => {
+  let is_class = false;
+
+  const classesData = school.classes.filter(
+    ({ year_id }) => year_id === year_id_data,
+  );
+  is_class = classesData.length > 0;
+
+  return { ...school, is_class };
+};
+
+export const verifySchoolClassArr = (
   schools: {
     classes: {
       year_id: string;
@@ -12,17 +38,10 @@ export const verifySchoolClass = (
       name: string;
     };
   }[],
-  year_id_data = '',
+  year_id = '',
 ) => {
   const verify = schools.map((el) => {
-    let is_class = false;
-
-    const classesData = el.classes.filter(
-      ({ year_id }) => year_id === year_id_data,
-    );
-    is_class = classesData.length > 0;
-
-    return { ...el, is_class };
+    return verifySchoolClass(el, year_id);
   });
   return verify;
 };
