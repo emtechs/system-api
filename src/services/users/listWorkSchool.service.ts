@@ -1,6 +1,10 @@
 import { IRequestUser, ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
+import {
+  schoolClassArrayReturn,
+  schoolServerClassArrayReturn,
+} from '../../scripts';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
@@ -49,11 +53,27 @@ export const listWorkSchoolService = async (
 
     const schoolSchema = SchoolArraySchema.parse(schoolsData);
 
+    const schools = SchoolArraySchema.parse(schoolsLabel);
+
+    if (year_id) {
+      const schoolsClass = await schoolClassArrayReturn(schoolSchema, year_id);
+
+      const result = schoolsClass.map((el) => {
+        return { school: el };
+      });
+
+      return {
+        schools: await schoolClassArrayReturn(schools, year_id),
+        total,
+        result,
+      };
+    }
+
     const result = schoolSchema.map((el) => {
       return { school: el };
     });
 
-    return { schools: SchoolArraySchema.parse(schoolsLabel), total, result };
+    return { schools, total, result };
   }
 
   where = { ...where, server_id, school: where_school };
@@ -83,6 +103,25 @@ export const listWorkSchoolService = async (
   const schoolSchema = SchoolServerArraySchema.parse(schoolsData);
 
   const schools = schoolSchema.map((el) => el.school);
+
+  if (year_id) {
+    const schoolServerSchema = SchoolServerArraySchema.parse(workSchools);
+
+    const schoolsClass = await schoolServerClassArrayReturn(
+      schoolServerSchema,
+      year_id,
+    );
+
+    const result = schoolsClass.map((el) => {
+      return { school: el };
+    });
+
+    return {
+      schools: await schoolClassArrayReturn(schools, year_id),
+      total,
+      result,
+    };
+  }
 
   return { schools, total, result: SchoolServerArraySchema.parse(workSchools) };
 };

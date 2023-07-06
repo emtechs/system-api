@@ -1,21 +1,9 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { ClassStudentArraySchema } from '../../schemas';
-import { studentClassParseFrequency } from '../../scripts';
 
 export const listClassStudentService = async (
   year_id: string,
-  {
-    by,
-    skip,
-    order,
-    name,
-    infreq,
-    take,
-    is_infreq,
-    class_id,
-    school_id,
-  }: IClassQuery,
+  { by, skip, order, name, infreq, take, class_id, school_id }: IClassQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -23,7 +11,6 @@ export const listClassStudentService = async (
   let whereData = {};
   let whereStudent = {};
   let orderBy = {};
-  let orderByStudent = {};
 
   if (class_id) whereData = { ...whereData, class_id };
 
@@ -55,11 +42,6 @@ export const listClassStudentService = async (
     case 'registry':
       orderBy = { student: { registry: by } };
       break;
-
-    case 'infreq':
-      orderBy = { student: { name: by } };
-      orderByStudent = { value: by };
-      break;
     }
   }
 
@@ -72,10 +54,7 @@ export const listClassStudentService = async (
       where: {
         ...whereData,
       },
-      include: {
-        student: { include: { infrequencies: { orderBy: orderByStudent } } },
-        class: { include: { class: true, school: true } },
-      },
+      select: { student: { select: { id: true, name: true, registry: true } } },
       orderBy,
     }),
     prisma.classStudent.count({
@@ -85,22 +64,16 @@ export const listClassStudentService = async (
     }),
   ]);
 
-  if (is_infreq) {
-    const classesSchema = await studentClassParseFrequency(
-      classStudent,
-      year_id,
-    );
-
+  const students = classStudent.map((el) => {
     return {
-      total,
-      result: classesSchema,
+      id: el.student.id,
+      name: el.student.name,
+      registry: el.student.registry,
     };
-  }
-
-  const classesSchema = ClassStudentArraySchema.parse(classStudent);
+  });
 
   return {
     total,
-    result: classesSchema,
+    result: students,
   };
 };

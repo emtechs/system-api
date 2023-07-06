@@ -1,49 +1,40 @@
-import { ISchoolData } from '../../interfaces';
+import { ISchoolData, ISchoolServerData } from '../../interfaces';
 import prisma from '../../prisma';
 
 export const schoolClassReturn = async (
   schoolData: ISchoolData,
   year_id: string,
 ) => {
-  let school = {};
+  const school_id = schoolData.id;
   let infrequency = 0;
 
-  if (schoolData.school.director)
-    school = {
-      ...school,
-      director: {
-        id: schoolData.school.director.id,
-        name: schoolData.school.director.name,
-        cpf: schoolData.school.director.cpf,
-      },
-    };
-
-  if (schoolData.school.infrequencies.length > 0)
-    infrequency = schoolData.school.infrequencies[0].value;
-
-  const [students, frequencies] = await Promise.all([
+  const [classes, students, frequencies, servers, infreq] = await Promise.all([
+    prisma.classSchool.count({ where: { school_id, year_id } }),
     prisma.classStudent.count({
-      where: { school_id: schoolData.school.id, year_id, is_active: true },
+      where: { school_id, year_id, is_active: true },
     }),
     prisma.frequency.count({
-      where: { school_id: schoolData.school.id, year_id, status: 'CLOSED' },
+      where: { school_id, year_id, status: 'CLOSED' },
+    }),
+    prisma.schoolServer.count({
+      where: { school_id },
+    }),
+    prisma.schoolInfrequency.findFirst({
+      where: { school_id, period: { year_id, category: 'ANO' } },
+      select: { value: true },
     }),
   ]);
 
-  school = {
-    ...school,
-    id: schoolData.school.id,
-    label: schoolData.school.name,
-    name: schoolData.school.name,
-    is_active: schoolData.school.is_active,
-    classes: schoolData.school._count.classes,
+  if (infreq) infrequency = infreq.value;
+
+  return {
+    ...schoolData,
+    classes,
     students,
     frequencies,
-    servers: schoolData.school._count.servers,
+    servers,
     infrequency,
   };
-
-  return school;
 };
 
 export const schoolClassArrayReturn = async (
@@ -57,34 +48,56 @@ export const schoolClassArrayReturn = async (
   });
 };
 
-export const classesArrSchoolClassReturn = async (
-  schoolsData: {
-    classes: ISchoolData[];
-  }[],
+const schoolServerClassReturn = async (
+  schoolData: ISchoolServerData,
   year_id: string,
 ) => {
-  const schools: ISchoolData[] = [];
+  const { dash, role, school } = schoolData;
+  const school_id = school.id;
+  let infrequency = 0;
 
-  schoolsData.forEach((el) => {
-    el.classes.forEach((el) => schools.push(el));
-  });
+  const [classes, students, frequencies, servers, infreq] = await Promise.all([
+    prisma.classSchool.count({ where: { school_id, year_id } }),
+    prisma.classStudent.count({
+      where: { school_id, year_id, is_active: true },
+    }),
+    prisma.frequency.count({
+      where: { school_id, year_id, status: 'CLOSED' },
+    }),
+    prisma.schoolServer.count({
+      where: { school_id },
+    }),
+    prisma.schoolInfrequency.findFirst({
+      where: { school_id, period: { year_id, category: 'ANO' } },
+      select: { value: true },
+    }),
+  ]);
 
-  return await schoolClassArrayReturn(schools, year_id);
+  if (infreq) infrequency = infreq.value;
+
+  return {
+    role,
+    dash,
+    school: {
+      ...school,
+      classes,
+      students,
+      frequencies,
+      servers,
+      infrequency,
+    },
+  };
 };
 
-export const serverArrSchoolClassReturn = async (
-  schoolsData: {
-    school: {
-      classes: ISchoolData[];
-    };
-  }[],
+export const schoolServerClassArrayReturn = async (
+  schoolsData: ISchoolServerData[],
   year_id: string,
 ) => {
-  const schools: ISchoolData[] = [];
-
-  schoolsData.forEach((el) => {
-    el.school.classes.forEach((el) => schools.push(el));
+  const schools = schoolsData.map((el) => {
+    return schoolServerClassReturn(el, year_id);
   });
 
-  return await schoolClassArrayReturn(schools, year_id);
+  return Promise.all(schools).then((school) => {
+    return school;
+  });
 };

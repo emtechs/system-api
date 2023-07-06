@@ -2,12 +2,18 @@ import { z } from 'zod';
 import {
   SchoolClassCreateSchema,
   SchoolCreateSchema,
+  SchoolReturnSchema,
   SchoolServerCreateSchema,
+  SchoolServerReturnSchema,
   SchoolUpdateSchema,
 } from '../schemas';
 import { IQuery } from './global.interfaces';
 
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>;
+
+export type ISchoolData = z.infer<typeof SchoolReturnSchema>;
+
+export type ISchoolServerData = z.infer<typeof SchoolServerReturnSchema>;
 
 export type ISchoolServerRequest = z.infer<typeof SchoolServerCreateSchema>;
 
@@ -37,24 +43,4 @@ export interface ISchoolQuery extends IQuery {
   date?: string;
   director_id?: string;
   server_id?: string;
-}
-
-export interface ISchoolData {
-  school: {
-    id: string;
-    name: string;
-    is_active: boolean;
-    director: {
-      name: string;
-      id: string;
-      cpf: string;
-    };
-    infrequencies: {
-      value: number;
-    }[];
-    _count: {
-      classes: number;
-      servers: number;
-    };
-  };
 }

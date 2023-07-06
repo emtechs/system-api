@@ -3,35 +3,19 @@ import prisma from '../../prisma';
 import { schoolClassReturn } from '../../scripts';
 
 export const retrieveSchoolClassService = async (
-  school_id: string,
+  id: string,
   year_id: string,
 ) => {
-  const schoolFind = await prisma.classSchool.findFirst({
-    where: { school_id, year_id },
-  });
+  const select = {
+    id: true,
+    name: true,
+    is_active: true,
+    director: { select: { id: true, cpf: true, name: true } },
+  };
 
-  if (!schoolFind) throw new AppError('school not found', 404);
+  const school = await prisma.school.findUnique({ where: { id }, select });
 
-  const element = await prisma.classSchool.findFirst({
-    where: { year_id, school_id },
-    select: {
-      school: {
-        select: {
-          id: true,
-          name: true,
-          is_active: true,
-          director: { select: { id: true, name: true, cpf: true } },
-          infrequencies: {
-            where: { period: { year_id, category: 'ANO' } },
-            select: { value: true },
-          },
-          _count: {
-            select: { classes: { where: { year_id } }, servers: true },
-          },
-        },
-      },
-    },
-  });
+  if (!school) throw new AppError('school not found', 404);
 
-  return await schoolClassReturn(element, year_id);
+  return await schoolClassReturn(school, year_id);
 };

@@ -89,7 +89,9 @@ export const listSchoolService = async ({
   ]);
 
   return {
-    schools: SchoolArraySchema.parse(verifySchoolClassArr(schoolsLabel, year_id)),
+    schools: SchoolArraySchema.parse(
+      verifySchoolClassArr(schoolsLabel, year_id),
+    ),
     total,
     result: SchoolArraySchema.parse(verifySchoolClassArr(schools, year_id)),
   };
