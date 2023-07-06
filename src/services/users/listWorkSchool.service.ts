@@ -4,6 +4,8 @@ import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
 import {
   schoolClassArrayReturn,
   schoolServerClassArrayReturn,
+  verifySchoolClassArr,
+  verifySchoolServerClassArr,
 } from '../../scripts';
 
 export const listWorkSchoolService = async (
@@ -38,7 +40,10 @@ export const listWorkSchoolService = async (
         take,
         skip,
         where,
-        select,
+        select: {
+          ...select,
+          classes: { distinct: ['year_id'], select: { year_id: true } },
+        },
         orderBy: { name: 'asc' },
       }),
       prisma.school.count({
@@ -46,30 +51,23 @@ export const listWorkSchoolService = async (
       }),
       prisma.school.findMany({
         where,
-        select,
+        select: {
+          ...select,
+          classes: { distinct: ['year_id'], select: { year_id: true } },
+        },
         orderBy: { name: 'asc' },
       }),
     ]);
 
-    const schoolSchema = SchoolArraySchema.parse(schoolsData);
+    const schoolsSchema = SchoolArraySchema.parse(
+      verifySchoolClassArr(schoolsData, year_id),
+    );
 
     const schools = SchoolArraySchema.parse(schoolsLabel);
 
-    if (year_id) {
-      const schoolsClass = await schoolClassArrayReturn(schoolSchema, year_id);
+    const schoolsClass = await schoolClassArrayReturn(schoolsSchema, year_id);
 
-      const result = schoolsClass.map((el) => {
-        return { school: el };
-      });
-
-      return {
-        schools: await schoolClassArrayReturn(schools, year_id),
-        total,
-        result,
-      };
-    }
-
-    const result = schoolSchema.map((el) => {
+    const result = schoolsClass.map((el) => {
       return { school: el };
     });
 
@@ -86,7 +84,12 @@ export const listWorkSchoolService = async (
       select: {
         role: true,
         dash: true,
-        school: { select: select_school },
+        school: {
+          select: {
+            ...select_school,
+            classes: { distinct: ['year_id'], select: { year_id: true } },
+          },
+        },
       },
       orderBy: { school: { name: 'asc' } },
     }),
@@ -95,7 +98,14 @@ export const listWorkSchoolService = async (
     }),
     prisma.schoolServer.findMany({
       where,
-      select: { school: { select: select_school } },
+      select: {
+        school: {
+          select: {
+            ...select_school,
+            classes: { distinct: ['year_id'], select: { year_id: true } },
+          },
+        },
+      },
       orderBy: { school: { name: 'asc' } },
     }),
   ]);
@@ -104,24 +114,14 @@ export const listWorkSchoolService = async (
 
   const schools = schoolSchema.map((el) => el.school);
 
-  if (year_id) {
-    const schoolServerSchema = SchoolServerArraySchema.parse(workSchools);
+  const schoolServerSchema = SchoolServerArraySchema.parse(
+    verifySchoolServerClassArr(workSchools, year_id),
+  );
 
-    const schoolsClass = await schoolServerClassArrayReturn(
-      schoolServerSchema,
-      year_id,
-    );
+  const result = await schoolServerClassArrayReturn(
+    schoolServerSchema,
+    year_id,
+  );
 
-    const result = schoolsClass.map((el) => {
-      return { school: el };
-    });
-
-    return {
-      schools: await schoolClassArrayReturn(schools, year_id),
-      total,
-      result,
-    };
-  }
-
-  return { schools, total, result: SchoolServerArraySchema.parse(workSchools) };
+  return { schools, total, result };
 };

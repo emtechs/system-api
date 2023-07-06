@@ -9,11 +9,9 @@ import {
   deleteSchoolService,
   exportSchoolService,
   importSchoolService,
-  listSchoolClassService,
   listSchoolServerService,
   listSchoolService,
   reportSchoolService,
-  retrieveSchoolClassService,
   retrieveSchoolService,
   updateSchoolService,
 } from '../services';
@@ -70,14 +68,6 @@ export const listSchoolController = async (req: Request, res: Response) => {
   return res.json(schools);
 };
 
-export const listSchoolClassController = async (
-  req: Request,
-  res: Response,
-) => {
-  const schools = await listSchoolClassService(req.params.year_id, req.query);
-  return res.json(schools);
-};
-
 export const listSchoolServerController = async (
   req: Request,
   res: Response,
@@ -99,17 +89,6 @@ export const reportSchoolController = async (req: Request, res: Response) => {
 
 export const retrieveSchoolController = async (req: Request, res: Response) => {
   const school = await retrieveSchoolService(req.params.school_id, req.query);
-  return res.json(school);
-};
-
-export const retrieveSchoolClassController = async (
-  req: Request,
-  res: Response,
-) => {
-  const school = await retrieveSchoolClassService(
-    req.params.school_id,
-    req.params.year_id,
-  );
   return res.json(school);
 };
 

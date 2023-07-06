@@ -8,11 +8,9 @@ import {
   deleteSchoolController,
   deleteSchoolServerController,
   exportSchoolController,
-  listSchoolClassController,
   listSchoolController,
   listSchoolServerController,
   reportSchoolController,
-  retrieveSchoolClassController,
   retrieveSchoolController,
   updateSchoolController,
 } from '../controllers';
@@ -65,13 +63,6 @@ schoolRouter.get(
 schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
 
 schoolRouter.get(
-  '/list/:year_id',
-  verifyUserIsAuthenticated,
-  verifyIsAdmin,
-  listSchoolClassController,
-);
-
-schoolRouter.get(
   '/:school_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
@@ -83,13 +74,6 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   listSchoolServerController,
-);
-
-schoolRouter.get(
-  '/:school_id/year/:year_id',
-  verifyUserIsAuthenticated,
-  verifyIsPermission,
-  retrieveSchoolClassController,
 );
 
 schoolRouter.get(

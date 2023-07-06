@@ -1,7 +1,8 @@
+import { AppError } from '../../errors';
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolReturnSchema } from '../../schemas';
-import { verifySchoolClass } from '../../scripts';
+import { schoolClassReturn, verifySchoolClass } from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
@@ -28,8 +29,17 @@ export const retrieveSchoolService = async (
     }),
   ]);
 
+  if (!school) throw new AppError('school not found', 404);
+
+  const schoolReturn = SchoolReturnSchema.parse(
+    verifySchoolClass(school, year_id),
+  );
+
+  const schoolClass = await schoolClassReturn(schoolReturn, year_id);
+
   return {
-    school: SchoolReturnSchema.parse(verifySchoolClass(school, year_id)),
+    school: schoolReturn,
     years,
+    schoolClass,
   };
 };

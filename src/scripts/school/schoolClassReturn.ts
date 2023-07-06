@@ -5,6 +5,8 @@ export const schoolClassReturn = async (
   schoolData: ISchoolData,
   year_id: string,
 ) => {
+  if (!schoolData.is_dash) return schoolData;
+
   const school_id = schoolData.id;
   let infrequency = 0;
 
@@ -53,6 +55,9 @@ const schoolServerClassReturn = async (
   year_id: string,
 ) => {
   const { dash, role, school } = schoolData;
+
+  if (!school.is_dash) return { dash, role, school };
+
   const school_id = school.id;
   let infrequency = 0;
 

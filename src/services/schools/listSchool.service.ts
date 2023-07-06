@@ -1,7 +1,7 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema } from '../../schemas';
-import { verifySchoolClassArr } from '../../scripts';
+import { schoolClassArrayReturn, verifySchoolClassArr } from '../../scripts';
 
 export const listSchoolService = async ({
   name,
@@ -13,6 +13,7 @@ export const listSchoolService = async ({
   by,
   server_id,
   year_id,
+  infreq,
 }: ISchoolQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -39,6 +40,12 @@ export const listSchoolService = async ({
   }
 
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
+
+  if (infreq)
+    where = {
+      ...where,
+      infrequencies: { some: { value: { gte: +infreq } } },
+    };
 
   if (is_active) {
     switch (is_active) {
@@ -88,11 +95,15 @@ export const listSchoolService = async ({
     }),
   ]);
 
+  const schoolsSchema = SchoolArraySchema.parse(
+    verifySchoolClassArr(schools, year_id),
+  );
+
   return {
     schools: SchoolArraySchema.parse(
       verifySchoolClassArr(schoolsLabel, year_id),
     ),
     total,
-    result: SchoolArraySchema.parse(verifySchoolClassArr(schools, year_id)),
+    result: await schoolClassArrayReturn(schoolsSchema, year_id),
   };
 };
