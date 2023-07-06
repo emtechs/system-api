@@ -106,8 +106,8 @@ export const listSchoolClassService = async (
   ]);
 
   return {
-    schools: schoolClassArrayReturn(schoolsLabel),
+    schools: await schoolClassArrayReturn(schoolsLabel, year_id),
     total: schoolsLabel.length,
-    result: schoolClassArrayReturn(schoolsData),
+    result: await schoolClassArrayReturn(schoolsData, year_id),
   };
 };

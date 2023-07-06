@@ -73,7 +73,7 @@ export const listWorkSchoolClassService = async (
 
     return {
       total,
-      result: classesArrSchoolClassReturn(schoolsData),
+      result: await classesArrSchoolClassReturn(schoolsData, year_id),
     };
   }
 
@@ -134,6 +134,6 @@ export const listWorkSchoolClassService = async (
 
   return {
     total,
-    result: serverArrSchoolClassReturn(schoolsData),
+    result: await serverArrSchoolClassReturn(schoolsData, year_id),
   };
 };

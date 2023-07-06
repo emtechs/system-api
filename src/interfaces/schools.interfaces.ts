@@ -57,8 +57,4 @@ export interface ISchoolData {
       servers: number;
     };
   };
-  _count: {
-    frequencies: number;
-    students: number;
-  };
 }

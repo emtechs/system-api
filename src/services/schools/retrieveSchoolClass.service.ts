@@ -30,14 +30,8 @@ export const retrieveSchoolClassService = async (
           },
         },
       },
-      _count: {
-        select: {
-          frequencies: { where: { status: 'CLOSED', year_id } },
-          students: { where: { is_active: true, year_id } },
-        },
-      },
     },
   });
 
-  return schoolClassReturn(element);
+  return await schoolClassReturn(element, year_id);
 };
