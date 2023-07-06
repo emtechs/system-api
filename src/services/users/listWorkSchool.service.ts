@@ -4,7 +4,7 @@ import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
-  { take, skip }: ISchoolQuery,
+  { take, skip, year_id }: ISchoolQuery,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -20,6 +20,9 @@ export const listWorkSchoolService = async (
   };
 
   where_school = { ...where_school, is_active: true };
+
+  if (year_id)
+    where_school = { ...where_school, classes: { some: { year_id } } };
 
   if (role === 'ADMIN') {
     const select = select_school;
