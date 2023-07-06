@@ -14,14 +14,14 @@ export const verifySchoolClass = (
   },
   year_id_data = '',
 ) => {
-  let is_class = false;
+  let is_dash = false;
 
   const classesData = school.classes.filter(
     ({ year_id }) => year_id === year_id_data,
   );
-  is_class = classesData.length > 0;
+  is_dash = classesData.length > 0;
 
-  return { ...school, is_class };
+  return { ...school, is_dash };
 };
 
 export const verifySchoolClassArr = (
