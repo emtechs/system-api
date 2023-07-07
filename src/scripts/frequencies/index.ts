@@ -1,6 +1,7 @@
 export * from './calculateFrequency';
 export * from './createFrequencyHistory';
 export * from './frequencyReturn';
+export * from './infrequencyReturn';
 export * from './parseFrequency';
 export * from './parseFrequencyClass';
 export * from './parseFrequencySchool';

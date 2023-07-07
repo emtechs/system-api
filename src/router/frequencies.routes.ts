@@ -4,6 +4,7 @@ import {
   deleteFrequencyController,
   listFrequencyController,
   listFrequencyStudentController,
+  listInfrequencyController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
@@ -29,6 +30,12 @@ frequencyRouter.post(
 );
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController);
+
+frequencyRouter.get(
+  '/infrequency',
+  verifyUserIsAuthenticated,
+  listInfrequencyController,
+);
 
 frequencyRouter.get(
   '/:id',
