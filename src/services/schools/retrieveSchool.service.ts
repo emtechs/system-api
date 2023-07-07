@@ -15,7 +15,7 @@ export const retrieveSchoolService = async (
     director: { select: { id: true, cpf: true, name: true } },
   };
 
-  const [school, years] = await Promise.all([
+  const [school, years, periodsData] = await Promise.all([
     prisma.school.findUnique({
       where: { id },
       select: {
@@ -27,6 +27,11 @@ export const retrieveSchoolService = async (
       where: { classes: { some: { school_id: id } } },
       orderBy: { year: 'desc' },
     }),
+    prisma.period.findMany({
+      where: { year_id },
+      distinct: ['category'],
+      select: { category: true },
+    }),
   ]);
 
   if (!school) throw new AppError('school not found', 404);
@@ -37,9 +42,17 @@ export const retrieveSchoolService = async (
 
   const schoolClass = await schoolClassReturn(schoolReturn, year_id);
 
+  const periods = periodsData.map((el) => {
+    return {
+      id: el.category,
+      label: el.category[0] + el.category.substring(1).toLowerCase(),
+    };
+  });
+
   return {
     school: schoolReturn,
     years,
+    periods,
     schoolClass,
   };
 };

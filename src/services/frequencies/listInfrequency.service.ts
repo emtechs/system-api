@@ -9,23 +9,9 @@ export const listInfrequencyService = async ({
   student_id,
   category,
 }: IFrequencyQuery) => {
-  const [infrequency, categoriesData] = await Promise.all([
-    prisma.period.findMany({
-      where: { category, year_id },
-      select: { id: true, name: true, date_initial: true, date_final: true },
-    }),
-    prisma.period.findMany({
-      where: { year_id },
-      distinct: ['category'],
-      select: { category: true },
-    }),
-  ]);
-
-  const categories = categoriesData.map((el) => {
-    return {
-      id: el.category,
-      label: el.category[0] + el.category.substring(1).toLowerCase(),
-    };
+  const infrequency = await prisma.period.findMany({
+    where: { category, year_id },
+    select: { id: true, name: true, date_initial: true, date_final: true },
   });
 
   const infreq = await infrequencyArrayReturn(
@@ -42,8 +28,5 @@ export const listInfrequencyService = async ({
     if (el) result.push(el);
   });
 
-  return {
-    result,
-    categories,
-  };
+  return result;
 };
