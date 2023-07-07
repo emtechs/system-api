@@ -29,7 +29,7 @@ export const frequencyReturn = (
       date,
       status,
       infrequency,
-      students: _count.students,
+      total_students: _count.students,
       school: classData.school,
       class: classData.class,
     };
