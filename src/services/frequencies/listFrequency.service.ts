@@ -61,6 +61,7 @@ export const listFrequencyService = async ({
             school: { select: { id: true, name: true } },
           },
         },
+        _count: { select: { students: true } },
       },
       orderBy,
     }),

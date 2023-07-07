@@ -16,16 +16,20 @@ export const frequencyReturn = (
         name: string;
       };
     };
+    _count: {
+      students: number;
+    };
   }[],
 ) => {
   const freqDataArr = frequencies.map((el) => {
-    const { id, date, status, infrequency, class: classData } = el;
+    const { id, date, status, infrequency, class: classData, _count } = el;
 
     return {
       id,
       date,
       status,
       infrequency,
+      students: _count.students,
       school: classData.school,
       class: classData.class,
     };
