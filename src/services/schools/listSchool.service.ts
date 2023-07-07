@@ -14,6 +14,7 @@ export const listSchoolService = async ({
   server_id,
   year_id,
   infreq,
+  none_server_id,
 }: ISchoolQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -71,7 +72,10 @@ export const listSchoolService = async ({
     }
   }
 
-  if (server_id) where = { ...where, servers: { none: { server_id } } };
+  if (none_server_id)
+    where = { ...where, servers: { none: { none_server_id } } };
+
+  if (server_id) where = { ...where, servers: { some: { server_id } } };
 
   const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
@@ -96,12 +100,12 @@ export const listSchoolService = async ({
   ]);
 
   const schoolsSchema = SchoolArraySchema.parse(
-    verifySchoolClassArr(schools, year_id),
+    await verifySchoolClassArr(schools, year_id, server_id),
   );
 
   return {
     schools: SchoolArraySchema.parse(
-      verifySchoolClassArr(schoolsLabel, year_id),
+      await verifySchoolClassArr(schoolsLabel, year_id, server_id),
     ),
     total,
     result: await schoolClassArrayReturn(schoolsSchema, year_id),

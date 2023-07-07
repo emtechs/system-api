@@ -78,6 +78,10 @@ export const SchoolReturnSchema = z
     is_active: z.boolean(),
     director: DirectorSchema.nullable().optional(),
     is_dash: z.boolean().optional(),
+    server: DirectorSchema.extend({
+      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
+      dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
+    }).optional(),
   })
   .refine((fields) => (fields.label = fields.name));
 

@@ -9,18 +9,12 @@ import {
   exportUserService,
   importUserService,
   dashUserService,
-  listServerService,
   listWorkSchoolService,
 } from '../services';
 
 export const createUserController = async (req: Request, res: Response) => {
   const user = await createUserService(req.body, req.query);
   return res.status(201).json(user);
-};
-
-export const listServerController = async (req: Request, res: Response) => {
-  const servers = await listServerService(req.params.id, req.query);
-  return res.json(servers);
 };
 
 export const listUserController = async (req: Request, res: Response) => {
