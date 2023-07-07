@@ -1,119 +1,53 @@
-import { Student } from '@prisma/client';
 import { IStudentQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { studentsParseFrequency } from '../../scripts';
-import { StudentArraySchema } from '../../schemas';
+import { studentArrayReturn } from '../../scripts';
 
 export const listStudentService = async ({
   year_id,
   school_id,
+  class_id,
   take,
-  is_active,
   skip,
-  is_list,
-  infreq,
+  by,
+  order,
+  name,
 }: IStudentQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
-  if (infreq) infreq = +infreq;
 
-  let whereClassesEvery = {};
+  let where = {};
+  let where_classes = {};
+  let orderBy = {};
 
-  if (is_list) {
-    const [students, total] = await Promise.all([
-      prisma.student.findMany({
-        take,
-        skip,
-        where: {
-          infrequencies: {
-            every: { value: { gte: infreq ? infreq : 0 }, year_id },
-          },
-        },
-        orderBy: { name: 'asc' },
-        include: {
-          classes: {
-            where: { AND: { year_id, is_active: true } },
-            include: {
-              class: { include: { class: true, school: true, year: true } },
-            },
-          },
-        },
-      }),
-      prisma.student.count({
-        where: {
-          infrequencies: { every: { value: { gte: infreq ? infreq : 0 } } },
-        },
-      }),
-    ]);
-
-    const studentsSchema = StudentArraySchema.parse(students);
-
-    return {
-      total,
-      result: studentsSchema,
-    };
-  }
-
-  let students: Student[];
-  let total: number;
-
-  if (is_active) {
-    switch (is_active) {
-    case 'true':
-      whereClassesEvery = { ...whereClassesEvery, is_active: true };
+  if (order) {
+    switch (order) {
+    case 'name':
+      orderBy = { name: by };
       break;
 
-    case 'false':
-      whereClassesEvery = { ...whereClassesEvery, is_active: false };
+    case 'registry':
+      orderBy = { registry: by };
       break;
     }
   }
 
-  if (school_id) whereClassesEvery = { ...whereClassesEvery, school_id };
+  if (year_id) where_classes = { ...where_classes, some: { year_id } };
 
-  if (year_id) {
-    [students, total] = await Promise.all([
-      prisma.student.findMany({
-        take,
-        skip,
-        where: {
-          classes: { every: { school_id } },
-          infrequencies: { every: { value: { gt: 0 } } },
-        },
-        include: { infrequencies: { orderBy: { value: 'desc' } } },
-      }),
-      prisma.student.count({
-        where: {
-          classes: { every: { school_id } },
-          infrequencies: { every: { value: { gt: 0 } } },
-        },
-      }),
-    ]);
+  if (school_id) where_classes = { ...where_classes, some: { school_id } };
 
-    const studentsReturn = await studentsParseFrequency(students, year_id);
+  if (class_id) where_classes = { ...where_classes, some: { class_id } };
 
-    return {
-      total,
-      result: studentsReturn,
-    };
-  }
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
-  [students, total] = await Promise.all([
-    prisma.student.findMany({
-      take,
-      skip,
-      where: { classes: { every: { ...whereClassesEvery } } },
-      orderBy: { name: 'asc' },
-    }),
-    prisma.student.count({
-      where: { classes: { every: { ...whereClassesEvery } } },
-    }),
+  where = { ...where, classes: { ...where_classes } };
+
+  const [users, total] = await Promise.all([
+    prisma.student.findMany({ take, skip, where, orderBy }),
+    prisma.student.count({ where }),
   ]);
-
-  const studentsSchema = StudentArraySchema.parse(students);
 
   return {
     total,
-    result: studentsSchema,
+    result: await studentArrayReturn(users, year_id),
   };
 };

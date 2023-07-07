@@ -14,6 +14,13 @@ export interface IStudent {
   year_id: string;
 }
 
+export interface IStudentData {
+  id: string;
+  name: string;
+  registry: string;
+  created_at: Date;
+}
+
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>;
 
 export type IStudentUpdateRequest = z.infer<typeof StudentUpdateSchema>;
@@ -43,7 +50,9 @@ export type IStudentWithClassRequest = z.infer<
 export interface IStudentQuery extends IQuery {
   year_id?: string;
   school_id?: string;
+  class_id?: string;
   is_active?: 'true' | 'false';
   is_list?: string;
   infreq?: number;
+  name?: string;
 }
