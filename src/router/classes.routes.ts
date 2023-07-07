@@ -8,7 +8,6 @@ import {
   listClassController,
   listClassDashController,
   listClassSchoolController,
-  listClassSchoolWithSchoolController,
   listClassStudentController,
   retrieveClassSchoolController,
   updateClassSchoolController,
@@ -53,26 +52,19 @@ classRouter.post(
 
 classRouter.get('', verifyUserIsAuthenticated, listClassController);
 
-classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
-
 classRouter.get(
-  '/school/:school_id',
+  '/school',
   verifyUserIsAuthenticated,
-  verifyIsPermission,
-  listClassSchoolWithSchoolController,
+  listClassSchoolController,
 );
+
+classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
 
 classRouter.get(
   '/school/:school_id/dash/:year_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   listClassDashController,
-);
-
-classRouter.get(
-  '/year/:id',
-  verifyUserIsAuthenticated,
-  listClassSchoolController,
 );
 
 classRouter.get(

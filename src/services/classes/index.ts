@@ -7,7 +7,6 @@ export * from './importClass.service';
 export * from './listClass.service';
 export * from './listClassDash.service';
 export * from './listClassSchool.service';
-export * from './listClassSchoolWithSchool.service';
 export * from './listClassStudent.service';
 export * from './retrieveClassSchool.service';
 export * from './updateClassSchool.service';

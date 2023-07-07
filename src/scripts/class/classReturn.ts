@@ -6,6 +6,10 @@ export const classReturn = (
       id: string;
       name: string;
     };
+    school: {
+      id: string;
+      name: string;
+    };
     infrequencies: {
       value: number;
       period: {
@@ -30,6 +34,7 @@ export const classReturn = (
       id: el.class.id,
       label: el.class.name,
       name: el.class.name,
+      school: el.school,
       students: el._count.students,
       frequencies: el._count.frequencies,
       infrequency,
