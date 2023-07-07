@@ -60,7 +60,7 @@ export const listWorkSchoolService = async (
     ]);
 
     const schoolsSchema = SchoolArraySchema.parse(
-      verifySchoolClassArr(schoolsData, year_id),
+      await verifySchoolClassArr(schoolsData, year_id),
     );
 
     const schools = SchoolArraySchema.parse(schoolsLabel);

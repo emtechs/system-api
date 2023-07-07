@@ -32,7 +32,7 @@ export const retrieveSchoolService = async (
   if (!school) throw new AppError('school not found', 404);
 
   const schoolReturn = SchoolReturnSchema.parse(
-    verifySchoolClass(school, year_id),
+    await verifySchoolClass(school, year_id),
   );
 
   const schoolClass = await schoolClassReturn(schoolReturn, year_id);
