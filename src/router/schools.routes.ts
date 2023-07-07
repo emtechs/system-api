@@ -9,7 +9,6 @@ import {
   deleteSchoolServerController,
   exportSchoolController,
   listSchoolController,
-  listSchoolServerController,
   reportSchoolController,
   retrieveSchoolController,
   updateSchoolController,
@@ -67,13 +66,6 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   retrieveSchoolController,
-);
-
-schoolRouter.get(
-  '/:school_id/server',
-  verifyUserIsAuthenticated,
-  verifyIsPermission,
-  listSchoolServerController,
 );
 
 schoolRouter.get(

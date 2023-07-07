@@ -8,7 +8,6 @@ export * from './deleteSchoolServer.service';
 export * from './exportSchool.service';
 export * from './importSchool.service';
 export * from './listSchool.service';
-export * from './listSchoolServer.service';
 export * from './reportSchool.service';
 export * from './retrieveSchool.service';
 export * from './updateSchool.service';

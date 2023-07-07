@@ -13,13 +13,14 @@ export const listUserService = async (
     order,
     by,
     name,
+    school_id,
   }: IUserQuery,
   id: string,
 ) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
-  let whereData = {};
+  let where = {};
   let orderBy = {};
 
   if (order) {
@@ -30,45 +31,34 @@ export const listUserService = async (
     }
   }
 
-  if (name)
-    whereData = { ...whereData, name: { contains: name, mode: 'insensitive' } };
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
-  if (role) {
-    if (role === 'SERV') {
-      whereData = {
-        ...whereData,
-        role: { not: { in: ['ADMIN', 'SECRET'] } },
-      };
-    } else {
-      whereData = {
-        ...whereData,
-        role: role,
-      };
-    }
-  }
+  if (role) where = { ...where, role };
+
+  if (school_id) where = { ...where, work_school: { some: { school_id } } };
 
   if (is_active) {
     switch (is_active) {
     case 'true':
-      whereData = { ...whereData, is_active: true };
+      where = { ...where, is_active: true };
       break;
 
     case 'false':
-      whereData = { ...whereData, is_active: false };
+      where = { ...where, is_active: false };
       break;
     }
   }
 
   if (isNot_director_school)
-    whereData = { ...whereData, director_school: { none: {} } };
+    where = { ...where, director_school: { none: {} } };
 
-  whereData = { ...whereData, NOT: { id } };
+  where = { ...where, NOT: { id } };
 
   const [users, total, rolesData] = await Promise.all([
     prisma.user.findMany({
       take,
       skip,
-      where: { ...whereData },
+      where,
       orderBy,
       include: {
         director_school: true,
@@ -80,10 +70,10 @@ export const listUserService = async (
       },
     }),
     prisma.user.count({
-      where: { ...whereData },
+      where,
     }),
     prisma.user.findMany({
-      where: { ...whereData },
+      where,
       distinct: ['role'],
       orderBy: { role: 'asc' },
       select: { role: true },

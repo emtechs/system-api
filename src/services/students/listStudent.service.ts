@@ -26,7 +26,7 @@ export const listStudentService = async ({
       break;
 
     case 'registry':
-      orderBy = { registry: by };
+      orderBy = [{ registry: by }, { name: 'asc' }];
       break;
     }
   }
@@ -41,13 +41,13 @@ export const listStudentService = async ({
 
   where = { ...where, classes: { ...where_classes } };
 
-  const [users, total] = await Promise.all([
+  const [students, total] = await Promise.all([
     prisma.student.findMany({ take, skip, where, orderBy }),
     prisma.student.count({ where }),
   ]);
 
   return {
     total,
-    result: await studentArrayReturn(users, year_id),
+    result: await studentArrayReturn(students, year_id),
   };
 };

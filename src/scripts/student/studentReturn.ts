@@ -6,32 +6,68 @@ export const studentReturn = async (
   year_id: string,
 ) => {
   const student_id = studentData.id;
-  let presented = 0;
-  let justified = 0;
-  let missed = 0;
-  let total_frequencies = 0;
-  let infrequency = 0;
+  let student = {};
 
-  const data = await prisma.studentInfrequency.findFirst({
-    where: { student_id, period: { year_id, category: 'ANO' } },
-  });
-
-  if (data) {
-    presented = data.presences;
-    justified = data.justified;
-    missed = data.absences;
-    total_frequencies = data.frequencies;
-    infrequency = data.value;
-  }
-
-  return {
+  student = {
+    ...student,
     ...studentData,
-    presented,
-    justified,
-    missed,
-    total_frequencies,
-    infrequency,
+    frequencies: {
+      presented: 0,
+      justified: 0,
+      missed: 0,
+      total: 0,
+    },
+    infrequency: 0,
   };
+
+  const [data, classData, schoolData] = await Promise.all([
+    prisma.studentInfrequency.findFirst({
+      where: { student_id, period: { year_id, category: 'ANO' } },
+    }),
+    prisma.class.findFirst({
+      where: {
+        schools: {
+          some: {
+            students: { some: { student_id, year_id, is_active: true } },
+          },
+        },
+      },
+      select: { id: true, name: true },
+    }),
+    prisma.school.findFirst({
+      where: {
+        classes: {
+          some: {
+            students: { some: { student_id, year_id, is_active: true } },
+          },
+        },
+      },
+      select: { id: true, name: true },
+    }),
+  ]);
+
+  if (data)
+    student = {
+      ...student,
+      frequencies: {
+        presented: data.presences,
+        justified: data.justified,
+        missed: data.absences,
+        total: data.frequencies,
+      },
+      infrequency: data.value,
+    };
+
+  if (classData)
+    student = { ...student, class: { id: classData.id, name: classData.name } };
+
+  if (schoolData)
+    student = {
+      ...student,
+      school: { id: schoolData.id, name: schoolData.name },
+    };
+
+  return student;
 };
 
 export const studentArrayReturn = async (
