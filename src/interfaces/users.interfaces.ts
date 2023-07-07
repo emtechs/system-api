@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { UserCreateSchema, UserUpdateRequestSchema } from '../schemas';
+import {
+  UserCreateSchema,
+  UserReturnSchema,
+  UserUpdateRequestSchema,
+} from '../schemas';
 import { IQuery } from './global.interfaces';
 
 export type IRole = 'ADMIN' | 'SERV' | 'DIRET' | 'SECRET';
@@ -16,6 +20,8 @@ export interface IUser {
   name: string;
   cpf: string;
 }
+
+export type IUserReturn = z.infer<typeof UserReturnSchema>;
 
 export type IUserRequest = z.infer<typeof UserCreateSchema>;
 

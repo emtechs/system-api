@@ -1,7 +1,7 @@
 import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
-import { rolePtBr } from '../../scripts';
+import { rolePtBr, userReturnArray } from '../../scripts';
 
 export const listUserService = async (
   {
@@ -60,14 +60,6 @@ export const listUserService = async (
       skip,
       where,
       orderBy,
-      include: {
-        director_school: true,
-        work_school: {
-          include: {
-            school: true,
-          },
-        },
-      },
     }),
     prisma.user.count({
       where,
@@ -88,7 +80,7 @@ export const listUserService = async (
 
   return {
     total,
-    result: usersSchema,
+    result: await userReturnArray(usersSchema, school_id),
     roles,
   };
 };

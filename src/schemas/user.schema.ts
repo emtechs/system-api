@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { SchoolReturnSchema } from './school.schema';
 
 export const UserCreateSchema = z.object({
   login: z.string(),
@@ -18,19 +17,7 @@ export const UserReturnSchema = UserCreateSchema.extend({
   is_active: z.boolean(),
   is_first_access: z.boolean(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-  director_school: SchoolReturnSchema.array().optional(),
-  work_school: z
-    .object({
-      role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
-      dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-      school: z.object({
-        id: z.string(),
-        name: z.string(),
-      }),
-    })
-    .array()
-    .optional(),
-}).omit({ password: true });
+}).omit({ password: true, schools: true });
 
 export const UserUpdateRequestSchema = UserCreateSchema.extend({
   email: z.string().email(),
