@@ -49,6 +49,7 @@ export interface IFrequencyQuery extends IQuery {
   student_id?: string;
   category?: CategoryPeriod;
   user_id?: string;
+  name?: string;
 }
 
 export interface IFrequencyStudentQuery extends IQuery {

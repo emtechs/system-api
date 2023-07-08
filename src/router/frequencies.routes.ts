@@ -3,6 +3,7 @@ import {
   createFrequencyController,
   deleteFrequencyController,
   listFrequencyController,
+  listFrequencyHistoryController,
   listFrequencyStudentController,
   listInfrequencyController,
   retrieveFrequencyController,
@@ -35,6 +36,12 @@ frequencyRouter.get(
   '/infrequency',
   verifyUserIsAuthenticated,
   listInfrequencyController,
+);
+
+frequencyRouter.get(
+  '/history',
+  verifyUserIsAuthenticated,
+  listFrequencyHistoryController,
 );
 
 frequencyRouter.get(

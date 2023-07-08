@@ -47,7 +47,7 @@ export const updateFrequencyService = async (
     createFrequencyHistory(
       frequencyData.students,
       frequencyData.user_id,
-      frequencyData.finished_at,
+      finished_at,
     ),
   ]);
 

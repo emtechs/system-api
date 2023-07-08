@@ -2,6 +2,7 @@ export * from './createFrequency.service';
 export * from './createFrequencyStudent.service';
 export * from './deleteFrequency.service';
 export * from './listFrequency.service';
+export * from './listFrequencyHistory.service';
 export * from './listFrequencyStudent.service';
 export * from './listInfrequency.service';
 export * from './retrieveFrequency.service';
