@@ -12,6 +12,7 @@ export const listFrequencyService = async ({
   year_id,
   order,
   by,
+  user_id,
 }: IFrequencyQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -26,7 +27,7 @@ export const listFrequencyService = async ({
       break;
 
     case 'date':
-      orderBy = { date_time: by };
+      orderBy = [{ date_time: by }, { class: { class: { name: 'asc' } } }];
       break;
 
     case 'finished_at':
@@ -36,6 +37,10 @@ export const listFrequencyService = async ({
     case 'infreq':
       orderBy = { infrequency: by };
       break;
+
+    case 'name':
+      orderBy = [{ class: { class: { name: by } } }, { date_time: 'asc' }];
+      break;
     }
   }
 
@@ -44,6 +49,7 @@ export const listFrequencyService = async ({
   if (class_id) where = { ...where, class_id };
   if (school_id) where = { ...where, school_id };
   if (year_id) where = { ...where, year_id };
+  if (user_id) where = { ...where, user_id };
 
   const [frequencies, total] = await Promise.all([
     prisma.frequency.findMany({
