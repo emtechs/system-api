@@ -28,5 +28,5 @@ export const listInfrequencyService = async ({
     if (el) result.push(el);
   });
 
-  return result;
+  return { result, total: result.length };
 };
