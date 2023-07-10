@@ -1,45 +1,33 @@
-import { CategoryPeriod } from '@prisma/client';
+import prisma from '../../prisma';
 
-export const classReturn = (
-  classes: {
-    class: {
-      id: string;
-      name: string;
-    };
-    school: {
-      id: string;
-      name: string;
-    };
-    infrequencies: {
-      value: number;
-      period: {
-        name: string;
-        category: CategoryPeriod;
-      };
-    }[];
-    _count: {
-      students: number;
-      frequencies: number;
-    };
+export const classReturn = async (classData: {
+  id: string;
+  name: string;
+  is_active: boolean;
+  created_at: Date;
+}) => {
+  const class_id = classData.id;
+
+  const [schools, students, frequencies] = await Promise.all([
+    prisma.school.count({ where: { classes: { every: { class_id } } } }),
+    prisma.student.count({ where: { classes: { some: { class_id } } } }),
+    prisma.frequency.count({ where: { class_id, status: 'CLOSED' } }),
+  ]);
+
+  return { ...classData, schools, students, frequencies };
+};
+
+export const classArrayReturn = async (
+  classData: {
+    id: string;
+    name: string;
+    is_active: boolean;
+    created_at: Date;
   }[],
 ) => {
-  const classDataArr = classes.map((el) => {
-    let infrequency = 0;
+  const classes = classData.map((el) => classReturn(el));
 
-    el.infrequencies.forEach((el) => {
-      if (el.period.category === 'ANO') infrequency = el.value;
-    });
-
-    return {
-      id: el.class.id,
-      label: el.class.name,
-      name: el.class.name,
-      school: el.school,
-      students: el._count.students,
-      frequencies: el._count.frequencies,
-      infrequency,
-    };
+  return Promise.all(classes).then((school) => {
+    return school;
   });
-
-  return classDataArr;
 };

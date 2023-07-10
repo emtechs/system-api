@@ -1,6 +1,6 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { classReturn } from '../../scripts';
+import { classYearReturn } from '../../scripts';
 
 export const listClassSchoolService = async ({
   take,
@@ -95,8 +95,8 @@ export const listClassSchoolService = async ({
   ]);
 
   return {
-    classes: classReturn(classesLabel),
+    classes: classYearReturn(classesLabel),
     total,
-    result: classReturn(classes),
+    result: classYearReturn(classes),
   };
 };

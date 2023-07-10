@@ -1,14 +1,12 @@
 import { AppError } from '../../errors';
 import prisma from '../../prisma';
 import { ClassReturnSchema } from '../../schemas';
+import { classReturn } from '../../scripts';
 
 export const retrieveClassService = async (id: string) => {
-  const select = { id: true, name: true, is_active: true };
-
   const [classData, years, periodsData] = await Promise.all([
     prisma.class.findUnique({
       where: { id },
-      select,
     }),
     prisma.year.findMany({
       where: { classes: { some: { class_id: id } } },
@@ -23,14 +21,6 @@ export const retrieveClassService = async (id: string) => {
 
   if (!classData) throw new AppError('school not found', 404);
 
-  const [schools, students, frequencies] = await Promise.all([
-    prisma.school.count({ where: { classes: { every: { class_id: id } } } }),
-    prisma.student.count({ where: { classes: { some: { class_id: id } } } }),
-    prisma.frequency.count({ where: { class_id: id, status: 'CLOSED' } }),
-  ]);
-
-  const classReturn = { ...classData, schools, students, frequencies };
-
   const periods = periodsData.map((el) => {
     return {
       id: el.category,
@@ -39,7 +29,7 @@ export const retrieveClassService = async (id: string) => {
   });
 
   return {
-    class: ClassReturnSchema.parse(classReturn),
+    class: ClassReturnSchema.parse(await classReturn(classData)),
     years,
     periods,
   };

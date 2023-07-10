@@ -1,6 +1,7 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { ClassArraySchema } from '../../schemas';
+import { classArrayReturn } from '../../scripts';
 
 export const listClassService = async ({
   is_active,
@@ -16,7 +17,6 @@ export const listClassService = async ({
   if (skip) skip = +skip;
 
   let where = {};
-  const select = { id: true, name: true, is_active: true };
   let orderBy = {};
 
   if (year_id && school_id)
@@ -50,19 +50,17 @@ export const listClassService = async ({
       skip,
       where,
       orderBy,
-      select,
     }),
     prisma.class.count({ where }),
     prisma.class.findMany({
       where,
       orderBy: { name: 'asc' },
-      select,
     }),
   ]);
 
   return {
     classes: ClassArraySchema.parse(classesLabel),
     total,
-    result: ClassArraySchema.parse(classes),
+    result: ClassArraySchema.parse(await classArrayReturn(classes)),
   };
 };
