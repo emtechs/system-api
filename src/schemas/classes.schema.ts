@@ -49,6 +49,9 @@ export const ClassReturnSchema = z
     label: z.string().optional(),
     name: z.string(),
     is_active: z.boolean(),
+    schools: z.number().optional(),
+    students: z.number().optional(),
+    frequencies: z.number().optional(),
   })
   .refine((fields) => (fields.label = fields.name));
 

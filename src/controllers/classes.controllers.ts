@@ -13,6 +13,7 @@ import {
   listClassStudentService,
   dashClassService,
   listClassDashService,
+  retrieveClassService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -87,6 +88,11 @@ export const listClassStudentController = async (
   res: Response,
 ) => {
   const classes = await listClassStudentService(req.params.year_id, req.query);
+  return res.json(classes);
+};
+
+export const retrieveClassController = async (req: Request, res: Response) => {
+  const classes = await retrieveClassService(req.params.class_id);
   return res.json(classes);
 };
 

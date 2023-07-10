@@ -28,9 +28,9 @@ export const retrieveSchoolService = async (
       orderBy: { year: 'desc' },
     }),
     prisma.period.findMany({
-      where: { year_id },
       distinct: ['category'],
       select: { category: true },
+      orderBy: { category: 'asc' },
     }),
   ]);
 

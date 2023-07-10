@@ -9,6 +9,7 @@ import {
   listClassDashController,
   listClassSchoolController,
   listClassStudentController,
+  retrieveClassController,
   retrieveClassSchoolController,
   updateClassSchoolController,
   updateClassStudentController,
@@ -51,6 +52,12 @@ classRouter.post(
 );
 
 classRouter.get('', verifyUserIsAuthenticated, listClassController);
+
+classRouter.get(
+  '/:class_id',
+  verifyUserIsAuthenticated,
+  retrieveClassController,
+);
 
 classRouter.get(
   '/school',
