@@ -17,6 +17,7 @@ export const UserReturnSchema = UserCreateSchema.extend({
   is_active: z.boolean(),
   is_first_access: z.boolean(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
+  frequencies: z.number().optional(),
 }).omit({ password: true, schools: true });
 
 export const UserUpdateRequestSchema = UserCreateSchema.extend({

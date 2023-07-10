@@ -3,16 +3,11 @@ import prisma from '../../prisma';
 import { UserReturnSchema } from '../../schemas';
 
 export const retrieveUserService = async (id: string) => {
-  const [user, yearsData] = await Promise.all([
+  const [userData, yearsData] = await Promise.all([
     prisma.user.findUnique({
       where: { id },
       include: {
-        director_school: true,
-        work_school: {
-          include: {
-            school: true,
-          },
-        },
+        _count: { select: { frequencies: { where: { status: 'CLOSED' } } } },
       },
     }),
     prisma.period.findMany({
@@ -27,7 +22,13 @@ export const retrieveUserService = async (id: string) => {
     return { id: el.year.id, year: el.year.year };
   });
 
-  if (!user) throw new AppError('user not found', 404);
+  if (!userData) throw new AppError('user not found', 404);
+
+  let frequencies = 0;
+
+  if (userData._count.frequencies) frequencies = userData._count.frequencies;
+
+  const user = { ...userData, frequencies };
 
   return { user: UserReturnSchema.parse(user), years };
 };
