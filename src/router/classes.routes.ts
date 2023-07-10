@@ -54,12 +54,6 @@ classRouter.post(
 classRouter.get('', verifyUserIsAuthenticated, listClassController);
 
 classRouter.get(
-  '/:class_id',
-  verifyUserIsAuthenticated,
-  retrieveClassController,
-);
-
-classRouter.get(
   '/school',
   verifyUserIsAuthenticated,
   listClassSchoolController,
@@ -78,6 +72,12 @@ classRouter.get(
   '/student/:year_id',
   verifyUserIsAuthenticated,
   listClassStudentController,
+);
+
+classRouter.get(
+  '/:class_id',
+  verifyUserIsAuthenticated,
+  retrieveClassController,
 );
 
 classRouter.get(
