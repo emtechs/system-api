@@ -25,9 +25,9 @@ export const listUserService = async (
 
   if (order) {
     switch (order) {
-    case 'name':
-      orderBy = { name: by };
-      break;
+      case 'name':
+        orderBy = { name: by };
+        break;
     }
   }
 
@@ -39,13 +39,13 @@ export const listUserService = async (
 
   if (is_active) {
     switch (is_active) {
-    case 'true':
-      where = { ...where, is_active: true };
-      break;
+      case 'true':
+        where = { ...where, is_active: true };
+        break;
 
-    case 'false':
-      where = { ...where, is_active: false };
-      break;
+      case 'false':
+        where = { ...where, is_active: false };
+        break;
     }
   }
 
@@ -54,7 +54,7 @@ export const listUserService = async (
 
   where = { ...where, NOT: { id } };
 
-  const [users, total, rolesData] = await Promise.all([
+  const [users, total] = await Promise.all([
     prisma.user.findMany({
       take,
       skip,
@@ -64,23 +64,12 @@ export const listUserService = async (
     prisma.user.count({
       where,
     }),
-    prisma.user.findMany({
-      where,
-      distinct: ['role'],
-      orderBy: { role: 'asc' },
-      select: { role: true },
-    }),
   ]);
 
   const usersSchema = UserArraySchema.parse(users);
 
-  const roles = rolesData.map((el) => {
-    return { id: el.role, label: rolePtBr(el.role) };
-  });
-
   return {
     total,
     result: await userReturnArray(usersSchema, school_id),
-    roles,
   };
 };
