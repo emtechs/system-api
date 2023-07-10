@@ -41,11 +41,8 @@ export type IFrequencyStudentUpdateRequest = z.infer<
 export interface IFrequencyQuery extends IQuery {
   status?: IStatusFrequency;
   date?: string;
-  class_id?: string;
-  year_id?: string;
   is_infreq?: string;
   is_dash?: string;
-  school_id?: string;
   student_id?: string;
   category?: CategoryPeriod;
   user_id?: string;

@@ -11,5 +11,4 @@ export interface IMonth {
 
 export interface ICalendarQuery extends IQuery {
   month?: string;
-  school_id?: string;
 }

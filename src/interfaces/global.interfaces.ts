@@ -14,4 +14,7 @@ export interface IQuery {
   order?: IOrder;
   by?: 'asc' | 'desc';
   is_active?: 'true' | 'false';
+  year_id?: string;
+  school_id?: string;
+  class_id?: string;
 }

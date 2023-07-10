@@ -36,10 +36,6 @@ export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>;
 export type IClassStudentUpdate = z.infer<typeof ClassStudentUpdateSchema>;
 
 export interface IClassQuery extends IQuery {
-  class_id?: string;
-  school_id?: string;
-  year_id?: string;
-  is_active?: 'true' | 'false';
   infreq?: number;
   date?: string;
   is_infreq?: string;

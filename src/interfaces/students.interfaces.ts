@@ -48,9 +48,6 @@ export type IStudentWithClassRequest = z.infer<
 >;
 
 export interface IStudentQuery extends IQuery {
-  year_id?: string;
-  school_id?: string;
-  class_id?: string;
   is_active?: 'true' | 'false';
   is_list?: string;
   infreq?: number;

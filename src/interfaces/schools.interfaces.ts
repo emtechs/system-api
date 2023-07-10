@@ -37,7 +37,6 @@ export interface ISchoolUpdateInfrequency {
 }
 
 export interface ISchoolQuery extends IQuery {
-  year_id?: string;
   is_director?: 'true' | 'false';
   infreq?: number;
   name?: string;

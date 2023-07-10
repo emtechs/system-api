@@ -15,6 +15,7 @@ export const listSchoolService = async ({
   year_id,
   infreq,
   none_server_id,
+  school_id,
 }: ISchoolQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -76,6 +77,8 @@ export const listSchoolService = async ({
     where = { ...where, servers: { none: { none_server_id } } };
 
   if (server_id) where = { ...where, servers: { some: { server_id } } };
+
+  if (school_id) where = { ...where, id: school_id };
 
   const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
