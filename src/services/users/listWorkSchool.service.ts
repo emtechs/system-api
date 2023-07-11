@@ -1,12 +1,7 @@
 import { IRequestUser, ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
-import {
-  schoolClassArrayReturn,
-  schoolServerClassArrayReturn,
-  verifySchoolClassArr,
-  verifySchoolServerClassArr,
-} from '../../scripts';
+import { schoolArrayReturn, schoolServerArrayReturn } from '../../scripts';
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
@@ -46,10 +41,7 @@ export const listWorkSchoolService = async (
         take,
         skip,
         where,
-        select: {
-          ...select,
-          classes: { distinct: ['year_id'], select: { year_id: true } },
-        },
+        select,
         orderBy: { name: 'asc' },
       }),
       prisma.school.count({
@@ -57,23 +49,18 @@ export const listWorkSchoolService = async (
       }),
       prisma.school.findMany({
         where,
-        select: {
-          ...select,
-          classes: { distinct: ['year_id'], select: { year_id: true } },
-        },
+        select,
         orderBy: { name: 'asc' },
       }),
     ]);
 
     const schoolsSchema = SchoolArraySchema.parse(
-      await verifySchoolClassArr(schoolsData, year_id),
+      await schoolArrayReturn(schoolsData, year_id),
     );
 
     const schools = SchoolArraySchema.parse(schoolsLabel);
 
-    const schoolsClass = await schoolClassArrayReturn(schoolsSchema, year_id);
-
-    const result = schoolsClass.map((el) => {
+    const result = schoolsSchema.map((el) => {
       return { school: el };
     });
 
@@ -91,10 +78,7 @@ export const listWorkSchoolService = async (
         role: true,
         dash: true,
         school: {
-          select: {
-            ...select_school,
-            classes: { distinct: ['year_id'], select: { year_id: true } },
-          },
+          select: select_school,
         },
       },
       orderBy: { school: { name: 'asc' } },
@@ -106,10 +90,7 @@ export const listWorkSchoolService = async (
       where,
       select: {
         school: {
-          select: {
-            ...select_school,
-            classes: { distinct: ['year_id'], select: { year_id: true } },
-          },
+          select: select_school,
         },
       },
       orderBy: { school: { name: 'asc' } },
@@ -120,13 +101,8 @@ export const listWorkSchoolService = async (
 
   const schools = schoolSchema.map((el) => el.school);
 
-  const schoolServerSchema = SchoolServerArraySchema.parse(
-    verifySchoolServerClassArr(workSchools, year_id),
-  );
-
-  const result = await schoolServerClassArrayReturn(
-    schoolServerSchema,
-    year_id,
+  const result = SchoolServerArraySchema.parse(
+    schoolServerArrayReturn(workSchools, year_id),
   );
 
   return { schools, total, result };
