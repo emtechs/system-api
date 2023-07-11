@@ -1,4 +1,3 @@
-import { IDash, IRole } from '../../interfaces';
 import prisma from '../../prisma';
 
 export const schoolReturn = async (
@@ -14,23 +13,30 @@ export const schoolReturn = async (
   },
   year_id = '',
   server_id = '',
+  class_id = '',
 ) => {
   const school_id = school.id;
 
   let schoolData = {};
   let is_dash = false;
   let infrequency = 0;
+  let where = {};
+
+  if (year_id) where = { ...where, year_id };
+  if (class_id) where = { ...where, class_id };
+
+  where = { ...where, school_id };
 
   schoolData = { ...school };
 
   const [classes, students, frequencies, servers, infreq, serverData] =
     await Promise.all([
-      prisma.classSchool.count({ where: { school_id, year_id } }),
+      prisma.classSchool.count({ where }),
       prisma.classStudent.count({
-        where: { school_id, year_id, is_active: true },
+        where: { ...where, is_active: true },
       }),
       prisma.frequency.count({
-        where: { school_id, year_id, status: 'CLOSED' },
+        where: { ...where, status: 'CLOSED' },
       }),
       prisma.schoolServer.count({
         where: { school_id },
@@ -88,59 +94,13 @@ export const schoolArrayReturn = async (
   }[],
   year_id = '',
   server_id = '',
+  class_id = '',
 ) => {
   const verify = schools.map((el) => {
-    return schoolReturn(el, year_id, server_id);
+    return schoolReturn(el, year_id, server_id, class_id);
   });
 
   return Promise.all(verify).then((school) => {
     return school;
   });
-};
-
-export const schoolServerReturn = async (
-  schoolServer: {
-    role: IRole;
-    dash: IDash;
-    school: {
-      id: string;
-      name: string;
-      is_active: boolean;
-      director: {
-        id: string;
-        cpf: string;
-        name: string;
-      };
-    };
-  },
-  year_id = '',
-) => {
-  const { dash, role, school } = schoolServer;
-
-  const schoolClass = await schoolReturn(school, year_id);
-
-  return { dash, role, school: schoolClass };
-};
-
-export const schoolServerArrayReturn = (
-  schools: {
-    role: IRole;
-    dash: IDash;
-    school: {
-      id: string;
-      name: string;
-      is_active: boolean;
-      director: {
-        id: string;
-        cpf: string;
-        name: string;
-      };
-    };
-  }[],
-  year_id = '',
-) => {
-  const verify = schools.map((el) => {
-    return schoolServerReturn(el, year_id);
-  });
-  return verify;
 };

@@ -9,7 +9,7 @@ export const classReturn = async (classData: {
   const class_id = classData.id;
 
   const [schools, students, frequencies] = await Promise.all([
-    prisma.school.count({ where: { classes: { every: { class_id } } } }),
+    prisma.school.count({ where: { classes: { some: { class_id } } } }),
     prisma.student.count({ where: { classes: { some: { class_id } } } }),
     prisma.frequency.count({ where: { class_id, status: 'CLOSED' } }),
   ]);

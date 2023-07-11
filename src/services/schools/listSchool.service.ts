@@ -16,6 +16,7 @@ export const listSchoolService = async ({
   infreq,
   none_server_id,
   school_id,
+  class_id,
 }: ISchoolQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
@@ -33,10 +34,6 @@ export const listSchoolService = async ({
     switch (order) {
     case 'name':
       orderBy = { name: by };
-      break;
-
-    case 'director_name':
-      orderBy = { director: { name: by } };
       break;
     }
   }
@@ -80,6 +77,8 @@ export const listSchoolService = async ({
 
   if (school_id) where = { ...where, id: school_id };
 
+  if (class_id) where = { ...where, classes: { some: { class_id } } };
+
   const [schools, total, schoolsLabel] = await Promise.all([
     prisma.school.findMany({
       take,
@@ -97,9 +96,7 @@ export const listSchoolService = async ({
   ]);
 
   return {
-    schools: SchoolArraySchema.parse(
-      await schoolArrayReturn(schoolsLabel, year_id, server_id),
-    ),
+    schools: SchoolArraySchema.parse(schoolsLabel),
     total,
     result: SchoolArraySchema.parse(
       await schoolArrayReturn(schools, year_id, server_id),
