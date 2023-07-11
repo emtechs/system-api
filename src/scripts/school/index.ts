@@ -1,3 +1,2 @@
-export * from './schoolClassReturn';
+export * from './schoolReturn';
 export * from './updateSchool';
-export * from './verifySchoolClass';

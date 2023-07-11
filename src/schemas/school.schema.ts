@@ -78,6 +78,11 @@ export const SchoolReturnSchema = z
     is_active: z.boolean(),
     director: DirectorSchema.nullable().optional(),
     is_dash: z.boolean().optional(),
+    classes: z.number().optional(),
+    students: z.number().optional(),
+    frequencies: z.number().optional(),
+    servers: z.number().optional(),
+    infrequency: z.number().optional(),
     server: DirectorSchema.extend({
       role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
       dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),

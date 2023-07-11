@@ -2,7 +2,7 @@ import { AppError } from '../../errors';
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolReturnSchema } from '../../schemas';
-import { schoolClassReturn, verifySchoolClass } from '../../scripts';
+import { schoolReturn } from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
@@ -18,10 +18,7 @@ export const retrieveSchoolService = async (
   const [school, years, periodsData] = await Promise.all([
     prisma.school.findUnique({
       where: { id },
-      select: {
-        ...select,
-        classes: { distinct: ['year_id'], select: { year_id: true } },
-      },
+      select,
     }),
     prisma.year.findMany({
       where: { classes: { some: { school_id: id } } },
@@ -36,12 +33,6 @@ export const retrieveSchoolService = async (
 
   if (!school) throw new AppError('school not found', 404);
 
-  const schoolReturn = SchoolReturnSchema.parse(
-    await verifySchoolClass(school, year_id),
-  );
-
-  const schoolClass = await schoolClassReturn(schoolReturn, year_id);
-
   const periods = periodsData.map((el) => {
     return {
       id: el.category,
@@ -50,9 +41,8 @@ export const retrieveSchoolService = async (
   });
 
   return {
-    school: schoolReturn,
+    school: SchoolReturnSchema.parse(await schoolReturn(school, year_id)),
     years,
     periods,
-    schoolClass,
   };
 };
