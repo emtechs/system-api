@@ -10,9 +10,9 @@ export const dashUserService = async (year_id: string) => {
     countNotClass,
   ] = await Promise.all([
     prisma.school.count({ where: { is_active: true } }),
-    prisma.classSchool.count({ where: { year_id } }),
+    prisma.classYear.count({ where: { year_id } }),
     prisma.classStudent.count({
-      where: { class_school: { class: { is_active: true } } },
+      where: { class_year: { class: { is_active: true } } },
     }),
     prisma.frequency.count({
       where: { AND: { year_id, status: 'CLOSED' } },

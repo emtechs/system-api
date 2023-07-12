@@ -20,7 +20,7 @@ const verifyStudent = async ({
       },
     });
 
-  const classSchool = await prisma.classSchool.findUnique({
+  const classSchool = await prisma.classYear.findUnique({
     where: {
       class_id_school_id_year_id: {
         class_id,
@@ -31,7 +31,7 @@ const verifyStudent = async ({
   });
 
   if (!classSchool)
-    await prisma.classSchool.create({
+    await prisma.classYear.create({
       data: { class_id, school_id, year_id },
     });
 

@@ -1,4 +1,4 @@
-import { ClassSchool, ClassStudent, School, Student } from '@prisma/client';
+import { ClassYear, ClassStudent, School, Student } from '@prisma/client';
 import { parseFrequency } from './calculateFrequency';
 
 const studentsSchoolParseFrequency = async (
@@ -18,7 +18,7 @@ const studentsSchoolParseFrequency = async (
 
 export const schoolParseRetrieveFrequency = async (
   school: School & {
-    classes: (ClassSchool & {
+    classes: (ClassYear & {
       students: (ClassStudent & {
         student: Student;
       })[];

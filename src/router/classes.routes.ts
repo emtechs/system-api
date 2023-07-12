@@ -7,10 +7,10 @@ import {
   exportClassController,
   listClassController,
   listClassDashController,
-  listClassSchoolController,
   listClassStudentController,
+  listClassYearController,
   retrieveClassController,
-  retrieveClassSchoolController,
+  retrieveClassYearController,
   updateClassSchoolController,
   updateClassStudentController,
 } from '../controllers';
@@ -54,9 +54,16 @@ classRouter.post(
 classRouter.get('', verifyUserIsAuthenticated, listClassController);
 
 classRouter.get(
-  '/school',
+  '/year/:year_id',
   verifyUserIsAuthenticated,
-  listClassSchoolController,
+  listClassYearController,
+);
+
+classRouter.get(
+  '/year/:year_id/:class_id/:school_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  retrieveClassYearController,
 );
 
 classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
@@ -78,13 +85,6 @@ classRouter.get(
   '/:class_id',
   verifyUserIsAuthenticated,
   retrieveClassController,
-);
-
-classRouter.get(
-  '/:class_id/:school_id/:year_id',
-  verifyUserIsAuthenticated,
-  verifyIsPermission,
-  retrieveClassSchoolController,
 );
 
 classRouter.get(

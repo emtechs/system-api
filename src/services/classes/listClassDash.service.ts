@@ -46,7 +46,7 @@ export const listClassDashService = async (
   };
 
   const [classesData, total, classesLabel] = await Promise.all([
-    prisma.classSchool.findMany({
+    prisma.classYear.findMany({
       take,
       skip,
       where: {
@@ -65,12 +65,12 @@ export const listClassDashService = async (
         _count: { select: { students: true, frequencies: true } },
       },
     }),
-    prisma.classSchool.count({
+    prisma.classYear.count({
       where: {
         ...whereData,
       },
     }),
-    prisma.classSchool.findMany({
+    prisma.classYear.findMany({
       where: {
         ...whereData,
       },

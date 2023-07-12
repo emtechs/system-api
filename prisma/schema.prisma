@@ -83,7 +83,7 @@ model School{
   director User? @relation(fields: [director_id], references: [id], onDelete: SetNull)
   director_id String?
   servers SchoolServer[]
-  classes ClassSchool[]
+  classes ClassYear[]
   infrequencies SchoolInfrequency[]
 
   @@map("schools")
@@ -94,7 +94,7 @@ model Class{
   name String @db.VarChar(254) @unique
   is_active Boolean @default(true)
   created_at DateTime @default(now())
-  schools ClassSchool[]
+  schools ClassYear[]
 
   @@map("classes")
 }
@@ -121,7 +121,7 @@ model Frequency{
   infrequency Float @default(0)
   month Month @relation(fields: [month_id], references: [id], onDelete: Cascade)
   month_id String
-  class ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  class ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String
   year_id String
@@ -137,7 +137,7 @@ model Year{
   id String @id @default(uuid())
   year String @db.VarChar(10) @unique
   periods Period[]
-  classes ClassSchool[]
+  classes ClassYear[]
 
   @@map("years")
 }
@@ -161,7 +161,7 @@ model Period{
   year_id String
   frequencies FrequencyPeriod[]
   infrequencies_school SchoolInfrequency[]
-  infrequencies_class ClassSchoolInfrequency[]
+  infrequencies_class ClassYearInfrequency[]
   infrequencies_student StudentInfrequency[]
 
   @@map("periods")
@@ -179,7 +179,7 @@ model SchoolServer{
   @@map("school_server")
 }
 
-model ClassSchool{
+model ClassYear{
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
@@ -188,14 +188,14 @@ model ClassSchool{
   year_id String
   students ClassStudent[]
   frequencies Frequency[]
-  infrequencies ClassSchoolInfrequency[]
+  infrequencies ClassYearInfrequency[]
 
   @@id([class_id, school_id, year_id])
-  @@map("class_school")
+  @@map("class_year")
 }
 
 model ClassStudent{
-  class_school ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  class_year ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String
   year_id String
@@ -262,18 +262,18 @@ model SchoolInfrequency{
   @@map("school_infrequency")
 }
 
-model ClassSchoolInfrequency{
+model ClassYearInfrequency{
   value Float @default(0)
   frequencies Int @default(0)
   period Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
   period_id String
-  class_school ClassSchool @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  class_year ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String
   year_id String
 
   @@id([period_id, class_id, school_id, year_id])
-  @@map("class_school_infrequency")
+  @@map("class_year_infrequency")
 }
 
 model StudentInfrequency{

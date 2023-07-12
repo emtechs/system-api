@@ -30,7 +30,7 @@ export const schoolReturn = async (
 
   const [classes, students, frequencies, servers, infreq, serverData] =
     await Promise.all([
-      prisma.classSchool.count({ where }),
+      prisma.classYear.count({ where }),
       prisma.classStudent.count({
         where: { ...where, is_active: true },
       }),

@@ -6,14 +6,14 @@ import {
   importClassService,
   listClassService,
   updateClassSchoolService,
-  retrieveClassSchoolService,
   updateClassStudentService,
-  listClassSchoolService,
   createClassSchoolService,
   listClassStudentService,
   dashClassService,
   listClassDashService,
   retrieveClassService,
+  listClassYearService,
+  retrieveClassYearService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -75,11 +75,8 @@ export const listClassDashController = async (req: Request, res: Response) => {
   return res.json(classes);
 };
 
-export const listClassSchoolController = async (
-  req: Request,
-  res: Response,
-) => {
-  const classes = await listClassSchoolService(req.query);
+export const listClassYearController = async (req: Request, res: Response) => {
+  const classes = await listClassYearService(req.params.year_id, req.query);
   return res.json(classes);
 };
 
@@ -96,15 +93,14 @@ export const retrieveClassController = async (req: Request, res: Response) => {
   return res.json(classes);
 };
 
-export const retrieveClassSchoolController = async (
+export const retrieveClassYearController = async (
   req: Request,
   res: Response,
 ) => {
-  const classes = await retrieveClassSchoolService(
+  const classes = await retrieveClassYearService(
     req.params.class_id,
     req.params.school_id,
     req.params.year_id,
-    req.query,
   );
   return res.json(classes);
 };

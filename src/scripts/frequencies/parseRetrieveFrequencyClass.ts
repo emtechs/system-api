@@ -1,6 +1,6 @@
 import {
   Class,
-  ClassSchool,
+  ClassYear,
   ClassStudent,
   School,
   Year,
@@ -24,7 +24,7 @@ const studentsClassParseFrequency = async (
 };
 
 export const classParseRetrieveFrequency = async (
-  classData: ClassSchool & {
+  classData: ClassYear & {
     class: Class;
     school: School;
     year: Year;

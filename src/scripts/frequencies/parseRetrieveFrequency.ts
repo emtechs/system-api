@@ -1,6 +1,6 @@
 import {
   Class,
-  ClassSchool,
+  ClassYear,
   ClassStudent,
   Frequency,
   FrequencyStudent,
@@ -74,7 +74,7 @@ export const freqParseRetrieveFrequency = async (
   frequency: Frequency & {
     _count: Prisma.FrequencyCountOutputType;
     user: User;
-    class: ClassSchool & {
+    class: ClassYear & {
       _count: {
         students: number;
         frequencies: number;
@@ -84,7 +84,7 @@ export const freqParseRetrieveFrequency = async (
         student: Student;
       })[];
       school: School & {
-        classes: (ClassSchool & {
+        classes: (ClassYear & {
           students: (ClassStudent & {
             student: Student;
           })[];

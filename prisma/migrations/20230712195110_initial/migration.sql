@@ -125,12 +125,12 @@ CREATE TABLE "school_server" (
 );
 
 -- CreateTable
-CREATE TABLE "class_school" (
+CREATE TABLE "class_year" (
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
 
-    CONSTRAINT "class_school_pkey" PRIMARY KEY ("class_id","school_id","year_id")
+    CONSTRAINT "class_year_pkey" PRIMARY KEY ("class_id","school_id","year_id")
 );
 
 -- CreateTable
@@ -193,7 +193,7 @@ CREATE TABLE "school_infrequency" (
 );
 
 -- CreateTable
-CREATE TABLE "class_school_infrequency" (
+CREATE TABLE "class_year_infrequency" (
     "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "frequencies" INTEGER NOT NULL DEFAULT 0,
     "period_id" TEXT NOT NULL,
@@ -201,7 +201,7 @@ CREATE TABLE "class_school_infrequency" (
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
 
-    CONSTRAINT "class_school_infrequency_pkey" PRIMARY KEY ("period_id","class_id","school_id","year_id")
+    CONSTRAINT "class_year_infrequency_pkey" PRIMARY KEY ("period_id","class_id","school_id","year_id")
 );
 
 -- CreateTable
@@ -280,7 +280,7 @@ ALTER TABLE "schools" ADD CONSTRAINT "schools_director_id_fkey" FOREIGN KEY ("di
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_year"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -295,16 +295,16 @@ ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIG
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_server_id_fkey" FOREIGN KEY ("server_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school" ADD CONSTRAINT "class_school_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_year" ADD CONSTRAINT "class_year_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "classes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school" ADD CONSTRAINT "class_school_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_year" ADD CONSTRAINT "class_year_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school" ADD CONSTRAINT "class_school_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_year" ADD CONSTRAINT "class_year_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_year"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -334,10 +334,10 @@ ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_period_id_fk
 ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school_infrequency" ADD CONSTRAINT "class_school_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_year_infrequency" ADD CONSTRAINT "class_year_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_school_infrequency" ADD CONSTRAINT "class_school_infrequency_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_school"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_year_infrequency" ADD CONSTRAINT "class_year_infrequency_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_year"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "student_infrequency" ADD CONSTRAINT "student_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;

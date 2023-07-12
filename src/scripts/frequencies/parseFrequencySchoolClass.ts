@@ -1,4 +1,4 @@
-import { ClassSchool, ClassStudent, School, Student } from '@prisma/client';
+import { ClassYear, ClassStudent, School, Student } from '@prisma/client';
 import {
   classFindUnique,
   justifiedCount,
@@ -59,7 +59,7 @@ const studentsSchoolParseFrequency = async (
 
 export const schoolClassParseFrequency = async (
   school: School & {
-    classes: (ClassSchool & {
+    classes: (ClassYear & {
       students: (ClassStudent & {
         student: Student;
       })[];

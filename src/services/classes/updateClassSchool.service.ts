@@ -9,7 +9,7 @@ export const updateClassSchoolService = async ({
   school_frequencies,
   school_infreq,
 }: IClassSchoolUpdateRequest) => {
-  const classSchool = await prisma.classSchool.update({
+  const classSchool = await prisma.classYear.update({
     where: {
       class_id_school_id_year_id: {
         class_id,

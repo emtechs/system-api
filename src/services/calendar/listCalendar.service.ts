@@ -24,7 +24,7 @@ export const listCalendarService = async (
 
   if (school_id) {
     whereData = { ...whereData, school_id };
-    classTotal = await prisma.classSchool.count({
+    classTotal = await prisma.classYear.count({
       where: { school_id, year_id },
     });
   }

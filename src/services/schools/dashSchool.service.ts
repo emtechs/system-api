@@ -15,7 +15,7 @@ export const dashSchoolService = async (
     prisma.classStudent.count({
       where: { school_id, year_id, is_active: true },
     }),
-    prisma.classSchool.count({
+    prisma.classYear.count({
       where: { school_id, year_id },
     }),
   ]);

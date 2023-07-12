@@ -131,7 +131,7 @@ export const classFreq = async (
     }),
   ]);
 
-  return await prisma.classSchoolInfrequency.upsert({
+  return await prisma.classYearInfrequency.upsert({
     create: {
       frequencies,
       period_id,

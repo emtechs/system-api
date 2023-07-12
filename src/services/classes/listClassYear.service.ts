@@ -2,16 +2,10 @@ import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { classYearReturn } from '../../scripts';
 
-export const listClassSchoolService = async ({
-  take,
-  skip,
-  infreq,
-  school_id,
-  order,
-  by,
-  name,
-  year_id,
-}: IClassQuery) => {
+export const listClassYearService = async (
+  year_id: string,
+  { take, skip, infreq, school_id, order, by, name }: IClassQuery,
+) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
@@ -40,14 +34,12 @@ export const listClassSchoolService = async ({
       name: { contains: name, mode: 'insensitive' },
     };
 
-  if (year_id) where = { ...where, year_id };
-
   if (school_id) where = { ...where, school_id };
 
-  where = { ...where, class: { ...where_class } };
+  where = { ...where, class: { ...where_class }, year_id };
 
   const [classes, total, classesLabel] = await Promise.all([
-    prisma.classSchool.findMany({
+    prisma.classYear.findMany({
       take,
       skip,
       where,
@@ -69,10 +61,10 @@ export const listClassSchoolService = async ({
         },
       },
     }),
-    prisma.classSchool.count({
+    prisma.classYear.count({
       where,
     }),
-    prisma.classSchool.findMany({
+    prisma.classYear.findMany({
       where,
       orderBy: { class: { name: 'asc' } },
       select: {

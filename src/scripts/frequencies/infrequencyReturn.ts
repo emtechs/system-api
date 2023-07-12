@@ -23,7 +23,7 @@ export const infrequencyReturn = async (
   }
 
   if (class_id && school_id && year_id) {
-    const infreq = await prisma.classSchoolInfrequency.findUnique({
+    const infreq = await prisma.classYearInfrequency.findUnique({
       where: {
         period_id_class_id_school_id_year_id: {
           period_id: infrequency.id,

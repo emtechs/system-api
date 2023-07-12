@@ -30,7 +30,7 @@ export const dashClassService = async (
           ...whereData,
         },
       }),
-      prisma.classSchool.findUnique({
+      prisma.classYear.findUnique({
         where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
         select: { infrequency: true },
       }),

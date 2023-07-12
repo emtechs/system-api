@@ -12,7 +12,7 @@ export const createStudentWithClassService = async (
         registry,
       },
     }),
-    prisma.classSchool.findUnique({
+    prisma.classYear.findUnique({
       where: {
         class_id_school_id_year_id: {
           class_id,
@@ -24,7 +24,7 @@ export const createStudentWithClassService = async (
   ]);
 
   if (!classSchool)
-    await prisma.classSchool.create({
+    await prisma.classYear.create({
       data: { class_id, school_id, year_id },
     });
 

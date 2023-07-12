@@ -1,6 +1,6 @@
 import {
   Class,
-  ClassSchool,
+  ClassYear,
   Frequency,
   FrequencyStudent,
   Prisma,
@@ -76,7 +76,7 @@ const infrequencyFreq = (
 export const freqArrParseFrequency = async (
   frequencies: (Frequency & {
     user: User;
-    class: ClassSchool & {
+    class: ClassYear & {
       year: Year;
       school: School;
       class: Class;
@@ -111,7 +111,7 @@ export const freqArrParseFrequency = async (
 export const freqParseFrequency = async (
   frequency: Frequency & {
     user: User;
-    class: ClassSchool & {
+    class: ClassYear & {
       year: Year;
       school: School;
       class: Class;
