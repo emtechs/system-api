@@ -1,6 +1,6 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
-import { classYearReturn } from '../../scripts';
+import { classYearArrayReturn } from '../../scripts';
 
 export const listClassYearService = async (
   year_id: string,
@@ -38,27 +38,16 @@ export const listClassYearService = async (
 
   where = { ...where, class: { ...where_class }, year_id };
 
-  const [classes, total, classesLabel] = await Promise.all([
+  const [classesData, total, classesLabel] = await Promise.all([
     prisma.classYear.findMany({
       take,
       skip,
       where,
       orderBy,
       select: {
-        class: { select: { id: true, name: true } },
-        school: { select: { id: true, name: true } },
-        infrequencies: {
-          select: {
-            value: true,
-            period: { select: { name: true, category: true } },
-          },
-        },
-        _count: {
-          select: {
-            students: { where: { is_active: true } },
-            frequencies: { where: { status: 'CLOSED' } },
-          },
-        },
+        class_id: true,
+        school_id: true,
+        year_id: true,
       },
     }),
     prisma.classYear.count({
@@ -70,25 +59,19 @@ export const listClassYearService = async (
       select: {
         class: { select: { id: true, name: true } },
         school: { select: { id: true, name: true } },
-        infrequencies: {
-          select: {
-            value: true,
-            period: { select: { name: true, category: true } },
-          },
-        },
-        _count: {
-          select: {
-            students: { where: { is_active: true } },
-            frequencies: { where: { status: 'CLOSED' } },
-          },
-        },
       },
     }),
   ]);
 
+  const classes = classesLabel.map((el) => {
+    const { id, name } = el.class;
+
+    return { id, name, label: name, school: el.school, year_id };
+  });
+
   return {
-    classes: classYearReturn(classesLabel),
+    classes,
     total,
-    result: classYearReturn(classes),
+    result: await classYearArrayReturn(classesData),
   };
 };

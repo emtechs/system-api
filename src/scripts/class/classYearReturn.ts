@@ -1,45 +1,61 @@
-import { CategoryPeriod } from '@prisma/client';
+import prisma from '../../prisma';
 
-export const classYearReturn = (
-  classes: {
-    class: {
-      id: string;
-      name: string;
-    };
-    school: {
-      id: string;
-      name: string;
-    };
-    infrequencies: {
-      value: number;
-      period: {
-        name: string;
-        category: CategoryPeriod;
-      };
-    }[];
-    _count: {
-      students: number;
-      frequencies: number;
-    };
+export const classYearReturn = async (
+  class_id: string,
+  school_id: string,
+  year_id: string,
+) => {
+  let infrequency = 0;
+
+  const [classData, school, students, frequencies, infreqData] =
+    await Promise.all([
+      prisma.class.findUnique({
+        where: { id: class_id },
+        select: { id: true, name: true },
+      }),
+      prisma.school.findUnique({
+        where: { id: school_id },
+        select: { id: true, name: true },
+      }),
+      prisma.student.count({
+        where: { classes: { some: { class_id, school_id, year_id } } },
+      }),
+      prisma.frequency.count({
+        where: { class_id, school_id, year_id, status: 'CLOSED' },
+      }),
+      prisma.classYearInfrequency.findFirst({
+        where: { class_id, school_id, year_id, period: { category: 'ANO' } },
+        select: { value: true },
+      }),
+    ]);
+
+  if (infreqData) infrequency = infreqData.value;
+
+  return {
+    ...classData,
+    label: classData.name,
+    school,
+    students,
+    frequencies,
+    infrequency,
+    year_id,
+  };
+};
+
+export const classYearArrayReturn = async (
+  classData: {
+    class_id: string;
+    school_id: string;
+    year_id: string;
   }[],
 ) => {
-  const classDataArr = classes.map((el) => {
-    let infrequency = 0;
+  const classes = classData.map((el) => {
+    const { class_id, school_id, year_id } = el;
 
-    el.infrequencies.forEach((el) => {
-      if (el.period.category === 'ANO') infrequency = el.value;
-    });
-
-    return {
-      id: el.class.id,
-      label: el.class.name,
-      name: el.class.name,
-      school: el.school,
-      students: el._count.students,
-      frequencies: el._count.frequencies,
-      infrequency,
-    };
+    return classYearReturn(class_id, school_id, year_id);
   });
 
-  return classDataArr;
+  return Promise.all(classes).then((school) => {
+    return school;
+  });
 };
