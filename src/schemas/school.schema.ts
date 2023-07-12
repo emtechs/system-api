@@ -77,7 +77,6 @@ export const SchoolReturnSchema = z
     name: z.string(),
     is_active: z.boolean(),
     director: DirectorSchema.nullable().optional(),
-    is_dash: z.boolean().optional(),
     classes: z.number().optional(),
     students: z.number().optional(),
     frequencies: z.number().optional(),

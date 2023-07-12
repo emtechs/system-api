@@ -18,7 +18,6 @@ export const schoolReturn = async (
   const school_id = school.id;
 
   let schoolData = {};
-  let is_dash = false;
   let infrequency = 0;
   let where = {};
 
@@ -55,13 +54,10 @@ export const schoolReturn = async (
       }),
     ]);
 
-  if (year_id.length > 0) is_dash = classes > 0;
-
   if (infreq) infrequency = infreq.value;
 
   schoolData = {
     ...schoolData,
-    is_dash,
     classes,
     students,
     frequencies,

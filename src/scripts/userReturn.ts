@@ -11,9 +11,7 @@ export const userReturn = async (user: IUserReturn, school_id = '') => {
     },
   });
 
-  if (work_school) {
-    return { ...user, work_school };
-  }
+  if (work_school) return { ...user, work_school };
 
   return user;
 };

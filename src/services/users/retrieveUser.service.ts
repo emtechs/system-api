@@ -1,6 +1,7 @@
 import { IQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserReturnSchema } from '../../schemas';
+import { userReturn } from '../../scripts';
 
 export const retrieveUserService = async (
   id: string,
@@ -9,24 +10,7 @@ export const retrieveUserService = async (
   let where_frequency = {};
   let user = {};
 
-  if (school_id) {
-    where_frequency = { ...where_frequency, school_id };
-
-    const schoolData = await prisma.schoolServer.findUnique({
-      where: { school_id_server_id: { school_id, server_id: id } },
-      select: {
-        dash: true,
-        role: true,
-        school: { select: { id: true, name: true } },
-      },
-    });
-
-    if (schoolData) {
-      const { dash, role, school } = schoolData;
-
-      user = { ...user, school: { dash, role, ...school } };
-    }
-  }
+  if (school_id) where_frequency = { ...where_frequency, school_id };
 
   where_frequency = { ...where_frequency, user_id: id };
 
@@ -41,5 +25,5 @@ export const retrieveUserService = async (
 
   user = { ...user, ...userData, frequencies };
 
-  return UserReturnSchema.parse(user);
+  return UserReturnSchema.parse(await userReturn(user, school_id));
 };

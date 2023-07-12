@@ -1,7 +1,7 @@
 import { IUserQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserArraySchema } from '../../schemas';
-import { rolePtBr, userReturnArray } from '../../scripts';
+import { userReturnArray } from '../../scripts';
 
 export const listUserService = async (
   {
@@ -25,9 +25,9 @@ export const listUserService = async (
 
   if (order) {
     switch (order) {
-      case 'name':
-        orderBy = { name: by };
-        break;
+    case 'name':
+      orderBy = { name: by };
+      break;
     }
   }
 
@@ -39,13 +39,13 @@ export const listUserService = async (
 
   if (is_active) {
     switch (is_active) {
-      case 'true':
-        where = { ...where, is_active: true };
-        break;
+    case 'true':
+      where = { ...where, is_active: true };
+      break;
 
-      case 'false':
-        where = { ...where, is_active: false };
-        break;
+    case 'false':
+      where = { ...where, is_active: false };
+      break;
     }
   }
 
@@ -66,10 +66,10 @@ export const listUserService = async (
     }),
   ]);
 
-  const usersSchema = UserArraySchema.parse(users);
+  const result = UserArraySchema.parse(await userReturnArray(users, school_id));
 
   return {
     total,
-    result: await userReturnArray(usersSchema, school_id),
+    result,
   };
 };
