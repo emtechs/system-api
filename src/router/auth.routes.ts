@@ -1,9 +1,13 @@
 import { Router } from 'express';
-import { validateSchemaMiddleware } from '../middlewares';
+import {
+  validateSchemaMiddleware,
+  verifyUserIsAuthenticated,
+} from '../middlewares';
 import {
   createSessionController,
   sendEmailToRecovery,
   updatePasswordController,
+  verifyController,
 } from '../controllers';
 import {
   PasswordUpdateSchema,
@@ -32,3 +36,7 @@ passwordRouter.post(
   validateSchemaMiddleware(PasswordUpdateSchema),
   updatePasswordController,
 );
+
+export const verifyRouter = Router();
+
+verifyRouter.get('', verifyUserIsAuthenticated, verifyController);

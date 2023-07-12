@@ -11,6 +11,7 @@ import {
   sessionRouter,
   studentRouter,
   userRouter,
+  verifyRouter,
 } from './router';
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/students', studentRouter);
 app.use('/frequencies', frequencyRouter);
 app.use('/calendar', calendarRouter);
 app.use('/imports', importRouter);
+app.use('/verify', verifyRouter);
 
 app.use(errorHandler);
 

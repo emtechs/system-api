@@ -17,4 +17,7 @@ export interface IQuery {
   year_id?: string;
   school_id?: string;
   class_id?: string;
+  user_id?: string;
+  student_id?: string;
+  frequency_id?: string;
 }

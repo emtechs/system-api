@@ -43,9 +43,7 @@ export interface IFrequencyQuery extends IQuery {
   date?: string;
   is_infreq?: string;
   is_dash?: string;
-  student_id?: string;
   category?: CategoryPeriod;
-  user_id?: string;
   name?: string;
 }
 
