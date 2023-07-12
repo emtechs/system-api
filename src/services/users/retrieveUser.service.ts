@@ -1,14 +1,24 @@
 import { AppError } from '../../errors';
+import { IQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { UserReturnSchema } from '../../schemas';
 
-export const retrieveUserService = async (id: string) => {
-  const [userData, yearsData] = await Promise.all([
+export const retrieveUserService = async (
+  id: string,
+  { school_id }: IQuery,
+) => {
+  let where_frequency = {};
+
+  if (school_id) where_frequency = { ...where_frequency, school_id };
+
+  where_frequency = { ...where_frequency, user_id: id };
+
+  const [userData, frequencies, yearsData] = await Promise.all([
     prisma.user.findUnique({
       where: { id },
-      include: {
-        _count: { select: { frequencies: { where: { status: 'CLOSED' } } } },
-      },
+    }),
+    prisma.frequency.count({
+      where: where_frequency,
     }),
     prisma.period.findMany({
       where: { frequencies: { some: { frequency: { user_id: id } } } },
@@ -23,10 +33,6 @@ export const retrieveUserService = async (id: string) => {
   });
 
   if (!userData) throw new AppError('user not found', 404);
-
-  let frequencies = 0;
-
-  if (userData._count.frequencies) frequencies = userData._count.frequencies;
 
   const user = { ...userData, frequencies };
 

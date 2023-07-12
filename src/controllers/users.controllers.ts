@@ -28,7 +28,7 @@ export const listWorkSchoolController = async (req: Request, res: Response) => {
 };
 
 export const retrieveUserController = async (req: Request, res: Response) => {
-  const user = await retrieveUserService(req.params.id);
+  const user = await retrieveUserService(req.params.id, req.query);
   return res.json(user);
 };
 
@@ -41,7 +41,7 @@ export const retrieveUserWithCpfController = async (
 };
 
 export const profileUserController = async (req: Request, res: Response) => {
-  const user = await retrieveUserService(req.user.id);
+  const user = await retrieveUserService(req.user.id, req.query);
   return res.json(user);
 };
 
