@@ -22,12 +22,6 @@ export const listSchoolService = async ({
   if (skip) skip = +skip;
 
   let where = {};
-  const select = {
-    id: true,
-    name: true,
-    is_active: true,
-    director: { select: { id: true, cpf: true, name: true } },
-  };
   let orderBy = {};
 
   if (order) {
@@ -84,13 +78,13 @@ export const listSchoolService = async ({
       take,
       skip,
       where,
-      select,
+      select: { id: true },
       orderBy,
     }),
     prisma.school.count({ where }),
     prisma.school.findMany({
       where,
-      select,
+      select: { id: true, name: true },
       orderBy: { name: 'asc' },
     }),
   ]);

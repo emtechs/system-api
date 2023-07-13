@@ -9,20 +9,13 @@ export const retrieveSchoolService = async (
 ) => {
   let school = {};
 
-  const select = {
-    id: true,
-    name: true,
-    is_active: true,
-    director: { select: { id: true, cpf: true, name: true } },
-  };
-
   const schoolData = await prisma.school.findUnique({
     where: { id },
-    select,
+    select: { id: true },
   });
 
   const schoolSchema = SchoolReturnSchema.parse(
-    await schoolReturn(schoolData, year_id),
+    await schoolReturn(schoolData.id, year_id),
   );
 
   school = { ...school, ...schoolSchema };

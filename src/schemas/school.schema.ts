@@ -75,7 +75,7 @@ export const SchoolReturnSchema = z
     id: z.string().uuid(),
     label: z.string().optional(),
     name: z.string(),
-    is_active: z.boolean(),
+    is_active: z.boolean().optional(),
     director: DirectorSchema.nullable().optional(),
     classes: z.number().optional(),
     students: z.number().optional(),

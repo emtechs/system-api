@@ -13,13 +13,6 @@ export const listWorkSchoolService = async (
   let where = {};
   let where_school = {};
 
-  const select_school = {
-    id: true,
-    name: true,
-    is_active: true,
-    director: { select: { id: true, cpf: true, name: true } },
-  };
-
   where_school = { ...where_school, is_active: true };
 
   if (name)
@@ -32,8 +25,6 @@ export const listWorkSchoolService = async (
     where_school = { ...where_school, classes: { some: { year_id } } };
 
   if (role === 'ADMIN') {
-    const select = select_school;
-
     where = where_school;
 
     const [schoolsData, total, schoolsLabel] = await Promise.all([
@@ -41,7 +32,7 @@ export const listWorkSchoolService = async (
         take,
         skip,
         where,
-        select,
+        select: { id: true },
         orderBy: { name: 'asc' },
       }),
       prisma.school.count({
@@ -49,7 +40,7 @@ export const listWorkSchoolService = async (
       }),
       prisma.school.findMany({
         where,
-        select,
+        select: { id: true, name: true },
         orderBy: { name: 'asc' },
       }),
     ]);
@@ -78,7 +69,7 @@ export const listWorkSchoolService = async (
         role: true,
         dash: true,
         school: {
-          select: select_school,
+          select: { id: true },
         },
       },
       orderBy: { school: { name: 'asc' } },
@@ -90,7 +81,7 @@ export const listWorkSchoolService = async (
       where,
       select: {
         school: {
-          select: select_school,
+          select: { id: true, name: true },
         },
       },
       orderBy: { school: { name: 'asc' } },
@@ -102,7 +93,7 @@ export const listWorkSchoolService = async (
   const schools = schoolSchema.map((el) => el.school);
 
   const result = SchoolServerArraySchema.parse(
-    schoolServerArrayReturn(workSchools, year_id),
+    await schoolServerArrayReturn(workSchools, year_id),
   );
 
   return { schools, total, result };

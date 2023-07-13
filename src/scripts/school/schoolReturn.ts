@@ -1,21 +1,12 @@
 import prisma from '../../prisma';
 
 export const schoolReturn = async (
-  school: {
-    id: string;
-    name: string;
-    is_active: boolean;
-    director: {
-      id: string;
-      cpf: string;
-      name: string;
-    };
-  },
+  id: string,
   year_id = '',
   server_id = '',
   class_id = '',
 ) => {
-  const school_id = school.id;
+  const school_id = id;
 
   let schoolData = {};
   let infrequency = 0;
@@ -26,10 +17,12 @@ export const schoolReturn = async (
 
   where = { ...where, school_id };
 
-  schoolData = { ...school };
-
-  const [classes, students, frequencies, servers, infreq, serverData] =
+  const [school, classes, students, frequencies, servers, infreq, serverData] =
     await Promise.all([
+      prisma.school.findUnique({
+        where: { id },
+        include: { director: { select: { id: true, name: true, cpf: true } } },
+      }),
       prisma.classYear.count({ where }),
       prisma.classStudent.count({
         where: { ...where, is_active: true },
@@ -53,6 +46,8 @@ export const schoolReturn = async (
         },
       }),
     ]);
+
+  if (school) schoolData = { ...schoolData, ...school };
 
   if (infreq) infrequency = infreq.value;
 
@@ -80,20 +75,13 @@ export const schoolReturn = async (
 export const schoolArrayReturn = async (
   schools: {
     id: string;
-    name: string;
-    is_active: boolean;
-    director: {
-      id: string;
-      cpf: string;
-      name: string;
-    };
   }[],
   year_id = '',
   server_id = '',
   class_id = '',
 ) => {
   const verify = schools.map((el) => {
-    return schoolReturn(el, year_id, server_id, class_id);
+    return schoolReturn(el.id, year_id, server_id, class_id);
   });
 
   return Promise.all(verify).then((school) => {
