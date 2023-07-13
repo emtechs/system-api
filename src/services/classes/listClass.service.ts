@@ -1,7 +1,7 @@
 import { IClassQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { ClassArraySchema } from '../../schemas';
-import { classArrayReturn } from '../../scripts';
+import { classArrayReturn, classYearArrayReturn } from '../../scripts';
 
 export const listClassService = async ({
   is_active,
@@ -12,15 +12,13 @@ export const listClassService = async ({
   school_id,
   year_id,
   name,
+  is_school,
 }: IClassQuery) => {
   if (take) take = +take;
   if (skip) skip = +skip;
 
   let where = {};
   let orderBy = {};
-
-  if (year_id && school_id)
-    where = { ...where, schools: { none: { school_id, year_id } } };
 
   if (order) {
     switch (order) {
@@ -44,7 +42,14 @@ export const listClassService = async ({
     }
   }
 
-  const [classes, total, classesLabel, yearsData] = await Promise.all([
+  where = { ...where, schools: { some: { year_id, school_id } } };
+
+  if (is_school) {
+    if (year_id && school_id)
+      where = { ...where, schools: { none: { school_id, year_id } } };
+  }
+
+  const [classesData, total, classesLabel, yearsData] = await Promise.all([
     prisma.class.findMany({
       take,
       skip,
@@ -62,12 +67,24 @@ export const listClassService = async ({
     }),
   ]);
 
+  let returnResult = {};
+  let result = {};
+
+  const classes = ClassArraySchema.parse(classesLabel);
+
   const years = yearsData.map((el) => el.year);
 
+  returnResult = { classes, total, years };
+
+  if (!is_school && school_id && year_id) {
+    const classYear = classesData.map((el) => {
+      return { class_id: el.id, school_id, year_id };
+    });
+    result = await classYearArrayReturn(classYear);
+  } else result = ClassArraySchema.parse(await classArrayReturn(classesData));
+
   return {
-    classes: ClassArraySchema.parse(classesLabel),
-    total,
-    years,
-    result: ClassArraySchema.parse(await classArrayReturn(classes)),
+    ...returnResult,
+    result,
   };
 };
