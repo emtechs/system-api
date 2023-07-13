@@ -1,12 +1,14 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolReturnSchema } from '../../schemas';
-import { schoolReturn } from '../../scripts';
+import { classYearReturn, schoolReturn } from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
-  { year_id }: ISchoolQuery,
+  { year_id, class_id }: ISchoolQuery,
 ) => {
+  let school = {};
+
   const select = {
     id: true,
     name: true,
@@ -14,10 +16,21 @@ export const retrieveSchoolService = async (
     director: { select: { id: true, cpf: true, name: true } },
   };
 
-  const school = await prisma.school.findUnique({
+  const schoolData = await prisma.school.findUnique({
     where: { id },
     select,
   });
 
-  return SchoolReturnSchema.parse(await schoolReturn(school, year_id));
+  const schoolSchema = SchoolReturnSchema.parse(
+    await schoolReturn(schoolData, year_id),
+  );
+
+  school = { ...school, ...schoolSchema };
+
+  if (year_id && class_id) {
+    const classData = await classYearReturn(class_id, id, year_id);
+    school = { ...school, class: classData };
+  }
+
+  return school;
 };
