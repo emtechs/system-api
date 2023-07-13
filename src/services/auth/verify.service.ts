@@ -1,5 +1,5 @@
 import { AppError } from '../../errors';
-import { IQuery, IRequestUser } from '../../interfaces';
+import { IAuthQuery, IRequestUser } from '../../interfaces';
 import prisma from '../../prisma';
 import {
   verifyClass,
@@ -13,7 +13,15 @@ import {
 
 export const verifyService = async (
   { id, role }: IRequestUser,
-  { class_id, school_id, user_id, frequency_id, student_id, year_id }: IQuery,
+  {
+    class_id,
+    school_id,
+    user_id,
+    frequency_id,
+    student_id,
+    year_id,
+    year,
+  }: IAuthQuery,
 ) => {
   if (user_id) {
     if (role !== 'ADMIN') throw new AppError('Missing permissions', 401);
@@ -48,5 +56,5 @@ export const verifyService = async (
 
   if (frequency_id) return await verifyFrequency(frequency_id);
 
-  if (year_id) return await verifyYear(year_id);
+  if (year || year_id) return await verifyYear(year_id, year);
 };
