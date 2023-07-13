@@ -44,7 +44,7 @@ export const listClassService = async ({
     }
   }
 
-  const [classes, total, classesLabel] = await Promise.all([
+  const [classes, total, classesLabel, yearsData] = await Promise.all([
     prisma.class.findMany({
       take,
       skip,
@@ -56,11 +56,18 @@ export const listClassService = async ({
       where,
       orderBy: { name: 'asc' },
     }),
+    prisma.classYear.findMany({
+      distinct: ['year_id'],
+      select: { year: true },
+    }),
   ]);
+
+  const years = yearsData.map((el) => el.year);
 
   return {
     classes: ClassArraySchema.parse(classesLabel),
     total,
+    years,
     result: ClassArraySchema.parse(await classArrayReturn(classes)),
   };
 };
