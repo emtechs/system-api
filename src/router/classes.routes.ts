@@ -107,18 +107,18 @@ classRouter.patch(
 );
 
 classRouter.patch(
-  '/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(ClassStudentUpdateSchema),
-  updateClassStudentController,
-);
-
-classRouter.patch(
   '/transfer',
   verifyUserIsAuthenticated,
   verifyIsAdmin,
   validateSchemaMiddleware(TransferClassStudentSchema),
   transferClassStudentController,
+);
+
+classRouter.patch(
+  '/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(ClassStudentUpdateSchema),
+  updateClassStudentController,
 );
 
 classRouter.delete(
