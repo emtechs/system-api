@@ -6,21 +6,26 @@ export const listClassYearService = async (
   { view }: IClassQuery,
 ) => {
   if (view === 'student') {
-    const classData = await prisma.classYear.findUnique({
-      where: { key, students: { some: { is_active: true } } },
-      include: {
-        _count: { select: { students: { where: { is_active: true } } } },
-        class: { select: { id: true, name: true } },
-        school: { select: { id: true, name: true } },
-        students: {
-          select: {
-            student: { select: { id: true, name: true, registry: true } },
-          },
+    const [students, total, classData] = await Promise.all([
+      prisma.classStudent.findMany({
+        where: { is_active: true, class_year: { key } },
+        select: {
+          student: { select: { id: true, name: true, registry: true } },
         },
-      },
-    });
+      }),
+      prisma.classStudent.count({
+        where: { is_active: true, class_year: { key } },
+      }),
+      prisma.classYear.findUnique({
+        where: { key },
+        include: {
+          class: { select: { id: true, name: true } },
+          school: { select: { id: true, name: true } },
+        },
+      }),
+    ]);
 
-    const result = classData.students.map((el) => {
+    const result = students.map((el) => {
       const { id, name, registry } = el.student;
       return {
         id,
@@ -32,6 +37,6 @@ export const listClassYearService = async (
       };
     });
 
-    return { total: classData._count.students, result };
+    return { total, result };
   }
 };

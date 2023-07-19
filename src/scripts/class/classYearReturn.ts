@@ -18,7 +18,9 @@ export const classYearReturn = async (
         select: { id: true, name: true },
       }),
       prisma.student.count({
-        where: { classes: { some: { class_id, school_id, year_id } } },
+        where: {
+          classes: { some: { class_id, school_id, year_id, is_active: true } },
+        },
       }),
       prisma.frequency.count({
         where: { class_id, school_id, year_id, status: 'CLOSED' },
