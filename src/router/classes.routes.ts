@@ -59,7 +59,7 @@ classRouter.post(
 classRouter.get('', verifyUserIsAuthenticated, listClassController);
 
 classRouter.get(
-  '/year/:year_id',
+  '/year/:key',
   verifyUserIsAuthenticated,
   listClassYearController,
 );

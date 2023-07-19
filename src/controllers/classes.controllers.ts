@@ -86,7 +86,7 @@ export const listClassDashController = async (req: Request, res: Response) => {
 };
 
 export const listClassYearController = async (req: Request, res: Response) => {
-  const classes = await listClassYearService(req.params.year_id, req.query);
+  const classes = await listClassYearService(req.params.key, req.query);
   return res.json(classes);
 };
 

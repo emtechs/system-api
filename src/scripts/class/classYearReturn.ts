@@ -7,7 +7,7 @@ export const classYearReturn = async (
 ) => {
   let infrequency = 0;
 
-  const [classData, school, students, frequencies, infreqData] =
+  const [classData, school, students, frequencies, infreqData, { key }] =
     await Promise.all([
       prisma.class.findUnique({
         where: { id: class_id },
@@ -27,6 +27,10 @@ export const classYearReturn = async (
         where: { class_id, school_id, year_id, period: { category: 'ANO' } },
         select: { value: true },
       }),
+      prisma.classYear.findUnique({
+        where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
+        select: { key: true },
+      }),
     ]);
 
   if (infreqData) infrequency = infreqData.value;
@@ -39,6 +43,7 @@ export const classYearReturn = async (
     frequencies,
     infrequency,
     year_id,
+    key,
   };
 };
 
