@@ -28,6 +28,7 @@ export const listClassYearService = async (
         registry,
         class: classData.class,
         school: classData.school,
+        year_id: classData.year_id,
       };
     });
 
