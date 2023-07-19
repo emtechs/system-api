@@ -54,7 +54,7 @@ export const listSchoolService = async ({
   }
 
   if (none_server_id)
-    where = { ...where, servers: { none: { none_server_id } } };
+    where = { ...where, servers: { none: { server_id: none_server_id } } };
 
   if (server_id) where = { ...where, servers: { some: { server_id } } };
 
