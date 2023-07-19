@@ -18,7 +18,7 @@ const WorkSchoolSchema = z.object({
 
 export const UserReturnSchema = UserCreateSchema.extend({
   id: z.string().uuid(),
-  email: z.string(),
+  email: z.string().nullable(),
   created_at: z.date(),
   is_active: z.boolean(),
   is_first_access: z.boolean(),
