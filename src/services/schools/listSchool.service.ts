@@ -9,8 +9,6 @@ export const listSchoolService = async ({
   is_director,
   take,
   skip,
-  order,
-  by,
   server_id,
   year_id,
   infreq,

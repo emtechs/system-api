@@ -10,8 +10,6 @@ export const listUserService = async (
     isNot_director_school,
     take,
     skip,
-    order,
-    by,
     name,
     school_id,
   }: IUserQuery,
@@ -21,15 +19,6 @@ export const listUserService = async (
   if (skip) skip = +skip;
 
   let where = {};
-  let orderBy = {};
-
-  if (order) {
-    switch (order) {
-    case 'name':
-      orderBy = { name: by };
-      break;
-    }
-  }
 
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
@@ -59,7 +48,7 @@ export const listUserService = async (
       take,
       skip,
       where,
-      orderBy,
+      orderBy: { name: 'asc' },
     }),
     prisma.user.count({
       where,
