@@ -114,7 +114,7 @@ classRouter.patch(
 );
 
 classRouter.patch(
-  '/transfer/:class_id',
+  '/transfer',
   verifyUserIsAuthenticated,
   verifyIsAdmin,
   validateSchemaMiddleware(TransferClassStudentSchema),

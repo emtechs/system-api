@@ -129,4 +129,5 @@ export const TransferClassStudentSchema = z.object({
   year_id: z.string().uuid(),
   student_id: z.string().uuid(),
   key: z.string().uuid(),
+  class_id: z.string().uuid(),
 });

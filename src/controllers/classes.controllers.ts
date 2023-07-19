@@ -119,10 +119,7 @@ export const transferClassStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const classes = await transferClassStudentService(
-    req.body,
-    req.params.class_id,
-  );
+  const classes = await transferClassStudentService(req.body);
   return res.json(classes);
 };
 
