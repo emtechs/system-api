@@ -37,6 +37,16 @@ export const listStudentService = async ({
 
   if (class_id) where_classes = { ...where_classes, some: { class_id } };
 
+  if (year_id && school_id && class_id)
+    where_classes = {
+      every: {
+        class_id,
+        school_id,
+        year_id,
+        is_active: true,
+      },
+    };
+
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
   where = {
