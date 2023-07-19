@@ -168,6 +168,7 @@ model Period{
 }
 
 model SchoolServer{
+  key String @default(uuid()) @unique
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
   school_id String
   server User @relation(fields: [server_id], references: [id], onDelete: Cascade)
@@ -180,6 +181,7 @@ model SchoolServer{
 }
 
 model ClassYear{
+  key String @default(uuid()) @unique
   class Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id String
   school School @relation(fields: [school_id], references: [id], onDelete: Cascade)
@@ -195,6 +197,7 @@ model ClassYear{
 }
 
 model ClassStudent{
+  key String @default(uuid()) @unique
   class_year ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id String
   school_id String
@@ -211,6 +214,7 @@ model ClassStudent{
 }
 
 model FrequencyPeriod{
+  key String @default(uuid()) @unique
   period Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
   period_id String
   frequency Frequency @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
@@ -251,6 +255,7 @@ model FrequencyHistory{
 }
 
 model SchoolInfrequency{
+  key String @default(uuid()) @unique
   value Float @default(0)
   frequencies Int @default(0)
   period Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
@@ -263,6 +268,7 @@ model SchoolInfrequency{
 }
 
 model ClassYearInfrequency{
+  key String @default(uuid()) @unique
   value Float @default(0)
   frequencies Int @default(0)
   period Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
@@ -277,6 +283,7 @@ model ClassYearInfrequency{
 }
 
 model StudentInfrequency{
+  key String @default(uuid()) @unique
   value Float @default(0)
   presences Int @default(0)
   justified Int @default(0)

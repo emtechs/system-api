@@ -14,6 +14,8 @@ import {
   retrieveClassService,
   listClassYearService,
   retrieveClassYearService,
+  deleteClassStudentService,
+  transferClassStudentService,
 } from '../services';
 
 export const createClassController = async (req: Request, res: Response) => {
@@ -49,6 +51,14 @@ export const dashClassController = async (req: Request, res: Response) => {
     req.query,
   );
   return res.json(dash);
+};
+
+export const deleteClassStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classData = await deleteClassStudentService(req.body, req.params.key);
+  return res.json(classData);
 };
 
 export const importClassController = async (req: Request, res: Response) => {
@@ -101,6 +111,17 @@ export const retrieveClassYearController = async (
     req.params.class_id,
     req.params.school_id,
     req.params.year_id,
+  );
+  return res.json(classes);
+};
+
+export const transferClassStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const classes = await transferClassStudentService(
+    req.body,
+    req.params.class_id,
   );
   return res.json(classes);
 };

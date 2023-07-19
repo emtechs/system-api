@@ -116,6 +116,7 @@ CREATE TABLE "periods" (
 
 -- CreateTable
 CREATE TABLE "school_server" (
+    "key" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "server_id" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'SERV',
@@ -126,6 +127,7 @@ CREATE TABLE "school_server" (
 
 -- CreateTable
 CREATE TABLE "class_year" (
+    "key" TEXT NOT NULL,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
@@ -135,6 +137,7 @@ CREATE TABLE "class_year" (
 
 -- CreateTable
 CREATE TABLE "class_student" (
+    "key" TEXT NOT NULL,
     "class_id" TEXT NOT NULL,
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
@@ -149,6 +152,7 @@ CREATE TABLE "class_student" (
 
 -- CreateTable
 CREATE TABLE "frequency_period" (
+    "key" TEXT NOT NULL,
     "period_id" TEXT NOT NULL,
     "frequency_id" TEXT NOT NULL,
 
@@ -184,6 +188,7 @@ CREATE TABLE "frequency_history" (
 
 -- CreateTable
 CREATE TABLE "school_infrequency" (
+    "key" TEXT NOT NULL,
     "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "frequencies" INTEGER NOT NULL DEFAULT 0,
     "period_id" TEXT NOT NULL,
@@ -194,6 +199,7 @@ CREATE TABLE "school_infrequency" (
 
 -- CreateTable
 CREATE TABLE "class_year_infrequency" (
+    "key" TEXT NOT NULL,
     "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "frequencies" INTEGER NOT NULL DEFAULT 0,
     "period_id" TEXT NOT NULL,
@@ -206,6 +212,7 @@ CREATE TABLE "class_year_infrequency" (
 
 -- CreateTable
 CREATE TABLE "student_infrequency" (
+    "key" TEXT NOT NULL,
     "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "presences" INTEGER NOT NULL DEFAULT 0,
     "justified" INTEGER NOT NULL DEFAULT 0,
@@ -263,6 +270,27 @@ CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "school_server_key_key" ON "school_server"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "class_year_key_key" ON "class_year"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "class_student_key_key" ON "class_student"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "frequency_period_key_key" ON "frequency_period"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "school_infrequency_key_key" ON "school_infrequency"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "class_year_infrequency_key_key" ON "class_year_infrequency"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "student_infrequency_key_key" ON "student_infrequency"("key");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "images_key_key" ON "images"("key");

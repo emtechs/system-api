@@ -4,6 +4,8 @@ import {
   ClassSchoolCreateSchema,
   ClassStudentCreateSchema,
   ClassStudentUpdateSchema,
+  DeleteClassStudentSchema,
+  TransferClassStudentSchema,
 } from '../schemas';
 import { IQuery } from './global.interfaces';
 
@@ -34,6 +36,14 @@ export type IClassSchoolRequest = z.infer<typeof ClassSchoolCreateSchema>;
 export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>;
 
 export type IClassStudentUpdate = z.infer<typeof ClassStudentUpdateSchema>;
+
+export type IDeleteClassStudentRequest = z.infer<
+  typeof DeleteClassStudentSchema
+>;
+
+export type ITransferClassStudentRequest = z.infer<
+  typeof TransferClassStudentSchema
+>;
 
 export interface IClassQuery extends IQuery {
   infreq?: number;

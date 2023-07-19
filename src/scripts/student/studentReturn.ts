@@ -67,6 +67,25 @@ export const studentReturn = async (
       school: { id: schoolData.id, name: schoolData.name },
     };
 
+  if (classData && schoolData) {
+    const { key } = await prisma.classStudent.findUnique({
+      where: {
+        class_id_school_id_year_id_student_id: {
+          class_id: classData.id,
+          school_id: schoolData.id,
+          year_id,
+          student_id: studentData.id,
+        },
+      },
+      select: { key: true },
+    });
+
+    student = {
+      ...student,
+      key,
+    };
+  }
+
   return student;
 };
 

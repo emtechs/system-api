@@ -116,3 +116,17 @@ export const ClassStudentReturnSchema = z.object({
 });
 
 export const ClassStudentArraySchema = ClassStudentReturnSchema.array();
+
+export const DeleteClassStudentSchema = z.object({
+  justify_disabled: z.string(),
+  finished_at: z.number(),
+});
+
+export const TransferClassStudentSchema = z.object({
+  justify_disabled: z.string(),
+  finished_at: z.number(),
+  school_id: z.string().uuid(),
+  year_id: z.string().uuid(),
+  student_id: z.string().uuid(),
+  key: z.string().uuid(),
+});

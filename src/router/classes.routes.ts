@@ -4,6 +4,7 @@ import {
   createClassSchoolController,
   createClassStudentController,
   dashClassController,
+  deleteClassStudentController,
   exportClassController,
   listClassController,
   listClassDashController,
@@ -11,11 +12,13 @@ import {
   listClassYearController,
   retrieveClassController,
   retrieveClassYearController,
+  transferClassStudentController,
   updateClassSchoolController,
   updateClassStudentController,
 } from '../controllers';
 import {
   validateSchemaMiddleware,
+  verifyIsAdmin,
   verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares';
@@ -25,6 +28,8 @@ import {
   ClassSchoolUpdateSchema,
   ClassStudentCreateSchema,
   ClassStudentUpdateSchema,
+  DeleteClassStudentSchema,
+  TransferClassStudentSchema,
 } from '../schemas';
 
 export const classRouter = Router();
@@ -106,4 +111,20 @@ classRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassStudentUpdateSchema),
   updateClassStudentController,
+);
+
+classRouter.patch(
+  '/transfer/:class_id',
+  verifyUserIsAuthenticated,
+  verifyIsAdmin,
+  validateSchemaMiddleware(TransferClassStudentSchema),
+  transferClassStudentController,
+);
+
+classRouter.delete(
+  '/:key',
+  verifyUserIsAuthenticated,
+  verifyIsAdmin,
+  validateSchemaMiddleware(DeleteClassStudentSchema),
+  deleteClassStudentController,
 );
