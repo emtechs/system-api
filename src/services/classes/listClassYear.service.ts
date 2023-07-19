@@ -10,8 +10,12 @@ export const listClassYearService = async (
       prisma.classStudent.findMany({
         where: { is_active: true, class_year: { key } },
         select: {
-          student: { select: { id: true, name: true, registry: true } },
+          key: true,
+          student: {
+            select: { id: true, name: true, registry: true, created_at: true },
+          },
         },
+        orderBy: { student: { name: 'asc' } },
       }),
       prisma.classStudent.count({
         where: { is_active: true, class_year: { key } },
@@ -26,11 +30,13 @@ export const listClassYearService = async (
     ]);
 
     const result = students.map((el) => {
-      const { id, name, registry } = el.student;
+      const { id, name, registry, created_at } = el.student;
       return {
         id,
         name,
         registry,
+        created_at,
+        key: el.key,
         class: classData.class,
         school: classData.school,
         year_id: classData.year_id,
