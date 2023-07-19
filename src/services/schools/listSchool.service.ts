@@ -22,15 +22,6 @@ export const listSchoolService = async ({
   if (skip) skip = +skip;
 
   let where = {};
-  let orderBy = {};
-
-  if (order) {
-    switch (order) {
-    case 'name':
-      orderBy = { name: by };
-      break;
-    }
-  }
 
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
 
@@ -78,8 +69,8 @@ export const listSchoolService = async ({
       take,
       skip,
       where,
-      select: { id: true },
-      orderBy,
+      include: { director: { select: { id: true, name: true, cpf: true } } },
+      orderBy: { name: 'asc' },
     }),
     prisma.school.count({ where }),
     prisma.school.findMany({
@@ -89,11 +80,18 @@ export const listSchoolService = async ({
     }),
   ]);
 
+  if (year_id || server_id)
+    return {
+      schools: SchoolArraySchema.parse(schoolsLabel),
+      total,
+      result: SchoolArraySchema.parse(
+        await schoolArrayReturn(schools, year_id, server_id),
+      ),
+    };
+
   return {
     schools: SchoolArraySchema.parse(schoolsLabel),
     total,
-    result: SchoolArraySchema.parse(
-      await schoolArrayReturn(schools, year_id, server_id),
-    ),
+    result: SchoolArraySchema.parse(schools),
   };
 };
