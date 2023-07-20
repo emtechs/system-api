@@ -65,9 +65,8 @@ classRouter.get(
 );
 
 classRouter.get(
-  '/year/:year_id/:class_id/:school_id',
+  '/year/:key/view',
   verifyUserIsAuthenticated,
-  verifyIsPermission,
   retrieveClassYearController,
 );
 

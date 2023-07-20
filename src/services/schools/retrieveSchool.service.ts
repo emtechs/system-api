@@ -4,9 +4,9 @@ import { SchoolReturnSchema } from '../../schemas';
 import {
   classYearReturn,
   schoolReturn,
+  studentReturnData,
   viewClass,
   viewServer,
-  viewStudent,
 } from '../../scripts';
 
 export const retrieveSchoolService = async (
@@ -22,7 +22,7 @@ export const retrieveSchoolService = async (
       return await viewServer(id, name);
 
     case 'student':
-      return await viewStudent(id, year_id, class_id, name);
+      return await studentReturnData(name, undefined, id, year_id, class_id);
     }
   }
 

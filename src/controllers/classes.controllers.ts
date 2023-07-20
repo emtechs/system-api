@@ -107,11 +107,7 @@ export const retrieveClassYearController = async (
   req: Request,
   res: Response,
 ) => {
-  const classes = await retrieveClassYearService(
-    req.params.class_id,
-    req.params.school_id,
-    req.params.year_id,
-  );
+  const classes = await retrieveClassYearService(req.params.key, req.query);
   return res.json(classes);
 };
 

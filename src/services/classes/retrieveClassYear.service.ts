@@ -1,9 +1,9 @@
-import { classYearReturn } from '../../scripts';
+import { IClassQuery } from '../../interfaces';
+import { studentReturnData } from '../../scripts';
 
 export const retrieveClassYearService = async (
-  class_id: string,
-  school_id: string,
-  year_id: string,
+  key: string,
+  { view, name }: IClassQuery,
 ) => {
-  return await classYearReturn(class_id, school_id, year_id);
+  if (view === 'student') return await studentReturnData(name, key);
 };
