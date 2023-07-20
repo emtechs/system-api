@@ -21,6 +21,7 @@ export const verifyService = async (
     student_id,
     year_id,
     year,
+    key_class,
   }: IAuthQuery,
 ) => {
   if (user_id) {
@@ -29,8 +30,7 @@ export const verifyService = async (
     return await verifyUser(user_id);
   }
 
-  if (year_id && school_id && class_id)
-    return await verifyClassYear(class_id, school_id, year_id);
+  if (key_class) return await verifyClassYear(key_class);
 
   if (school_id) {
     const server_id = id;

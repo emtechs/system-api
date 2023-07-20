@@ -14,4 +14,5 @@ export type IPasswordUpdateRequest = z.infer<typeof PasswordUpdateSchema>;
 
 export interface IAuthQuery extends IQuery {
   year?: string;
+  key_class?: string;
 }

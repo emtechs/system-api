@@ -1,24 +1,34 @@
 import { AppError } from '../../errors';
 import prisma from '../../prisma';
 
-export const verifyClassYear = async (
-  class_id: string,
-  school_id: string,
-  year_id: string,
-) => {
+export const verifyClassYear = async (key: string) => {
   const classYear = await prisma.classYear.findUnique({
-    where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
+    where: { key },
     select: {
-      class: { select: { name: true } },
+      class: { select: { id: true, name: true } },
+      school: { select: { id: true, name: true } },
+      year: { select: { id: true, year: true } },
     },
   });
 
   if (!classYear) throw new AppError('class not found', 404);
 
+  const { class: classData, school, year } = classYear;
+
   const select = {
-    id: class_id,
-    label: classYear.class.name,
+    id: classData.id,
+    label: classData.name,
   };
 
-  return { select };
+  const select_school = {
+    id: school.id,
+    label: school.name,
+  };
+
+  const select_year = {
+    id: year.id,
+    label: year.year,
+  };
+
+  return { select, school: select_school, year: select_year };
 };
