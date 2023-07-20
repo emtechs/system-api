@@ -23,7 +23,13 @@ export const viewStudent = async (
       orderBy: { student: { name: 'asc' } },
     }),
     prisma.classStudent.count({
-      where: { school_id, year_id, class_id, is_active: true },
+      where: {
+        school_id,
+        year_id,
+        class_id,
+        is_active: true,
+        student: { name: { contains: name, mode: 'insensitive' } },
+      },
     }),
   ]);
 
