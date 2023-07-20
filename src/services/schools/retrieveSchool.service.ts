@@ -1,12 +1,31 @@
 import { ISchoolQuery } from '../../interfaces';
 import prisma from '../../prisma';
 import { SchoolReturnSchema } from '../../schemas';
-import { classYearReturn, schoolReturn } from '../../scripts';
+import {
+  classYearReturn,
+  schoolReturn,
+  viewClass,
+  viewServer,
+  viewStudent,
+} from '../../scripts';
 
 export const retrieveSchoolService = async (
   id: string,
-  { year_id, class_id }: ISchoolQuery,
+  { year_id, class_id, view, name }: ISchoolQuery,
 ) => {
+  if (view) {
+    switch (view) {
+    case 'class':
+      return await viewClass(id, year_id, name);
+
+    case 'server':
+      return await viewServer(id, name);
+
+    case 'student':
+      return await viewStudent(id, year_id, class_id, name);
+    }
+  }
+
   let school = {};
 
   const schoolData = await prisma.school.findUnique({

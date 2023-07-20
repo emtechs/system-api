@@ -45,4 +45,5 @@ export interface ISchoolQuery extends IQuery {
   server_id?: string;
   none_server_id?: string;
   category?: CategoryPeriod;
+  view?: 'server' | 'class' | 'student';
 }
