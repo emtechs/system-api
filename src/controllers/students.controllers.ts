@@ -12,7 +12,7 @@ import {
 } from '../services';
 
 export const createStudentController = async (req: Request, res: Response) => {
-  const student = await createStudentService(req.body);
+  const student = await createStudentService(req.body, req.query);
   return res.status(201).json(student);
 };
 
