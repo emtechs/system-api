@@ -40,10 +40,18 @@ export const viewStudent = async (
   ]);
 
   const result = data.map((el) => {
-    const { class_year, key, student } = el;
+    const { class_year, key, student, year_id: year_id_data } = el;
     const { class: classData, school } = class_year;
     const { id, name, registry } = student;
-    return { id, name, registry, class: classData, school, key };
+    return {
+      id,
+      name,
+      registry,
+      class: classData,
+      school,
+      year_id: year_id_data,
+      key,
+    };
   });
 
   return { total, result };
