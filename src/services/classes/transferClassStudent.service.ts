@@ -15,8 +15,17 @@ export const transferClassStudentService = async ({
       where: { key },
       data: { is_active: false, finished_at, justify_disabled },
     }),
-    prisma.classStudent.create({
-      data: { class_id, school_id, year_id, student_id },
+    prisma.classStudent.upsert({
+      where: {
+        class_id_school_id_year_id_student_id: {
+          class_id,
+          school_id,
+          student_id,
+          year_id,
+        },
+      },
+      create: { class_id, school_id, student_id, year_id },
+      update: { is_active: true },
     }),
   ]);
 
