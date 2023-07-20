@@ -3,13 +3,8 @@ import { z } from 'zod';
 export const StudentCreateSchema = z.object({
   name: z.string(),
   registry: z.string(),
-});
-
-export const StudentCreateWithClassSchema = z.object({
-  name: z.string(),
-  registry: z.string(),
-  class_id: z.string().uuid(),
-  school_id: z.string().uuid(),
+  class_id: z.string().uuid().optional(),
+  school_id: z.string().uuid().optional(),
 });
 
 export const StudentUpdateSchema = z
