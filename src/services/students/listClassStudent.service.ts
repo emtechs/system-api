@@ -1,16 +1,17 @@
+import { IStudentQuery } from '../../interfaces';
 import prisma from '../../prisma';
 
-export const studentReturnData = async (
-  name: string,
-  key?: string,
-  school_id?: string,
-  year_id?: string,
-  class_id?: string,
-) => {
+export const listClassStudentService = async ({
+  name,
+  key_class,
+  school_id,
+  year_id,
+  class_id,
+}: IStudentQuery) => {
   const [data, total] = await Promise.all([
     prisma.classStudent.findMany({
       where: {
-        class_year: { key },
+        class_year: { key: key_class },
         school_id,
         year_id,
         class_id,
@@ -32,7 +33,7 @@ export const studentReturnData = async (
     }),
     prisma.classStudent.count({
       where: {
-        class_year: { key },
+        class_year: { key: key_class },
         school_id,
         year_id,
         class_id,

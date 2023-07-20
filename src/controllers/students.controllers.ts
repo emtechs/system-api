@@ -5,6 +5,7 @@ import {
   exportStudentService,
   importStudentAllService,
   importStudentService,
+  listClassStudentService,
   listStudentService,
   retrieveStudentService,
   updateStudentService,
@@ -44,6 +45,14 @@ export const importStudentAllController = async (
 ) => {
   const students = await importStudentAllService(req.file);
   return res.status(201).json(students);
+};
+
+export const listClassStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const students = await listClassStudentService(req.query);
+  return res.json(students);
 };
 
 export const listStudentController = async (req: Request, res: Response) => {

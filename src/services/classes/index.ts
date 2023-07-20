@@ -8,7 +8,6 @@ export * from './importClass.service';
 export * from './listClass.service';
 export * from './listClassDash.service';
 export * from './listClassYear.service';
-export * from './listClassStudent.service';
 export * from './retrieveClass.service';
 export * from './retrieveClassYear.service';
 export * from './transferClassStudent.service';

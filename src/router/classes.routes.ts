@@ -8,7 +8,6 @@ import {
   exportClassController,
   listClassController,
   listClassDashController,
-  listClassStudentController,
   listClassYearController,
   retrieveClassController,
   retrieveClassYearController,
@@ -77,12 +76,6 @@ classRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   listClassDashController,
-);
-
-classRouter.get(
-  '/student/:year_id',
-  verifyUserIsAuthenticated,
-  listClassStudentController,
 );
 
 classRouter.get(

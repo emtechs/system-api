@@ -3,6 +3,7 @@ import {
   createStudentController,
   createStudentWithClassController,
   exportStudentController,
+  listClassStudentController,
   listStudentController,
   retrieveStudentController,
   updateStudentController,
@@ -34,6 +35,12 @@ studentRouter.post(
 );
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController);
+
+studentRouter.get(
+  '/class',
+  verifyUserIsAuthenticated,
+  listClassStudentController,
+);
 
 studentRouter.get(
   '/export',

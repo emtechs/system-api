@@ -51,5 +51,4 @@ export interface IStudentQuery extends IQuery {
   is_active?: 'true' | 'false';
   is_list?: string;
   infreq?: number;
-  name?: string;
 }

@@ -4,7 +4,6 @@ import { SchoolReturnSchema } from '../../schemas';
 import {
   classYearReturn,
   schoolReturn,
-  studentReturnData,
   viewClass,
   viewServer,
 } from '../../scripts';
@@ -20,9 +19,6 @@ export const retrieveSchoolService = async (
 
     case 'server':
       return await viewServer(id, name);
-
-    case 'student':
-      return await studentReturnData(name, undefined, id, year_id, class_id);
     }
   }
 
