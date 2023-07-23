@@ -1,5 +1,5 @@
-import 'dotenv/config';
-import { createTransport } from 'nodemailer';
+import 'dotenv/config'
+import { createTransport } from 'nodemailer'
 
 export const sendEmail = async (
   email: string,
@@ -13,17 +13,17 @@ export const sendEmail = async (
         user: process.env.USER,
         pass: process.env.PASS,
       },
-    });
+    })
 
     await transporter.sendMail({
       from: process.env.USER,
       to: email,
-      subject: subject,
-      html: html,
-    });
+      subject,
+      html,
+    })
 
-    console.log('email sent sucessfully');
+    console.log('email sent sucessfully')
   } catch (error) {
-    console.log(error, 'email not sent');
+    console.log(error, 'email not sent')
   }
-};
+}

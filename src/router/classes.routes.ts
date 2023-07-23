@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from 'express'
 import {
   createClassController,
   createClassSchoolController,
@@ -14,13 +14,13 @@ import {
   transferClassStudentController,
   updateClassSchoolController,
   updateClassStudentController,
-} from '../controllers';
+} from '../controllers'
 import {
   validateSchemaMiddleware,
   verifyIsAdmin,
   verifyIsPermission,
   verifyUserIsAuthenticated,
-} from '../middlewares';
+} from '../middlewares'
 import {
   ClassCreateSchema,
   ClassSchoolCreateSchema,
@@ -29,16 +29,16 @@ import {
   ClassStudentUpdateSchema,
   DeleteClassStudentSchema,
   TransferClassStudentSchema,
-} from '../schemas';
+} from '../schemas'
 
-export const classRouter = Router();
+export const classRouter = Router()
 
 classRouter.post(
   '',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassCreateSchema),
   createClassController,
-);
+)
 
 classRouter.post(
   '/:year_id/:school_id',
@@ -46,57 +46,57 @@ classRouter.post(
   verifyIsPermission,
   validateSchemaMiddleware(ClassSchoolCreateSchema),
   createClassSchoolController,
-);
+)
 
 classRouter.post(
   '/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassStudentCreateSchema),
   createClassStudentController,
-);
+)
 
-classRouter.get('', verifyUserIsAuthenticated, listClassController);
+classRouter.get('', verifyUserIsAuthenticated, listClassController)
 
 classRouter.get(
   '/year/:key',
   verifyUserIsAuthenticated,
   listClassYearController,
-);
+)
 
 classRouter.get(
   '/year/:key/view',
   verifyUserIsAuthenticated,
   retrieveClassYearController,
-);
+)
 
-classRouter.get('/export', verifyUserIsAuthenticated, exportClassController);
+classRouter.get('/export', verifyUserIsAuthenticated, exportClassController)
 
 classRouter.get(
   '/school/:school_id/dash/:year_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   listClassDashController,
-);
+)
 
 classRouter.get(
   '/:class_id',
   verifyUserIsAuthenticated,
   retrieveClassController,
-);
+)
 
 classRouter.get(
   '/:class_id/:school_id/:year_id/dash',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   dashClassController,
-);
+)
 
 classRouter.patch(
   '',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassSchoolUpdateSchema),
   updateClassSchoolController,
-);
+)
 
 classRouter.patch(
   '/transfer',
@@ -104,14 +104,14 @@ classRouter.patch(
   verifyIsAdmin,
   validateSchemaMiddleware(TransferClassStudentSchema),
   transferClassStudentController,
-);
+)
 
 classRouter.patch(
   '/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassStudentUpdateSchema),
   updateClassStudentController,
-);
+)
 
 classRouter.delete(
   '/:key',
@@ -119,4 +119,4 @@ classRouter.delete(
   verifyIsAdmin,
   validateSchemaMiddleware(DeleteClassStudentSchema),
   deleteClassStudentController,
-);
+)

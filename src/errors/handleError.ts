@@ -1,6 +1,7 @@
-import { ZodError } from 'zod';
-import { AppError } from './appError';
-import { Request, Response, NextFunction } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ZodError } from 'zod'
+import { AppError } from './appError'
+import { Request, Response, NextFunction } from 'express'
 
 export const errorHandler = async (
   error: Error,
@@ -11,14 +12,14 @@ export const errorHandler = async (
   if (error instanceof AppError)
     return res.status(error.statusCode).json({
       message: error.message,
-    });
+    })
 
   if (error instanceof ZodError)
-    return res.status(400).json({ message: error.flatten().fieldErrors });
+    return res.status(400).json({ message: error.flatten().fieldErrors })
 
-  console.log(error);
+  console.log(error)
 
   return res.status(500).json({
     message: 'Internal server error',
-  });
-};
+  })
+}

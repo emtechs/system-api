@@ -1,18 +1,18 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const ClassCreateSchema = z.object({
   name: z.string(),
-});
+})
 
 export const ClassSchoolCreateSchema = z.object({
   class_id: z.string().uuid(),
-});
+})
 
 export const ClassStudentCreateSchema = z.object({
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),
   student_id: z.string().uuid(),
-});
+})
 
 export const ClassStudentUpdateSchema = z.object({
   school_id: z.string().uuid(),
@@ -21,7 +21,7 @@ export const ClassStudentUpdateSchema = z.object({
   is_active: z.boolean().optional(),
   justify_disabled: z.string().optional(),
   finished_at: z.number().optional(),
-});
+})
 
 export const ClassSchoolUpdateSchema = z.object({
   class_id: z.string().uuid(),
@@ -30,7 +30,7 @@ export const ClassSchoolUpdateSchema = z.object({
   class_infreq: z.number(),
   school_frequencies: z.number(),
   school_infreq: z.number(),
-});
+})
 
 export const ClassUpdateInfrequency = z.object({
   class_id: z.string().uuid(),
@@ -41,7 +41,7 @@ export const ClassUpdateInfrequency = z.object({
       period_id: z.string().uuid(),
     })
     .array(),
-});
+})
 
 export const ClassReturnSchema = z
   .object({
@@ -53,9 +53,9 @@ export const ClassReturnSchema = z
     students: z.number().optional(),
     frequencies: z.number().optional(),
   })
-  .refine((fields) => (fields.label = fields.name));
+  .refine((fields) => (fields.label = fields.name))
 
-export const ClassArraySchema = ClassReturnSchema.array();
+export const ClassArraySchema = ClassReturnSchema.array()
 
 export const ClassSchoolReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
@@ -73,9 +73,9 @@ export const ClassSchoolReturnSchema = z.object({
     .array()
     .optional(),
   _count: z.object({ frequencies: z.number(), students: z.number() }),
-});
+})
 
-export const ClassSchoolArraySchema = ClassSchoolReturnSchema.array();
+export const ClassSchoolArraySchema = ClassSchoolReturnSchema.array()
 
 export const ClassSchoolFrequencyReturnSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
@@ -96,15 +96,15 @@ export const ClassSchoolFrequencyReturnSchema = z.object({
     .array(),
   _count: z.object({ frequencies: z.number(), students: z.number() }),
   infreq: z.number(),
-});
+})
 
 export const ClassSchoolFrequencyArraySchema =
-  ClassSchoolFrequencyReturnSchema.array();
+  ClassSchoolFrequencyReturnSchema.array()
 
 const ClassSchema = z.object({
   class: z.object({ id: z.string(), name: z.string() }),
   school: z.object({ id: z.string(), name: z.string() }),
-});
+})
 
 export const ClassStudentReturnSchema = z.object({
   class: ClassSchema,
@@ -113,14 +113,14 @@ export const ClassStudentReturnSchema = z.object({
     name: z.string(),
     registry: z.string(),
   }),
-});
+})
 
-export const ClassStudentArraySchema = ClassStudentReturnSchema.array();
+export const ClassStudentArraySchema = ClassStudentReturnSchema.array()
 
 export const DeleteClassStudentSchema = z.object({
   justify_disabled: z.string(),
   finished_at: z.number(),
-});
+})
 
 export const TransferClassStudentSchema = z.object({
   justify_disabled: z.string(),
@@ -130,4 +130,4 @@ export const TransferClassStudentSchema = z.object({
   student_id: z.string().uuid(),
   key: z.string().uuid(),
   class_id: z.string().uuid(),
-});
+})

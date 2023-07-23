@@ -1,11 +1,11 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const classYearReturn = async (
   class_id: string,
   school_id: string,
   year_id: string,
 ) => {
-  let infrequency = 0;
+  let infrequency = 0
 
   const [classData, school, students, frequencies, infreqData, { key }] =
     await Promise.all([
@@ -33,9 +33,9 @@ export const classYearReturn = async (
         where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
         select: { key: true },
       }),
-    ]);
+    ])
 
-  if (infreqData) infrequency = infreqData.value;
+  if (infreqData) infrequency = infreqData.value
 
   return {
     ...classData,
@@ -46,23 +46,23 @@ export const classYearReturn = async (
     infrequency,
     year_id,
     key,
-  };
-};
+  }
+}
 
 export const classYearArrayReturn = async (
   classData: {
-    class_id: string;
-    school_id: string;
-    year_id: string;
+    class_id: string
+    school_id: string
+    year_id: string
   }[],
 ) => {
   const classes = classData.map((el) => {
-    const { class_id, school_id, year_id } = el;
+    const { class_id, school_id, year_id } = el
 
-    return classYearReturn(class_id, school_id, year_id);
-  });
+    return classYearReturn(class_id, school_id, year_id)
+  })
 
   return Promise.all(classes).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}

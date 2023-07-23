@@ -1,4 +1,4 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const dashUserService = async (year_id: string) => {
   const [
@@ -25,7 +25,7 @@ export const dashUserService = async (year_id: string) => {
     prisma.student.count({
       where: { classes: { every: { is_active: false } } },
     }),
-  ]);
+  ])
 
   return {
     countSchool,
@@ -34,5 +34,5 @@ export const dashUserService = async (year_id: string) => {
     countFrequency,
     countServer,
     countNotClass,
-  };
-};
+  }
+}

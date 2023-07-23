@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const UserCreateSchema = z.object({
   login: z.string(),
@@ -8,13 +8,13 @@ export const UserCreateSchema = z.object({
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).default('COMMON'),
   schools: z.object({ id: z.string().uuid() }).array().optional(),
-});
+})
 
 const WorkSchoolSchema = z.object({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
   school: z.object({ id: z.string().uuid(), name: z.string() }),
-});
+})
 
 export const UserReturnSchema = UserCreateSchema.extend({
   id: z.string().uuid(),
@@ -25,7 +25,7 @@ export const UserReturnSchema = UserCreateSchema.extend({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
   frequencies: z.number().optional(),
   work_school: WorkSchoolSchema.optional(),
-}).omit({ password: true, schools: true });
+}).omit({ password: true, schools: true })
 
 export const UserUpdateRequestSchema = UserCreateSchema.extend({
   email: z.string().email(),
@@ -35,6 +35,6 @@ export const UserUpdateRequestSchema = UserCreateSchema.extend({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).optional(),
 })
   .omit({ login: true, cpf: true })
-  .partial();
+  .partial()
 
-export const UserArraySchema = UserReturnSchema.array();
+export const UserArraySchema = UserReturnSchema.array()

@@ -1,7 +1,10 @@
-import { importUser, loadUser } from '../../scripts';
+import { AppError } from '../../errors'
+import { importUser, loadUser } from '../../scripts'
 
-export const importUserService = async (file: Express.Multer.File) => {
-  const users = await loadUser(file);
+export const importUserService = async (file?: Express.Multer.File) => {
+  if (!file) throw new AppError('')
 
-  return await importUser(users);
-};
+  const users = await loadUser(file)
+
+  return await importUser(users)
+}

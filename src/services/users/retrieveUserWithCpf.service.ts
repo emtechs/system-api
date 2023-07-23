@@ -1,6 +1,6 @@
-import { AppError } from '../../errors';
-import { IUserQuery } from '../../interfaces';
-import prisma from '../../prisma';
+import { AppError } from '../../errors'
+import { IUserQuery } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const retrieveUserWithCpfService = async (
   login: string,
@@ -9,7 +9,7 @@ export const retrieveUserWithCpfService = async (
   const user = await prisma.user.findUnique({
     where: { login },
     select: { name: true, role: true },
-  });
+  })
 
   if (school_id) {
     if (director) {
@@ -19,14 +19,14 @@ export const retrieveUserWithCpfService = async (
           school_id,
           role: 'DIRET',
         },
-      });
+      })
 
-      if (!user) return { name: '' };
+      if (!user) return { name: '' }
 
       if (server || user.role === 'ADMIN')
-        throw new AppError('user already exists', 409);
+        throw new AppError('user already exists', 409)
 
-      return user;
+      return user
     }
 
     const server = await prisma.schoolServer.findFirst({
@@ -34,30 +34,30 @@ export const retrieveUserWithCpfService = async (
         server: { login },
         school_id,
       },
-    });
+    })
 
-    if (!user) return { name: '' };
+    if (!user) return { name: '' }
 
     if (server || user.role === 'ADMIN')
-      throw new AppError('user already exists', 409);
+      throw new AppError('user already exists', 409)
 
-    return user;
+    return user
   }
 
   if (director) {
-    if (!user) return { name: '' };
+    if (!user) return { name: '' }
 
-    if (user.role === 'ADMIN') throw new AppError('user already exists', 409);
+    if (user.role === 'ADMIN') throw new AppError('user already exists', 409)
 
-    return user;
+    return user
   }
 
   if (allNotServ) {
-    if (user) throw new AppError('user already exists', 409);
-    return { name: '' };
+    if (user) throw new AppError('user already exists', 409)
+    return { name: '' }
   }
 
-  if (!user) throw new AppError('user not found', 404);
+  if (!user) throw new AppError('user not found', 404)
 
-  return user;
-};
+  return user
+}

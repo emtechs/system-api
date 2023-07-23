@@ -1,12 +1,12 @@
-import { hashSync } from 'bcryptjs';
-import { IUser } from '../../interfaces';
-import prisma from '../../prisma';
+import { hashSync } from 'bcryptjs'
+import { IUser } from '../../interfaces'
+import { prisma } from '../../lib'
 
 const verifyUser = async ({ login, name, cpf }: IUser) => {
-  const userData = await prisma.user.findUnique({ where: { login } });
-  let user = userData;
+  const userData = await prisma.user.findUnique({ where: { login } })
+  let user = userData
   if (!userData) {
-    const password = hashSync(login.substring(0, 6), 10);
+    const password = hashSync(login.substring(0, 6), 10)
 
     user = await prisma.user.create({
       data: {
@@ -15,17 +15,17 @@ const verifyUser = async ({ login, name, cpf }: IUser) => {
         name,
         password,
       },
-    });
+    })
   }
 
-  return user;
-};
+  return user
+}
 
 export const importUser = async (users: IUser[]) => {
   const usersVerifyParse = users.map((el) => {
-    return verifyUser(el);
-  });
+    return verifyUser(el)
+  })
   return Promise.all(usersVerifyParse).then((user) => {
-    return user;
-  });
-};
+    return user
+  })
+}

@@ -1,9 +1,9 @@
-import prisma from '../../prisma';
-import { IUserQuery, IUserRequest } from '../../interfaces';
-import { hashSync } from 'bcryptjs';
-import { AppError } from '../../errors';
-import { ServerSchema, UserReturnSchema } from '../../schemas';
-import { updateSchoolDirector } from '../../scripts';
+import { prisma } from '../../lib'
+import { IUserQuery, IUserRequest } from '../../interfaces'
+import { hashSync } from 'bcryptjs'
+import { AppError } from '../../errors'
+import { ServerSchema, UserReturnSchema } from '../../schemas'
+import { updateSchoolDirector } from '../../scripts'
 
 export const createUserService = async (
   { login, name, password, cpf, role, dash, schools }: IUserRequest,
@@ -11,11 +11,11 @@ export const createUserService = async (
 ) => {
   let user = await prisma.user.findUnique({
     where: { login },
-  });
+  })
 
   if (schools) {
     if (!user) {
-      password = hashSync(password, 10);
+      password = hashSync(password, 10)
       user = await prisma.user.create({
         data: {
           login,
@@ -23,22 +23,22 @@ export const createUserService = async (
           password,
           cpf,
         },
-      });
+      })
     } else {
       await prisma.user.update({
         where: { login },
         data: { is_active: true },
-      });
+      })
     }
 
-    await updateSchoolDirector(schools, user.id);
+    await updateSchoolDirector(schools, user.id)
 
-    return UserReturnSchema.parse(user);
+    return UserReturnSchema.parse(user)
   }
 
   if (school_id) {
     if (!user) {
-      password = hashSync(password, 10);
+      password = hashSync(password, 10)
       user = await prisma.user.create({
         data: {
           login,
@@ -46,7 +46,7 @@ export const createUserService = async (
           password,
           cpf,
         },
-      });
+      })
     }
 
     await prisma.school.update({
@@ -62,7 +62,7 @@ export const createUserService = async (
           },
         },
       },
-    });
+    })
 
     const server = await prisma.schoolServer.findUnique({
       where: { school_id_server_id: { school_id, server_id: user.id } },
@@ -71,21 +71,21 @@ export const createUserService = async (
         dash: true,
         server: { select: { id: true, name: true, cpf: true } },
       },
-    });
+    })
 
-    return ServerSchema.parse(server);
+    return ServerSchema.parse(server)
   }
 
   switch (role) {
-  case 'ADMIN':
-    dash = 'ADMIN';
-    break;
-  case 'SECRET':
-    dash = 'ORGAN';
-    break;
-  case 'DIRET':
-    dash = 'SCHOOL';
-    break;
+    case 'ADMIN':
+      dash = 'ADMIN'
+      break
+    case 'SECRET':
+      dash = 'ORGAN'
+      break
+    case 'DIRET':
+      dash = 'SCHOOL'
+      break
   }
 
   if (allNotServ) {
@@ -93,11 +93,11 @@ export const createUserService = async (
       const server = await prisma.user.update({
         where: { id: user.id },
         data: { is_active: true },
-      });
-      return UserReturnSchema.parse(server);
+      })
+      return UserReturnSchema.parse(server)
     }
 
-    password = hashSync(password, 10);
+    password = hashSync(password, 10)
 
     const server = await prisma.user.create({
       data: {
@@ -106,14 +106,14 @@ export const createUserService = async (
         cpf,
         password,
       },
-    });
+    })
 
-    return UserReturnSchema.parse(server);
+    return UserReturnSchema.parse(server)
   }
 
-  if (user) throw new AppError('user already exists', 409);
+  if (user) throw new AppError('user already exists', 409)
 
-  password = hashSync(password, 10);
+  password = hashSync(password, 10)
 
   user = await prisma.user.create({
     data: {
@@ -124,7 +124,7 @@ export const createUserService = async (
       role,
       dash,
     },
-  });
+  })
 
-  return UserReturnSchema.parse(user);
-};
+  return UserReturnSchema.parse(user)
+}

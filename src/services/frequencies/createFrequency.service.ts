@@ -1,6 +1,6 @@
-import prisma from '../../prisma';
-import { IFrequencyRequest } from '../../interfaces';
-import { FrequencyReturnSchema } from '../../schemas';
+import { prisma } from '../../lib'
+import { IFrequencyRequest } from '../../interfaces'
+import { FrequencyReturnSchema } from '../../schemas'
 
 export const createFrequencyService = async (
   { date, name, class_id, school_id, year_id, students }: IFrequencyRequest,
@@ -8,18 +8,18 @@ export const createFrequencyService = async (
 ) => {
   const frequencyData = await prisma.frequency.findFirst({
     where: { date, class_id, school_id, year_id },
-  });
+  })
 
-  if (frequencyData) return FrequencyReturnSchema.parse(frequencyData);
+  if (frequencyData) return FrequencyReturnSchema.parse(frequencyData)
 
-  const dateData = date.split('/');
-  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`);
+  const dateData = date.split('/')
+  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
 
   const whereData = {
     date_initial: { lte: date_time },
     date_final: { gte: date_time },
     year_id,
-  };
+  }
 
   const [{ id: period_id_ano }, { id: period_id_bim }, { id: period_id_sem }] =
     await Promise.all([
@@ -35,7 +35,7 @@ export const createFrequencyService = async (
         where: { category: 'SEMESTRE', ...whereData },
         select: { id: true },
       }),
-    ]);
+    ])
 
   const frequency = await prisma.frequency.create({
     data: {
@@ -66,7 +66,7 @@ export const createFrequencyService = async (
         },
       },
     },
-  });
+  })
 
-  return FrequencyReturnSchema.parse(frequency);
-};
+  return FrequencyReturnSchema.parse(frequency)
+}

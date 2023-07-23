@@ -1,25 +1,25 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const infrequencyReturn = async (
   infrequency: {
-    id: string;
-    name: string;
-    date_initial: Date;
-    date_final: Date;
+    id: string
+    name: string
+    date_initial: Date
+    date_final: Date
   },
   year_id: string,
   school_id: string,
   class_id: string,
   student_id: string,
 ) => {
-  let infreqReturn = undefined;
+  let infreqReturn
 
   if (school_id) {
     const infreq = await prisma.schoolInfrequency.findUnique({
       where: { period_id_school_id: { period_id: infrequency.id, school_id } },
       select: { value: true, frequencies: true },
-    });
-    if (infreq) infreqReturn = { ...infrequency, ...infreq };
+    })
+    if (infreq) infreqReturn = { ...infrequency, ...infreq }
   }
 
   if (class_id && school_id && year_id) {
@@ -33,8 +33,8 @@ export const infrequencyReturn = async (
         },
       },
       select: { value: true, frequencies: true },
-    });
-    if (infreq) infreqReturn = { ...infrequency, ...infreq };
+    })
+    if (infreq) infreqReturn = { ...infrequency, ...infreq }
   }
 
   if (student_id) {
@@ -49,19 +49,19 @@ export const infrequencyReturn = async (
         justified: true,
         presences: true,
       },
-    });
-    if (infreq) infreqReturn = { ...infrequency, ...infreq };
+    })
+    if (infreq) infreqReturn = { ...infrequency, ...infreq }
   }
 
-  return infreqReturn;
-};
+  return infreqReturn
+}
 
 export const infrequencyArrayReturn = async (
   infrequency: {
-    id: string;
-    name: string;
-    date_initial: Date;
-    date_final: Date;
+    id: string
+    name: string
+    date_initial: Date
+    date_final: Date
   }[],
   year_id = '',
   school_id = '',
@@ -70,9 +70,9 @@ export const infrequencyArrayReturn = async (
 ) => {
   const infreq = infrequency.map((el) =>
     infrequencyReturn(el, year_id, school_id, class_id, student_id),
-  );
+  )
 
   return Promise.all(infreq).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}

@@ -1,8 +1,8 @@
-import { AppError } from '../../errors';
-import prisma from '../../prisma';
+import { AppError } from '../../errors'
+import { prisma } from '../../lib'
 
 export const verifySchool = async (id: string) => {
-  const school_id = id;
+  const school_id = id
 
   const [school, years] = await Promise.all([
     prisma.school.findUnique({
@@ -13,11 +13,11 @@ export const verifySchool = async (id: string) => {
       where: { classes: { some: { school_id } } },
       orderBy: { year: 'desc' },
     }),
-  ]);
+  ])
 
-  if (!school) throw new AppError('school not found', 404);
+  if (!school) throw new AppError('school not found', 404)
 
-  const select = { id, label: school.name };
+  const select = { id, label: school.name }
 
-  return { select, years };
-};
+  return { select, years }
+}

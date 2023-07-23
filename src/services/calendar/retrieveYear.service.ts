@@ -1,7 +1,7 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const retrieveYearService = async (year: string) => {
-  const schoolYear = await prisma.year.findUnique({ where: { year } });
+  const schoolYear = await prisma.year.findUnique({ where: { year } })
 
-  return schoolYear;
-};
+  return schoolYear
+}

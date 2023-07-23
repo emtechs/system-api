@@ -1,7 +1,7 @@
-import { IClassQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { ClassArraySchema } from '../../schemas';
-import { classArrayReturn, classYearArrayReturn } from '../../scripts';
+import { IClassQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { ClassArraySchema } from '../../schemas'
+import { classArrayReturn, classYearArrayReturn } from '../../scripts'
 
 export const listClassService = async ({
   is_active,
@@ -14,39 +14,39 @@ export const listClassService = async ({
   name,
   is_school,
 }: IClassQuery) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let where = {};
-  let orderBy = {};
+  let where = {}
+  let orderBy = {}
 
   if (order) {
     switch (order) {
-    case 'name':
-      orderBy = { name: by };
-      break;
+      case 'name':
+        orderBy = { name: by }
+        break
     }
   }
 
-  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } }
 
   if (is_active) {
     switch (is_active) {
-    case 'true':
-      where = { ...where, is_active: true };
-      break;
+      case 'true':
+        where = { ...where, is_active: true }
+        break
 
-    case 'false':
-      where = { ...where, is_active: false };
-      break;
+      case 'false':
+        where = { ...where, is_active: false }
+        break
     }
   }
 
-  where = { ...where, schools: { some: { year_id, school_id } } };
+  where = { ...where, schools: { some: { year_id, school_id } } }
 
   if (is_school) {
     if (year_id && school_id)
-      where = { ...where, schools: { none: { school_id, year_id } } };
+      where = { ...where, schools: { none: { school_id, year_id } } }
   }
 
   const [classesData, total, classesLabel, yearsData] = await Promise.all([
@@ -65,26 +65,26 @@ export const listClassService = async ({
       distinct: ['year_id'],
       select: { year: true },
     }),
-  ]);
+  ])
 
-  let returnResult = {};
-  let result = {};
+  let returnResult = {}
+  let result = {}
 
-  const classes = ClassArraySchema.parse(classesLabel);
+  const classes = ClassArraySchema.parse(classesLabel)
 
-  const years = yearsData.map((el) => el.year);
+  const years = yearsData.map((el) => el.year)
 
-  returnResult = { classes, total, years };
+  returnResult = { classes, total, years }
 
   if (!is_school && school_id && year_id) {
     const classYear = classesData.map((el) => {
-      return { class_id: el.id, school_id, year_id };
-    });
-    result = await classYearArrayReturn(classYear);
-  } else result = ClassArraySchema.parse(await classArrayReturn(classesData));
+      return { class_id: el.id, school_id, year_id }
+    })
+    result = await classYearArrayReturn(classYear)
+  } else result = ClassArraySchema.parse(await classArrayReturn(classesData))
 
   return {
     ...returnResult,
     result,
-  };
-};
+  }
+}

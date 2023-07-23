@@ -1,5 +1,5 @@
-import prisma from '../../prisma';
-import { FrequencyReturnSchema } from '../../schemas';
+import { prisma } from '../../lib'
+import { FrequencyReturnSchema } from '../../schemas'
 
 export const retrieveFrequencyService = async (id: string) => {
   const frequency = await prisma.frequency.findUnique({
@@ -13,7 +13,7 @@ export const retrieveFrequencyService = async (id: string) => {
         orderBy: { student: { name: 'asc' } },
       },
     },
-  });
+  })
 
-  return FrequencyReturnSchema.parse(frequency);
-};
+  return FrequencyReturnSchema.parse(frequency)
+}

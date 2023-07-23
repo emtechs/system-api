@@ -1,5 +1,5 @@
-import prisma from '../../prisma';
-import { IClassSchoolUpdateRequest } from '../../interfaces';
+import { prisma } from '../../lib'
+import { IClassSchoolUpdateRequest } from '../../interfaces'
 
 export const updateClassSchoolService = async ({
   class_id,
@@ -35,7 +35,7 @@ export const updateClassSchoolService = async ({
         },
       },
     },
-  });
+  })
 
-  return classSchool;
-};
+  return classSchool
+}

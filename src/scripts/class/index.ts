@@ -1,2 +1,2 @@
-export * from './classReturn';
-export * from './classYearReturn';
+export * from './classReturn'
+export * from './classYearReturn'

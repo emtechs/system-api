@@ -1,4 +1,4 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const reportSchoolService = async (
   school_id: string,
@@ -29,19 +29,19 @@ export const reportSchoolService = async (
       },
       select: { id: true, registry: true, name: true },
     }),
-  ]);
+  ])
 
   const classes = classesData.map((el) => {
-    return { ...el, label: el.name };
-  });
+    return { ...el, label: el.name }
+  })
 
   const months = monthsData.map((el) => {
-    return { ...el, label: el.name };
-  });
+    return { ...el, label: el.name }
+  })
 
   const students = studentsData.map((el) => {
-    return { ...el, label: el.name };
-  });
+    return { ...el, label: el.name }
+  })
 
-  return { classes, months, students };
-};
+  return { classes, months, students }
+}

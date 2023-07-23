@@ -1,6 +1,6 @@
-import { AppError } from '../../errors';
-import { IAuthQuery, IRequestUser } from '../../interfaces';
-import prisma from '../../prisma';
+import { AppError } from '../../errors'
+import { IAuthQuery, IRequestUser } from '../../interfaces'
+import { prisma } from '../../lib'
 import {
   verifyClass,
   verifyClassYear,
@@ -9,7 +9,7 @@ import {
   verifyStudent,
   verifyUser,
   verifyYear,
-} from '../../scripts';
+} from '../../scripts'
 
 export const verifyService = async (
   { id, role }: IRequestUser,
@@ -25,15 +25,15 @@ export const verifyService = async (
   }: IAuthQuery,
 ) => {
   if (user_id) {
-    if (role !== 'ADMIN') throw new AppError('Missing permissions', 401);
+    if (role !== 'ADMIN') throw new AppError('Missing permissions', 401)
 
-    return await verifyUser(user_id);
+    return await verifyUser(user_id)
   }
 
-  if (key_class) return await verifyClassYear(key_class);
+  if (key_class) return await verifyClassYear(key_class)
 
   if (school_id) {
-    const server_id = id;
+    const server_id = id
 
     const server = await prisma.schoolServer.findUnique({
       where: {
@@ -42,19 +42,19 @@ export const verifyService = async (
           server_id,
         },
       },
-    });
+    })
 
     if (!server && role !== 'ADMIN')
-      throw new AppError('Missing permissions', 401);
+      throw new AppError('Missing permissions', 401)
 
-    return await verifySchool(school_id);
+    return await verifySchool(school_id)
   }
 
-  if (class_id) return await verifyClass(class_id);
+  if (class_id) return await verifyClass(class_id)
 
-  if (student_id) return await verifyStudent(student_id);
+  if (student_id) return await verifyStudent(student_id)
 
-  if (frequency_id) return await verifyFrequency(frequency_id);
+  if (frequency_id) return await verifyFrequency(frequency_id)
 
-  if (year || year_id) return await verifyYear(year_id, year);
-};
+  if (year || year_id) return await verifyYear(year_id, year)
+}

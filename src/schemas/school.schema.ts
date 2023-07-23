@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const SchoolCreateSchema = z.object({
   name: z.string(),
-});
+})
 
 export const SchoolServerCreateSchema = z.object({
   schools: z.object({ id: z.string().uuid() }).array(),
-});
+})
 
 export const SchoolClassCreateSchema = z.object({
   classes: z.object({ id: z.string().uuid() }).array(),
-});
+})
 
 export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   is_active: z.boolean(),
@@ -20,7 +20,7 @@ export const SchoolUpdateSchema = SchoolCreateSchema.extend({
   password: z.string(),
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
-}).partial();
+}).partial()
 
 export const SchoolUpdateInfrequency = z.object({
   school_id: z.string().uuid(),
@@ -29,21 +29,21 @@ export const SchoolUpdateInfrequency = z.object({
       period_id: z.string().uuid(),
     })
     .array(),
-});
+})
 
 const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
   cpf: z.string(),
-});
+})
 
-const ClassSchema = z.object({
+export const ClassSchema = z.object({
   class: UserSchema.omit({ cpf: true }),
   infrequency: z.number(),
   _count: z.object({ students: z.number() }).optional(),
-});
+})
 
-const StudentSchema = z.object({
+export const StudentSchema = z.object({
   id: z.string(),
   name: z.string(),
   registry: z.string(),
@@ -53,22 +53,22 @@ const StudentSchema = z.object({
   total_frequencies: z.number(),
   infrequency: z.number(),
   class: UserSchema.omit({ cpf: true }).optional(),
-});
+})
 
 export const ServerSchema = z.object({
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
   server: UserSchema.optional(),
   school: UserSchema.omit({ cpf: true }).optional(),
-});
+})
 
-export const ServerArraySchema = ServerSchema.array();
+export const ServerArraySchema = ServerSchema.array()
 
 const DirectorSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   cpf: z.string(),
-});
+})
 
 export const SchoolReturnSchema = z
   .object({
@@ -87,17 +87,17 @@ export const SchoolReturnSchema = z
       dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
     }).optional(),
   })
-  .refine((fields) => (fields.label = fields.name));
+  .refine((fields) => (fields.label = fields.name))
 
-export const SchoolArraySchema = SchoolReturnSchema.array();
+export const SchoolArraySchema = SchoolReturnSchema.array()
 
 export const SchoolServerReturnSchema = z.object({
   role: z.enum(['SERV', 'DIRET', 'SECRET', 'ADMIN']).optional(),
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']).optional(),
   school: SchoolReturnSchema,
-});
+})
 
-export const SchoolServerArraySchema = SchoolServerReturnSchema.array();
+export const SchoolServerArraySchema = SchoolServerReturnSchema.array()
 
 export const SchoolListReturnSchema = z.object({
   id: z.string(),
@@ -110,6 +110,6 @@ export const SchoolListReturnSchema = z.object({
   num_students: z.number(),
   num_frequencies: z.number(),
   num_classes: z.number(),
-});
+})
 
-export const SchoolListArraySchema = SchoolListReturnSchema.array();
+export const SchoolListArraySchema = SchoolListReturnSchema.array()

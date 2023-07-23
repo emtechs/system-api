@@ -1,6 +1,6 @@
-import { IFrequencyQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { frequencyReturn } from '../../scripts';
+import { IFrequencyQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { frequencyReturn } from '../../scripts'
 
 export const listFrequencyService = async ({
   take,
@@ -14,42 +14,42 @@ export const listFrequencyService = async ({
   by,
   user_id,
 }: IFrequencyQuery) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let where = {};
-  let orderBy = {};
+  let where = {}
+  let orderBy = {}
 
   if (order) {
     switch (order) {
-    case 'created_at':
-      orderBy = { created_at: by };
-      break;
+      case 'created_at':
+        orderBy = { created_at: by }
+        break
 
-    case 'date':
-      orderBy = [{ date_time: by }, { class: { class: { name: 'asc' } } }];
-      break;
+      case 'date':
+        orderBy = [{ date_time: by }, { class: { class: { name: 'asc' } } }]
+        break
 
-    case 'finished_at':
-      orderBy = { finished_at: by };
-      break;
+      case 'finished_at':
+        orderBy = { finished_at: by }
+        break
 
-    case 'infreq':
-      orderBy = { infrequency: by };
-      break;
+      case 'infreq':
+        orderBy = { infrequency: by }
+        break
 
-    case 'name':
-      orderBy = [{ class: { class: { name: by } } }, { date_time: 'asc' }];
-      break;
+      case 'name':
+        orderBy = [{ class: { class: { name: by } } }, { date_time: 'asc' }]
+        break
     }
   }
 
-  if (status) where = { ...where, status };
-  if (date) where = { ...where, date };
-  if (class_id) where = { ...where, class_id };
-  if (school_id) where = { ...where, school_id };
-  if (year_id) where = { ...where, year_id };
-  if (user_id) where = { ...where, user_id };
+  if (status) where = { ...where, status }
+  if (date) where = { ...where, date }
+  if (class_id) where = { ...where, class_id }
+  if (school_id) where = { ...where, school_id }
+  if (year_id) where = { ...where, year_id }
+  if (user_id) where = { ...where, user_id }
 
   const [frequencies, total] = await Promise.all([
     prisma.frequency.findMany({
@@ -74,10 +74,10 @@ export const listFrequencyService = async ({
     prisma.frequency.count({
       where,
     }),
-  ]);
+  ])
 
   return {
     total,
     result: frequencyReturn(frequencies),
-  };
-};
+  }
+}

@@ -1,31 +1,31 @@
-import { IRequestUser, ISchoolQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas';
-import { schoolArrayReturn, schoolServerArrayReturn } from '../../scripts';
+import { IRequestUser, ISchoolQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { SchoolArraySchema, SchoolServerArraySchema } from '../../schemas'
+import { schoolArrayReturn, schoolServerArrayReturn } from '../../scripts'
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
   { take, skip, year_id, name }: ISchoolQuery,
 ) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let where = {};
-  let where_school = {};
+  let where = {}
+  let where_school = {}
 
-  where_school = { ...where_school, is_active: true };
+  where_school = { ...where_school, is_active: true }
 
   if (name)
     where_school = {
       ...where_school,
       name: { contains: name, mode: 'insensitive' },
-    };
+    }
 
   if (year_id)
-    where_school = { ...where_school, classes: { some: { year_id } } };
+    where_school = { ...where_school, classes: { some: { year_id } } }
 
   if (role === 'ADMIN') {
-    where = where_school;
+    where = where_school
 
     const [schoolsData, total, schoolsLabel] = await Promise.all([
       prisma.school.findMany({
@@ -43,22 +43,22 @@ export const listWorkSchoolService = async (
         select: { id: true, name: true },
         orderBy: { name: 'asc' },
       }),
-    ]);
+    ])
 
     const schoolsSchema = SchoolArraySchema.parse(
       await schoolArrayReturn(schoolsData, year_id),
-    );
+    )
 
-    const schools = SchoolArraySchema.parse(schoolsLabel);
+    const schools = SchoolArraySchema.parse(schoolsLabel)
 
     const result = schoolsSchema.map((el) => {
-      return { school: el };
-    });
+      return { school: el }
+    })
 
-    return { schools, total, result };
+    return { schools, total, result }
   }
 
-  where = { ...where, server_id, school: where_school };
+  where = { ...where, server_id, school: where_school }
 
   const [workSchools, total, schoolsData] = await Promise.all([
     prisma.schoolServer.findMany({
@@ -86,15 +86,15 @@ export const listWorkSchoolService = async (
       },
       orderBy: { school: { name: 'asc' } },
     }),
-  ]);
+  ])
 
-  const schoolSchema = SchoolServerArraySchema.parse(schoolsData);
+  const schoolSchema = SchoolServerArraySchema.parse(schoolsData)
 
-  const schools = schoolSchema.map((el) => el.school);
+  const schools = schoolSchema.map((el) => el.school)
 
   const result = SchoolServerArraySchema.parse(
     await schoolServerArrayReturn(workSchools, year_id),
-  );
+  )
 
-  return { schools, total, result };
-};
+  return { schools, total, result }
+}

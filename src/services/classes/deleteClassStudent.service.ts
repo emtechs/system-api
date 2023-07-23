@@ -1,5 +1,5 @@
-import { IDeleteClassStudentRequest } from '../../interfaces';
-import prisma from '../../prisma';
+import { IDeleteClassStudentRequest } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const deleteClassStudentService = async (
   { finished_at, justify_disabled }: IDeleteClassStudentRequest,
@@ -8,7 +8,7 @@ export const deleteClassStudentService = async (
   const classData = await prisma.classStudent.update({
     where: { key },
     data: { is_active: false, finished_at, justify_disabled },
-  });
+  })
 
-  return classData;
-};
+  return classData
+}

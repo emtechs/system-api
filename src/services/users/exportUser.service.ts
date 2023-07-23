@@ -1,7 +1,7 @@
-import fs from 'node:fs';
-import { stringify } from 'csv-stringify';
-import prisma from '../../prisma';
-import 'dotenv/config';
+import fs from 'node:fs'
+import { stringify } from 'csv-stringify'
+import { env } from '../../env'
+import { prisma } from '../../lib'
 
 export const exportUserService = async () => {
   const users = await prisma.user.findMany({
@@ -11,21 +11,21 @@ export const exportUserService = async () => {
       name: true,
       cpf: true,
     },
-  });
+  })
 
-  if (process.env.APP_URL) {
-    const writeStream = fs.createWriteStream('tmp/uploads/users.csv');
+  if (env.NODE_ENV === 'production') {
+    const writeStream = fs.createWriteStream('tmp/uploads/users.csv')
     const stringifier = stringify({
       header: true,
       columns: ['id', 'login', 'name', 'cpf'],
-    });
+    })
 
-    users.map((user) => {
-      stringifier.write(Object.values(user));
-    });
+    users.forEach((user) => {
+      stringifier.write(Object.values(user))
+    })
 
-    stringifier.pipe(writeStream);
+    stringifier.pipe(writeStream)
   }
 
-  return users;
-};
+  return users
+}

@@ -1,6 +1,6 @@
-import { IStudentQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { studentArrayReturn } from '../../scripts';
+import { IStudentQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { studentArrayReturn } from '../../scripts'
 
 export const listStudentService = async ({
   year_id,
@@ -12,30 +12,30 @@ export const listStudentService = async ({
   order,
   name,
 }: IStudentQuery) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let where = {};
-  let where_classes = {};
-  let orderBy = {};
+  let where = {}
+  let where_classes = {}
+  let orderBy = {}
 
   if (order) {
     switch (order) {
-    case 'name':
-      orderBy = { name: by };
-      break;
+      case 'name':
+        orderBy = { name: by }
+        break
 
-    case 'registry':
-      orderBy = [{ registry: by }, { name: 'asc' }];
-      break;
+      case 'registry':
+        orderBy = [{ registry: by }, { name: 'asc' }]
+        break
     }
   }
 
-  if (year_id) where_classes = { ...where_classes, some: { year_id } };
+  if (year_id) where_classes = { ...where_classes, some: { year_id } }
 
-  if (school_id) where_classes = { ...where_classes, some: { school_id } };
+  if (school_id) where_classes = { ...where_classes, some: { school_id } }
 
-  if (class_id) where_classes = { ...where_classes, some: { class_id } };
+  if (class_id) where_classes = { ...where_classes, some: { class_id } }
 
   if (year_id && school_id && class_id)
     where_classes = {
@@ -45,15 +45,15 @@ export const listStudentService = async ({
         year_id,
         is_active: true,
       },
-    };
+    }
 
-  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } }
 
   where = {
     ...where,
     classes: { ...where_classes },
     NOT: { classes: { none: {} } },
-  };
+  }
 
   const [students, total] = await Promise.all([
     prisma.student.findMany({
@@ -63,10 +63,10 @@ export const listStudentService = async ({
       orderBy,
     }),
     prisma.student.count({ where }),
-  ]);
+  ])
 
   return {
     total,
     result: await studentArrayReturn(students, year_id),
-  };
-};
+  }
+}

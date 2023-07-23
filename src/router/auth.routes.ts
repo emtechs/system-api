@@ -1,42 +1,42 @@
-import { Router } from 'express';
+import { Router } from 'express'
 import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
-} from '../middlewares';
+} from '../middlewares'
 import {
   createSessionController,
   sendEmailToRecovery,
   updatePasswordController,
   verifyController,
-} from '../controllers';
+} from '../controllers'
 import {
   PasswordUpdateSchema,
   RecoveryPasswordSchema,
   SessionSchema,
-} from '../schemas';
+} from '../schemas'
 
-export const sessionRouter = Router();
+export const sessionRouter = Router()
 
 sessionRouter.post(
   '',
   validateSchemaMiddleware(SessionSchema),
   createSessionController,
-);
+)
 
-export const passwordRouter = Router();
+export const passwordRouter = Router()
 
 passwordRouter.post(
   '',
   validateSchemaMiddleware(RecoveryPasswordSchema),
   sendEmailToRecovery,
-);
+)
 
 passwordRouter.post(
   '/:userId/:token',
   validateSchemaMiddleware(PasswordUpdateSchema),
   updatePasswordController,
-);
+)
 
-export const verifyRouter = Router();
+export const verifyRouter = Router()
 
-verifyRouter.get('', verifyUserIsAuthenticated, verifyController);
+verifyRouter.get('', verifyUserIsAuthenticated, verifyController)

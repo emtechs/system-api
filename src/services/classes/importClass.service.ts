@@ -1,7 +1,10 @@
-import { importClass, loadClasses } from '../../scripts';
+import { AppError } from '../../errors'
+import { importClass, loadClasses } from '../../scripts'
 
-export const importClassService = async (file: Express.Multer.File) => {
-  const classes = await loadClasses(file);
+export const importClassService = async (file?: Express.Multer.File) => {
+  if (!file) throw new AppError('')
 
-  return await importClass(classes);
-};
+  const classes = await loadClasses(file)
+
+  return await importClass(classes)
+}

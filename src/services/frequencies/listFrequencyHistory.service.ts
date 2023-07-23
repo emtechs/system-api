@@ -1,6 +1,6 @@
-import { IFrequencyQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { frequencyHistoryArrayReturn } from '../../scripts';
+import { IFrequencyQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { frequencyHistoryArrayReturn } from '../../scripts'
 
 export const listFrequencyHistoryService = async ({
   take,
@@ -10,8 +10,8 @@ export const listFrequencyHistoryService = async ({
   user_id,
   name,
 }: IFrequencyQuery) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
   const [frequencies, total] = await Promise.all([
     prisma.frequencyHistory.findMany({
@@ -28,7 +28,7 @@ export const listFrequencyHistoryService = async ({
     prisma.frequencyHistory.count({
       where: { frequency: { frequency: { year_id, school_id } } },
     }),
-  ]);
+  ])
 
-  return { result: await frequencyHistoryArrayReturn(frequencies), total };
-};
+  return { result: await frequencyHistoryArrayReturn(frequencies), total }
+}

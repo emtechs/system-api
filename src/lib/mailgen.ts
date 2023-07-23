@@ -1,5 +1,5 @@
-import 'dotenv/config';
-import Mailgen from 'mailgen';
+import Mailgen from 'mailgen'
+import { env } from '../env'
 
 export const mailGenerator = new Mailgen({
   theme: 'cerberus',
@@ -7,6 +7,6 @@ export const mailGenerator = new Mailgen({
   product: {
     // logo: "",
     name: 'EM Techs',
-    link: process.env.BASE_URL,
+    link: env.BASE_URL,
   },
-});
+})

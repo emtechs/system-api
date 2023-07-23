@@ -1,8 +1,8 @@
-import { AppError } from '../../errors';
-import prisma from '../../prisma';
+import { AppError } from '../../errors'
+import { prisma } from '../../lib'
 
 export const verifyUser = async (id: string) => {
-  const user_id = id;
+  const user_id = id
 
   const [user, yearsData] = await Promise.all([
     prisma.user.findUnique({
@@ -15,15 +15,15 @@ export const verifyUser = async (id: string) => {
       distinct: ['year_id'],
       orderBy: { year: { year: 'desc' } },
     }),
-  ]);
+  ])
 
-  if (!user) throw new AppError('user not found', 404);
+  if (!user) throw new AppError('user not found', 404)
 
   const years = yearsData.map((el) => {
-    return { id: el.year.id, year: el.year.year };
-  });
+    return { id: el.year.id, year: el.year.year }
+  })
 
-  const select = { id, label: user.name };
+  const select = { id, label: user.name }
 
-  return { select, years };
-};
+  return { select, years }
+}

@@ -1,2 +1,2 @@
-export * from './class';
-export * from './server';
+export * from './class'
+export * from './server'

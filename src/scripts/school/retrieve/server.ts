@@ -1,4 +1,4 @@
-import prisma from '../../../prisma';
+import { prisma } from '../../../lib'
 
 export const viewServer = async (school_id: string, name: string) => {
   const [data, total] = await Promise.all([
@@ -21,14 +21,14 @@ export const viewServer = async (school_id: string, name: string) => {
         server: { name: { contains: name, mode: 'insensitive' } },
       },
     }),
-  ]);
+  ])
 
   const result = data.map((el) => {
-    const { dash, key, role, server } = el;
-    const { cpf, id, name } = server;
+    const { dash, key, role, server } = el
+    const { cpf, id, name } = server
 
-    return { id, name, cpf, dash, role, key };
-  });
+    return { id, name, cpf, dash, role, key }
+  })
 
-  return { total, result };
-};
+  return { total, result }
+}

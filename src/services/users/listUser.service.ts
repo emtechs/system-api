@@ -1,7 +1,7 @@
-import { IUserQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { UserArraySchema } from '../../schemas';
-import { userReturnArray } from '../../scripts';
+import { IUserQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { UserArraySchema } from '../../schemas'
+import { userReturnArray } from '../../scripts'
 
 export const listUserService = async (
   {
@@ -15,33 +15,32 @@ export const listUserService = async (
   }: IUserQuery,
   id: string,
 ) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let where = {};
+  let where = {}
 
-  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } };
+  if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } }
 
-  if (role) where = { ...where, role };
+  if (role) where = { ...where, role }
 
-  if (school_id) where = { ...where, work_school: { some: { school_id } } };
+  if (school_id) where = { ...where, work_school: { some: { school_id } } }
 
   if (is_active) {
     switch (is_active) {
-    case 'true':
-      where = { ...where, is_active: true };
-      break;
+      case 'true':
+        where = { ...where, is_active: true }
+        break
 
-    case 'false':
-      where = { ...where, is_active: false };
-      break;
+      case 'false':
+        where = { ...where, is_active: false }
+        break
     }
   }
 
-  if (isNot_director_school)
-    where = { ...where, director_school: { none: {} } };
+  if (isNot_director_school) where = { ...where, director_school: { none: {} } }
 
-  where = { ...where, NOT: { id } };
+  where = { ...where, NOT: { id } }
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({
@@ -53,12 +52,12 @@ export const listUserService = async (
     prisma.user.count({
       where,
     }),
-  ]);
+  ])
 
-  const result = UserArraySchema.parse(await userReturnArray(users, school_id));
+  const result = UserArraySchema.parse(await userReturnArray(users, school_id))
 
   return {
     total,
     result,
-  };
-};
+  }
+}

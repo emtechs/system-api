@@ -1,6 +1,6 @@
-import { IFrequencyQuery } from '../../interfaces';
-import prisma from '../../prisma';
-import { infrequencyArrayReturn } from '../../scripts';
+import { IFrequencyQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { infrequencyArrayReturn } from '../../scripts'
 
 export const listInfrequencyService = async ({
   school_id,
@@ -12,7 +12,7 @@ export const listInfrequencyService = async ({
   const infrequency = await prisma.period.findMany({
     where: { category, year_id },
     select: { id: true, name: true, date_initial: true, date_final: true },
-  });
+  })
 
   const infreq = await infrequencyArrayReturn(
     infrequency,
@@ -20,13 +20,13 @@ export const listInfrequencyService = async ({
     school_id,
     class_id,
     student_id,
-  );
+  )
 
-  const result = [];
+  const result = []
 
   infreq.forEach((el) => {
-    if (el) result.push(el);
-  });
+    if (el) result.push(el)
+  })
 
-  return { result, total: result.length };
-};
+  return { result, total: result.length }
+}

@@ -1,24 +1,24 @@
-import fs from 'node:fs';
-import { stringify } from 'csv-stringify';
-import prisma from '../../prisma';
-import 'dotenv/config';
+import fs from 'node:fs'
+import { stringify } from 'csv-stringify'
+import { prisma } from '../../lib'
+import { env } from '../../env'
 
 export const exportClassService = async () => {
   const classes = await prisma.class.findMany({
     select: { name: true, id: true },
-  });
+  })
 
-  if (process.env.APP_URL) {
-    const writeStream = fs.createWriteStream('tmp/uploads/turmas.csv');
+  if (env.NODE_ENV === 'dev') {
+    const writeStream = fs.createWriteStream('tmp/uploads/turmas.csv')
     const stringifier = stringify({
       header: true,
       columns: ['name', 'id'],
-    });
-    classes.map((class_data) => {
-      stringifier.write(Object.values(class_data));
-    });
-    stringifier.pipe(writeStream);
+    })
+    classes.forEach((class_data) => {
+      stringifier.write(Object.values(class_data))
+    })
+    stringifier.pipe(writeStream)
   }
 
-  return classes;
-};
+  return classes
+}

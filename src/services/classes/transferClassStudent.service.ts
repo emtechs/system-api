@@ -1,5 +1,5 @@
-import { ITransferClassStudentRequest } from '../../interfaces';
-import prisma from '../../prisma';
+import { ITransferClassStudentRequest } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const transferClassStudentService = async ({
   finished_at,
@@ -27,7 +27,7 @@ export const transferClassStudentService = async ({
       create: { class_id, school_id, student_id, year_id },
       update: { is_active: true },
     }),
-  ]);
+  ])
 
-  return { oldClass, newClass };
-};
+  return { oldClass, newClass }
+}

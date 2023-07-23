@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 import {
   ClassCreateSchema,
   ClassSchoolCreateSchema,
@@ -6,50 +6,50 @@ import {
   ClassStudentUpdateSchema,
   DeleteClassStudentSchema,
   TransferClassStudentSchema,
-} from '../schemas';
-import { IQuery } from './global.interfaces';
+} from '../schemas'
+import { IQuery } from './global.interfaces'
 
 export interface IClass {
-  name: string;
+  name: string
 }
 
-export type IClassRequest = z.infer<typeof ClassCreateSchema>;
+export type IClassRequest = z.infer<typeof ClassCreateSchema>
 
 export interface IClassSchoolUpdateRequest {
-  class_id: string;
-  school_id: string;
-  year_id: string;
-  school_frequencies: number;
-  school_infreq: number;
-  class_infreq: number;
+  class_id: string
+  school_id: string
+  year_id: string
+  school_frequencies: number
+  school_infreq: number
+  class_infreq: number
 }
 
 export interface IClassUpdateInfrequency {
-  class_id: string;
-  school_id: string;
-  year_id: string;
-  periods: { period_id: string }[];
+  class_id: string
+  school_id: string
+  year_id: string
+  periods: { period_id: string }[]
 }
 
-export type IClassSchoolRequest = z.infer<typeof ClassSchoolCreateSchema>;
+export type IClassSchoolRequest = z.infer<typeof ClassSchoolCreateSchema>
 
-export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>;
+export type IClassStudentRequest = z.infer<typeof ClassStudentCreateSchema>
 
-export type IClassStudentUpdate = z.infer<typeof ClassStudentUpdateSchema>;
+export type IClassStudentUpdate = z.infer<typeof ClassStudentUpdateSchema>
 
 export type IDeleteClassStudentRequest = z.infer<
   typeof DeleteClassStudentSchema
->;
+>
 
 export type ITransferClassStudentRequest = z.infer<
   typeof TransferClassStudentSchema
->;
+>
 
 export interface IClassQuery extends IQuery {
-  infreq?: number;
-  date?: string;
-  is_infreq?: string;
-  name?: string;
-  is_school?: string;
-  view?: 'student';
+  infreq?: number
+  date?: string
+  is_infreq?: string
+  name?: string
+  is_school?: string
+  view?: 'student'
 }

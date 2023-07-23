@@ -1,7 +1,10 @@
-import { importMonth, loadMonth } from '../../scripts';
+import { AppError } from '../../errors'
+import { importMonth, loadMonth } from '../../scripts'
 
-export const importMonthService = async (file: Express.Multer.File) => {
-  const months = await loadMonth(file);
+export const importMonthService = async (file?: Express.Multer.File) => {
+  if (!file) throw new AppError('')
 
-  return await importMonth(months);
-};
+  const months = await loadMonth(file)
+
+  return await importMonth(months)
+}

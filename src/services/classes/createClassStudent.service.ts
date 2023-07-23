@@ -1,5 +1,5 @@
-import prisma from '../../prisma';
-import { IClassStudentRequest } from '../../interfaces';
+import { prisma } from '../../lib'
+import { IClassStudentRequest } from '../../interfaces'
 
 export const createClassStudentService = async (
   { school_id, year_id, student_id }: IClassStudentRequest,
@@ -21,7 +21,7 @@ export const createClassStudentService = async (
       },
       student: { connect: { id: student_id } },
     },
-  });
+  })
 
-  return classStudent;
-};
+  return classStudent
+}

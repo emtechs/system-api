@@ -9,8 +9,8 @@ import {
   StatusStudent,
   Student,
   User,
-} from '@prisma/client';
-import { frequencyFindUnique, studentFindUnique } from './calculateFrequency';
+} from '@prisma/client'
+import { frequencyFindUnique, studentFindUnique } from './calculateFrequency'
 
 const parseFrequencyFreq = async (
   id: string,
@@ -20,10 +20,10 @@ const parseFrequencyFreq = async (
   const [student, frequency] = await Promise.all([
     studentFindUnique(id),
     frequencyFindUnique(frequencyStudent_id),
-  ]);
+  ])
 
-  const { justification, status, updated_at } = frequency;
-  const infrequency = status === 'MISSED' ? 100 : 0;
+  const { justification, status, updated_at } = frequency
+  const infrequency = status === 'MISSED' ? 100 : 0
 
   return {
     ...student,
@@ -33,68 +33,68 @@ const parseFrequencyFreq = async (
     infrequency: Number(infrequency.toFixed(2)),
     frequency_id,
     frequencyStudent_id,
-  };
-};
+  }
+}
 
 const studentsFreqParseFrequency = async (
   students: (FrequencyStudent & {
-    student: Student;
+    student: Student
   })[],
 ) => {
   const studentsWithFrequency = students.map((el) => {
-    return parseFrequencyFreq(el.student_id, el.id, el.frequency_id);
-  });
+    return parseFrequencyFreq(el.student_id, el.id, el.frequency_id)
+  })
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
-    return studentFrequency;
-  });
-};
+    return studentFrequency
+  })
+}
 
 const infrequencyFreq = (
   students: {
-    status: StatusStudent;
-    justification: string;
-    updated_at: string;
-    infrequency: number;
-    frequency_id: string;
-    frequencyStudent_id: string;
-    id: string;
-    name: string;
-    registry: string;
-    created_at: Date;
+    status: StatusStudent
+    justification: string
+    updated_at: string
+    infrequency: number
+    frequency_id: string
+    frequencyStudent_id: string
+    id: string
+    name: string
+    registry: string
+    created_at: Date
   }[],
   frequency_id: string,
   count_students: number,
 ) => {
-  let some = 0;
+  let some = 0
   students.forEach((student) => {
-    if (student.frequency_id === frequency_id) some += student.infrequency;
-  });
-  return some / count_students;
-};
+    if (student.frequency_id === frequency_id) some += student.infrequency
+  })
+  return some / count_students
+}
 
 export const freqArrParseFrequency = async (
   frequencies: (Frequency & {
-    user: User;
+    user: User
     class: ClassYear & {
-      year: Year;
-      school: School;
-      class: Class;
-    };
+      year: Year
+      school: School
+      class: Class
+    }
     students: (FrequencyStudent & {
-      student: Student;
-    })[];
-    _count: Prisma.FrequencyCountOutputType;
+      student: Student
+    })[]
+    _count: Prisma.FrequencyCountOutputType
   })[],
 ) => {
   const studentsData: (FrequencyStudent & {
-    student: Student;
-  })[] = [];
+    student: Student
+  })[] = []
   frequencies.forEach((el) => {
-    el.students.forEach((student) => studentsData.push(student));
-  });
+    el.students.forEach((student) => studentsData.push(student))
+  })
 
-  const students = await studentsFreqParseFrequency(studentsData);
+  const students = await studentsFreqParseFrequency(studentsData)
 
   const result = frequencies.map((el) => {
     return {
@@ -103,31 +103,31 @@ export const freqArrParseFrequency = async (
       infrequency: Number(
         infrequencyFreq(students, el.id, el._count.students).toFixed(2),
       ),
-    };
-  });
-  return result;
-};
+    }
+  })
+  return result
+}
 
 export const freqParseFrequency = async (
   frequency: Frequency & {
-    user: User;
+    user: User
     class: ClassYear & {
-      year: Year;
-      school: School;
-      class: Class;
-    };
+      year: Year
+      school: School
+      class: Class
+    }
     students: (FrequencyStudent & {
-      student: Student;
-    })[];
-    _count: Prisma.FrequencyCountOutputType;
+      student: Student
+    })[]
+    _count: Prisma.FrequencyCountOutputType
   },
 ) => {
   const studentsData: (FrequencyStudent & {
-    student: Student;
-  })[] = [];
-  frequency.students.forEach((student) => studentsData.push(student));
+    student: Student
+  })[] = []
+  frequency.students.forEach((student) => studentsData.push(student))
 
-  const students = await studentsFreqParseFrequency(studentsData);
+  const students = await studentsFreqParseFrequency(studentsData)
 
   const result = {
     ...frequency,
@@ -141,7 +141,7 @@ export const freqParseFrequency = async (
         frequency._count.students,
       ).toFixed(2),
     ),
-  };
+  }
 
-  return result;
-};
+  return result
+}

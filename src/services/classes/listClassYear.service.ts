@@ -1,5 +1,5 @@
-import { IClassQuery } from '../../interfaces';
-import prisma from '../../prisma';
+import { IClassQuery } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const listClassYearService = async (
   key: string,
@@ -27,10 +27,10 @@ export const listClassYearService = async (
           school: { select: { id: true, name: true } },
         },
       }),
-    ]);
+    ])
 
     const result = students.map((el) => {
-      const { id, name, registry, created_at } = el.student;
+      const { id, name, registry, created_at } = el.student
       return {
         id,
         name,
@@ -40,9 +40,9 @@ export const listClassYearService = async (
         class: classData.class,
         school: classData.school,
         year_id: classData.year_id,
-      };
-    });
+      }
+    })
 
-    return { total, result };
+    return { total, result }
   }
-};
+}

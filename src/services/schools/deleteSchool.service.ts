@@ -1,12 +1,12 @@
-import prisma from '../../prisma';
-import { AppError } from '../../errors';
+import { prisma } from '../../lib'
+import { AppError } from '../../errors'
 
 export const deleteSchoolService = async (id: string) => {
   try {
     await prisma.school.delete({
       where: { id },
-    });
+    })
   } catch {
-    throw new AppError('school not found', 404);
+    throw new AppError('school not found', 404)
   }
-};
+}

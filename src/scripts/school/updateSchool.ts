@@ -1,5 +1,5 @@
-import { ISchoolUpdate } from '../../interfaces';
-import prisma from '../../prisma';
+import { ISchoolUpdate } from '../../interfaces'
+import { prisma } from '../../lib'
 
 const verifySchoolDirector = async (
   { id }: ISchoolUpdate,
@@ -19,44 +19,44 @@ const verifySchoolDirector = async (
         },
       },
     },
-  });
+  })
 
-  return school;
-};
+  return school
+}
 
 export const updateSchoolDirector = async (
   schools: ISchoolUpdate[],
   director_id: string,
 ) => {
   const schoolsVerifyParse = schools.map((el) => {
-    return verifySchoolDirector(el, director_id);
-  });
+    return verifySchoolDirector(el, director_id)
+  })
   return Promise.all(schoolsVerifyParse).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}
 
 const verifySchoolServer = async ({ id }: ISchoolUpdate, server_id: string) => {
   const school = await prisma.schoolServer.upsert({
     where: { school_id_server_id: { school_id: id, server_id } },
     create: { school_id: id, server_id },
     update: { dash: 'COMMON', role: 'SERV' },
-  });
+  })
 
-  return school;
-};
+  return school
+}
 
 export const updateSchoolServer = async (
   schools: ISchoolUpdate[],
   server_id: string,
 ) => {
   const schoolsVerifyParse = schools.map((el) => {
-    return verifySchoolServer(el, server_id);
-  });
+    return verifySchoolServer(el, server_id)
+  })
   return Promise.all(schoolsVerifyParse).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}
 
 const verifySchoolClass = async (
   { id }: ISchoolUpdate,
@@ -75,10 +75,10 @@ const verifySchoolClass = async (
         },
       },
     },
-  });
+  })
 
-  return classData;
-};
+  return classData
+}
 
 export const updateSchoolClass = async (
   classes: ISchoolUpdate[],
@@ -86,9 +86,9 @@ export const updateSchoolClass = async (
   year_id: string,
 ) => {
   const schoolsVerifyParse = classes.map((el) => {
-    return verifySchoolClass(el, school_id, year_id);
-  });
+    return verifySchoolClass(el, school_id, year_id)
+  })
   return Promise.all(schoolsVerifyParse).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}

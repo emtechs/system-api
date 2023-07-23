@@ -1,11 +1,11 @@
-import { IFrequencyUpdateRequest } from '../../interfaces';
-import prisma from '../../prisma';
+import { IFrequencyUpdateRequest } from '../../interfaces'
+import { prisma } from '../../lib'
 import {
   createFrequencyHistory,
   updateClassSchoolInfreq,
   updateSchoolInfreq,
   updateStudentInfreq,
-} from '../../scripts';
+} from '../../scripts'
 
 export const updateFrequencyService = async (
   { status, finished_at }: IFrequencyUpdateRequest,
@@ -14,7 +14,7 @@ export const updateFrequencyService = async (
   const agg = await prisma.frequencyStudent.aggregate({
     _avg: { value: true },
     where: { frequency_id: id },
-  });
+  })
 
   const [frequency, frequencyData] = await Promise.all([
     prisma.frequency.update({
@@ -36,9 +36,9 @@ export const updateFrequencyService = async (
         students: { select: { id: true, status: true, justification: true } },
       },
     }),
-  ]);
+  ])
 
-  const { class_id, periods, school_id, students, year_id } = frequency;
+  const { class_id, periods, school_id, students, year_id } = frequency
 
   await Promise.all([
     updateSchoolInfreq(school_id, periods),
@@ -49,7 +49,7 @@ export const updateFrequencyService = async (
       frequencyData.user_id,
       finished_at,
     ),
-  ]);
+  ])
 
-  return frequency;
-};
+  return frequency
+}

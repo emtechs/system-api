@@ -1,7 +1,7 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const listYearService = async () => {
-  const years = await prisma.year.findMany();
+  const years = await prisma.year.findMany()
 
-  return years;
-};
+  return years
+}

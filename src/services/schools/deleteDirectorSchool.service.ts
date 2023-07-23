@@ -1,7 +1,7 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const deleteDirectorSchoolService = async (id: string) => {
-  const school = await prisma.school.findUnique({ where: { id } });
+  const school = await prisma.school.findUnique({ where: { id } })
   await prisma.school.update({
     where: { id },
     data: {
@@ -19,5 +19,5 @@ export const deleteDirectorSchoolService = async (id: string) => {
         disconnect: true,
       },
     },
-  });
-};
+  })
+}

@@ -1,11 +1,11 @@
-import { ClassYear, ClassStudent, School, Student } from '@prisma/client';
+import { ClassYear, ClassStudent, School, Student } from '@prisma/client'
 import {
   classFindUnique,
   justifiedCount,
   missedCount,
   presentedCount,
   studentFindUnique,
-} from './calculateFrequency';
+} from './calculateFrequency'
 
 const parseFrequencySchool = async (
   id: string,
@@ -19,11 +19,11 @@ const parseFrequencySchool = async (
     presentedCount(id, year_id),
     justifiedCount(id, year_id),
     missedCount(id, year_id),
-  ]);
+  ])
 
-  const total_frequencies = presented + justified + missed;
+  const total_frequencies = presented + justified + missed
   const infrequency =
-    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
+    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100
 
   return {
     ...student,
@@ -34,12 +34,12 @@ const parseFrequencySchool = async (
     infrequency: Number(infrequency.toFixed(2)),
     school_id,
     class: classData,
-  };
-};
+  }
+}
 
 const studentsSchoolParseFrequency = async (
   students: (ClassStudent & {
-    student: Student;
+    student: Student
   })[],
   year_id: string,
 ) => {
@@ -49,49 +49,49 @@ const studentsSchoolParseFrequency = async (
       year_id,
       el.school_id,
       el.class_id,
-    );
-  });
+    )
+  })
 
   return Promise.all(studentsWithFrequency).then((studentFrequency) => {
-    return studentFrequency;
-  });
-};
+    return studentFrequency
+  })
+}
 
 export const schoolClassParseFrequency = async (
   school: School & {
     classes: (ClassYear & {
       students: (ClassStudent & {
-        student: Student;
-      })[];
-    })[];
+        student: Student
+      })[]
+    })[]
   },
   year_id: string,
 ) => {
   const studentsData: (ClassStudent & {
-    student: Student;
-  })[] = [];
+    student: Student
+  })[] = []
   school.classes.forEach((classes) => {
     classes.students.forEach((student) => {
       if (student.school_id === school.id) {
-        studentsData.push(student);
+        studentsData.push(student)
       }
-    });
-  });
+    })
+  })
 
-  const students = await studentsSchoolParseFrequency(studentsData, year_id);
+  const students = await studentsSchoolParseFrequency(studentsData, year_id)
 
-  const total_students = studentsData.length;
+  const total_students = studentsData.length
 
-  let some = 0;
-  students.forEach((student) => (some += student.infrequency));
-  const infrequency = total_students === 0 ? 0 : some / total_students;
+  let some = 0
+  students.forEach((student) => (some += student.infrequency))
+  const infrequency = total_students === 0 ? 0 : some / total_students
 
   const result = {
     ...school,
     students: students.filter((student) => school.id === student.school_id),
     infrequency: Number(infrequency.toFixed(2)),
     total_students,
-  };
+  }
 
-  return result;
-};
+  return result
+}

@@ -1,21 +1,21 @@
-import { IClassQuery } from '../../interfaces';
-import prisma from '../../prisma';
+import { IClassQuery } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const listClassDashService = async (
   school_id: string,
   year_id: string,
   { date, take, skip, order, by }: IClassQuery,
 ) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let whereData = {};
-  let whereInfrequencies = {};
-  let orderBy = {};
+  let whereData = {}
+  let whereInfrequencies = {}
+  let orderBy = {}
 
   if (date) {
-    const dateData = date.split('/');
-    const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`);
+    const dateData = date.split('/')
+    const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
     whereInfrequencies = {
       period: {
         category: 'ANO',
@@ -23,18 +23,18 @@ export const listClassDashService = async (
         date_final: { gte: date_time },
         year_id,
       },
-    };
+    }
   }
 
   if (order) {
     switch (order) {
       case 'name':
-        orderBy = { class: { name: by } };
-        break;
+        orderBy = { class: { name: by } }
+        break
 
       case 'infreq':
-        orderBy = { infrequency: by };
-        break;
+        orderBy = { infrequency: by }
+        break
     }
   }
 
@@ -43,7 +43,7 @@ export const listClassDashService = async (
     class: { is_active: true },
     frequencies: { none: { date, status: 'CLOSED' } },
     school_id,
-  };
+  }
 
   const [classesData, total, classesLabel] = await Promise.all([
     prisma.classYear.findMany({
@@ -87,7 +87,7 @@ export const listClassDashService = async (
         _count: { select: { students: true, frequencies: true } },
       },
     }),
-  ]);
+  ])
 
   const classes = classesLabel.map((el) => {
     return {
@@ -95,8 +95,8 @@ export const listClassDashService = async (
       label: el.class.name,
       infrequency: el.infrequencies.length > 0 ? el.infrequencies[0].value : 0,
       ...el,
-    };
-  });
+    }
+  })
 
   const result = classesData.map((el) => {
     return {
@@ -104,12 +104,12 @@ export const listClassDashService = async (
       label: el.class.name,
       infrequency: el.infrequencies.length > 0 ? el.infrequencies[0].value : 0,
       ...el,
-    };
-  });
+    }
+  })
 
   return {
     classes,
     total,
     result,
-  };
-};
+  }
+}

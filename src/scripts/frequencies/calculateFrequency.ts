@@ -1,12 +1,12 @@
-import prisma from '../../prisma';
+import { prisma } from '../../lib'
 
 export const studentFindUnique = async (id: string) => {
-  return await prisma.student.findUnique({ where: { id } });
-};
+  return await prisma.student.findUnique({ where: { id } })
+}
 
 export const classFindUnique = async (id: string) => {
-  return await prisma.class.findUnique({ where: { id } });
-};
+  return await prisma.class.findUnique({ where: { id } })
+}
 
 export const frequencyFindUnique = async (id: string) => {
   return await prisma.frequencyStudent.findUnique({
@@ -14,8 +14,8 @@ export const frequencyFindUnique = async (id: string) => {
       id,
     },
     select: { status: true, justification: true, updated_at: true },
-  });
-};
+  })
+}
 
 export const presentedCount = async (student_id: string, year_id: string) => {
   return await prisma.frequencyStudent.count({
@@ -24,8 +24,8 @@ export const presentedCount = async (student_id: string, year_id: string) => {
       status: 'PRESENTED',
       frequency: { year_id, status: 'CLOSED' },
     },
-  });
-};
+  })
+}
 
 export const justifiedCount = async (student_id: string, year_id: string) => {
   return await prisma.frequencyStudent.count({
@@ -34,8 +34,8 @@ export const justifiedCount = async (student_id: string, year_id: string) => {
       status: 'JUSTIFIED',
       frequency: { year_id, status: 'CLOSED' },
     },
-  });
-};
+  })
+}
 
 export const missedCount = async (student_id: string, year_id: string) => {
   return await prisma.frequencyStudent.count({
@@ -44,8 +44,8 @@ export const missedCount = async (student_id: string, year_id: string) => {
       status: 'MISSED',
       frequency: { year_id, status: 'CLOSED' },
     },
-  });
-};
+  })
+}
 
 export const parseFrequency = async (id: string, year_id: string) => {
   const [student, presented, justified, missed] = await Promise.all([
@@ -53,11 +53,11 @@ export const parseFrequency = async (id: string, year_id: string) => {
     presentedCount(id, year_id),
     justifiedCount(id, year_id),
     missedCount(id, year_id),
-  ]);
+  ])
 
-  const total_frequencies = presented + justified + missed;
+  const total_frequencies = presented + justified + missed
   const infrequency =
-    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100;
+    total_frequencies === 0 ? 0 : (missed / total_frequencies) * 100
 
   return {
     ...student,
@@ -66,8 +66,8 @@ export const parseFrequency = async (id: string, year_id: string) => {
     missed,
     total_frequencies,
     infrequency: Number(infrequency.toFixed(2)),
-  };
-};
+  }
+}
 
 export const schoolFreq = async (school_id: string, period_id: string) => {
   const [aggregate, frequencies] = await Promise.all([
@@ -84,22 +84,24 @@ export const schoolFreq = async (school_id: string, period_id: string) => {
     prisma.frequency.count({
       where: { school_id, periods: { some: { period_id } }, status: 'CLOSED' },
     }),
-  ]);
+  ])
+
+  const value = aggregate._avg.value ? aggregate._avg.value : undefined
 
   return await prisma.schoolInfrequency.upsert({
     create: {
       frequencies,
       period_id,
       school_id,
-      value: aggregate._avg.value,
+      value,
     },
     where: { period_id_school_id: { period_id, school_id } },
     update: {
       frequencies,
-      value: aggregate._avg.value,
+      value,
     },
-  });
-};
+  })
+}
 
 export const classFreq = async (
   class_id: string,
@@ -129,7 +131,9 @@ export const classFreq = async (
         status: 'CLOSED',
       },
     }),
-  ]);
+  ])
+
+  const value = aggregate._avg.value ? aggregate._avg.value : undefined
 
   return await prisma.classYearInfrequency.upsert({
     create: {
@@ -138,7 +142,7 @@ export const classFreq = async (
       school_id,
       year_id,
       class_id,
-      value: aggregate._avg.value,
+      value,
     },
     where: {
       period_id_class_id_school_id_year_id: {
@@ -150,10 +154,10 @@ export const classFreq = async (
     },
     update: {
       frequencies,
-      value: aggregate._avg.value,
+      value,
     },
-  });
-};
+  })
+}
 
 export const studentFreq = async (student_id: string, period_id: string) => {
   const [aggregate, frequencies, justified, presences, absences] =
@@ -192,7 +196,9 @@ export const studentFreq = async (student_id: string, period_id: string) => {
           status: 'MISSED',
         },
       }),
-    ]);
+    ])
+
+  const value = aggregate._avg.value ? aggregate._avg.value : undefined
 
   return await prisma.studentInfrequency.upsert({
     create: {
@@ -201,7 +207,7 @@ export const studentFreq = async (student_id: string, period_id: string) => {
       justified,
       presences,
       absences,
-      value: aggregate._avg.value,
+      value,
       student_id,
     },
     where: { period_id_student_id: { period_id, student_id } },
@@ -210,7 +216,7 @@ export const studentFreq = async (student_id: string, period_id: string) => {
       justified,
       presences,
       absences,
-      value: aggregate._avg.value,
+      value,
     },
-  });
-};
+  })
+}

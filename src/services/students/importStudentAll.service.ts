@@ -1,7 +1,10 @@
-import { importStudent, loadStudentsAll } from '../../scripts';
+import { AppError } from '../../errors'
+import { importStudent, loadStudentsAll } from '../../scripts'
 
-export const importStudentAllService = async (file: Express.Multer.File) => {
-  const students = await loadStudentsAll(file);
+export const importStudentAllService = async (file?: Express.Multer.File) => {
+  if (!file) throw new AppError('')
 
-  return await importStudent(students);
-};
+  const students = await loadStudentsAll(file)
+
+  return await importStudent(students)
+}

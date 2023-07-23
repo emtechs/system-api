@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from 'express'
 import {
   createFrequencyService,
   createFrequencyStudentService,
@@ -11,60 +11,60 @@ import {
   updateFrequencyService,
   updateFrequencyStudentService,
   updateInfrequencyService,
-} from '../services';
+} from '../services'
 
 export const createFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await createFrequencyService(req.body, req.user.id);
-  return res.status(201).json(frequency);
-};
+  const frequency = await createFrequencyService(req.body, req.user.id)
+  return res.status(201).json(frequency)
+}
 
 export const listFrequencyController = async (req: Request, res: Response) => {
-  const frequencies = await listFrequencyService(req.query);
-  return res.json(frequencies);
-};
+  const frequencies = await listFrequencyService(req.query)
+  return res.json(frequencies)
+}
 
 export const listFrequencyHistoryController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequencies = await listFrequencyHistoryService(req.query);
-  return res.json(frequencies);
-};
+  const frequencies = await listFrequencyHistoryService(req.query)
+  return res.json(frequencies)
+}
 
 export const listInfrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequencies = await listInfrequencyService(req.query);
-  return res.json(frequencies);
-};
+  const frequencies = await listInfrequencyService(req.query)
+  return res.json(frequencies)
+}
 
 export const updateFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await updateFrequencyService(req.body, req.params.id);
-  return res.json(frequency);
-};
+  const frequency = await updateFrequencyService(req.body, req.params.id)
+  return res.json(frequency)
+}
 
 export const retrieveFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await retrieveFrequencyService(req.params.id);
-  return res.json(frequency);
-};
+  const frequency = await retrieveFrequencyService(req.params.id)
+  return res.json(frequency)
+}
 
 export const createFrequencyStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await createFrequencyStudentService(req.body);
-  return res.status(201).json(frequency);
-};
+  const frequency = await createFrequencyStudentService(req.body)
+  return res.status(201).json(frequency)
+}
 
 export const listFrequencyStudentController = async (
   req: Request,
@@ -73,33 +73,30 @@ export const listFrequencyStudentController = async (
   const frequencies = await listFrequencyStudentService(
     req.params.id,
     req.query,
-  );
-  return res.json(frequencies);
-};
+  )
+  return res.json(frequencies)
+}
 
 export const updateFrequencyStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await updateFrequencyStudentService(
-    req.body,
-    req.params.id,
-  );
-  return res.json(frequency);
-};
+  const frequency = await updateFrequencyStudentService(req.body, req.params.id)
+  return res.json(frequency)
+}
 
 export const updateInfrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  const frequency = await updateInfrequencyService(req.body, req.params.id);
-  return res.json(frequency);
-};
+  const frequency = await updateInfrequencyService(req.body, req.params.id)
+  return res.json(frequency)
+}
 
 export const deleteFrequencyController = async (
   req: Request,
   res: Response,
 ) => {
-  await deleteFrequencyService(req.params.id);
-  return res.status(204).json({});
-};
+  await deleteFrequencyService(req.params.id)
+  return res.status(204).json({})
+}

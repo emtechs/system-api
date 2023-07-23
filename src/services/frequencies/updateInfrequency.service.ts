@@ -1,6 +1,6 @@
-import { IFrequencyUpdateRequest } from '../../interfaces';
-import prisma from '../../prisma';
-import { createFrequencyHistory } from '../../scripts';
+import { IFrequencyUpdateRequest } from '../../interfaces'
+import { prisma } from '../../lib'
+import { createFrequencyHistory } from '../../scripts'
 
 export const updateInfrequencyService = async (
   { infrequency }: IFrequencyUpdateRequest,
@@ -10,11 +10,11 @@ export const updateInfrequencyService = async (
     where: { id },
     data: { infrequency },
     include: { students: true },
-  });
+  })
 
   return await createFrequencyHistory(
     frequency.students,
     frequency.user_id,
     frequency.finished_at,
-  );
-};
+  )
+}

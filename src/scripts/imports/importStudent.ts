@@ -1,5 +1,5 @@
-import { IStudent } from '../../interfaces';
-import prisma from '../../prisma';
+import { IStudent } from '../../interfaces'
+import { prisma } from '../../lib'
 
 const verifyStudent = async ({
   name,
@@ -10,7 +10,7 @@ const verifyStudent = async ({
 }: IStudent) => {
   let student = await prisma.student.findUnique({
     where: { registry },
-  });
+  })
 
   if (!student)
     student = await prisma.student.create({
@@ -18,7 +18,7 @@ const verifyStudent = async ({
         name,
         registry,
       },
-    });
+    })
 
   const classSchool = await prisma.classYear.findUnique({
     where: {
@@ -28,12 +28,12 @@ const verifyStudent = async ({
         year_id,
       },
     },
-  });
+  })
 
   if (!classSchool)
     await prisma.classYear.create({
       data: { class_id, school_id, year_id },
-    });
+    })
 
   const classStudent = await prisma.classStudent.findUnique({
     where: {
@@ -44,21 +44,21 @@ const verifyStudent = async ({
         student_id: student.id,
       },
     },
-  });
+  })
 
   if (!classStudent)
     await prisma.classStudent.create({
       data: { class_id, school_id, year_id, student_id: student.id },
-    });
+    })
 
-  return student;
-};
+  return student
+}
 
 export const importStudent = async (students: IStudent[]) => {
   const studentsVerifyParse = students.map((el) => {
-    return verifyStudent(el);
-  });
+    return verifyStudent(el)
+  })
   return Promise.all(studentsVerifyParse).then((student) => {
-    return student;
-  });
-};
+    return student
+  })
+}

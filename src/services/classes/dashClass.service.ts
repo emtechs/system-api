@@ -1,5 +1,5 @@
-import { ICalendarQuery } from '../../interfaces';
-import prisma from '../../prisma';
+import { ICalendarQuery } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const dashClassService = async (
   class_id: string,
@@ -7,13 +7,13 @@ export const dashClassService = async (
   year_id: string,
   { month }: ICalendarQuery,
 ) => {
-  let whereData = {};
+  let whereData = {}
 
   if (month)
     whereData = {
       ...whereData,
       month: { name: { contains: month, mode: 'insensitive' } },
-    };
+    }
 
   whereData = {
     ...whereData,
@@ -21,7 +21,7 @@ export const dashClassService = async (
     year_id,
     class_id,
     school_id,
-  };
+  }
 
   const [frequencies, { infrequency: class_infreq }, frequencyOpen, stundents] =
     await Promise.all([
@@ -40,7 +40,7 @@ export const dashClassService = async (
       prisma.classStudent.count({
         where: { school_id, year_id, class_id, is_active: true },
       }),
-    ]);
+    ])
 
-  return { frequencies, class_infreq, frequencyOpen, stundents };
-};
+  return { frequencies, class_infreq, frequencyOpen, stundents }
+}

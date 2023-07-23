@@ -1,33 +1,33 @@
-import prisma from '../../prisma';
-import { IFrequencyStudentQuery } from '../../interfaces';
+import { prisma } from '../../lib'
+import { IFrequencyStudentQuery } from '../../interfaces'
 
 export const listFrequencyStudentService = async (
   frequency_id: string,
   { is_alter, isNot_presented, order, by, skip, take }: IFrequencyStudentQuery,
 ) => {
-  if (take) take = +take;
-  if (skip) skip = +skip;
+  if (take) take = +take
+  if (skip) skip = +skip
 
-  let whereData = {};
-  let orderBy = {};
+  let whereData = {}
+  let orderBy = {}
 
   if (order) {
     switch (order) {
-    case 'name':
-      orderBy = { student: { name: by } };
-      break;
-    case 'registry':
-      orderBy = { student: { registry: by } };
-      break;
+      case 'name':
+        orderBy = { student: { name: by } }
+        break
+      case 'registry':
+        orderBy = { student: { registry: by } }
+        break
     }
   }
 
-  if (is_alter) whereData = { ...whereData, updated_at: { not: null } };
+  if (is_alter) whereData = { ...whereData, updated_at: { not: null } }
 
   if (isNot_presented)
-    whereData = { ...whereData, status: { not: 'PRESENTED' } };
+    whereData = { ...whereData, status: { not: 'PRESENTED' } }
 
-  whereData = { ...whereData, frequency_id };
+  whereData = { ...whereData, frequency_id }
 
   const [frequency, frequencies, total] = await Promise.all([
     prisma.frequency.findUnique({
@@ -53,7 +53,7 @@ export const listFrequencyStudentService = async (
     prisma.frequencyStudent.count({
       where: { ...whereData },
     }),
-  ]);
+  ])
 
-  return { total, frequency, result: frequencies };
-};
+  return { total, frequency, result: frequencies }
+}

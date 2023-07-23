@@ -1,12 +1,12 @@
-import prisma from '../../prisma';
-import { AppError } from '../../errors';
+import { prisma } from '../../lib'
+import { AppError } from '../../errors'
 
 export const deleteUserService = async (login: string) => {
   try {
     await prisma.user.delete({
       where: { login },
-    });
+    })
   } catch {
-    throw new AppError('user not found', 404);
+    throw new AppError('user not found', 404)
   }
-};
+}

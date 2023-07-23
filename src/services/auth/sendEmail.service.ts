@@ -1,8 +1,8 @@
-import prisma from '../../prisma';
-import { randomBytes } from 'crypto';
-import { AppError } from '../../errors';
-import { mailGenerator, sendEmail } from '../../utils';
-import { IRecoveryPasswordRequest } from '../../interfaces';
+import { randomBytes } from 'crypto'
+import { AppError } from '../../errors'
+import { IRecoveryPasswordRequest } from '../../interfaces'
+import { env } from '../../env'
+import { prisma, mailGenerator, sendEmail } from '../../lib'
 
 export const sendEmailRecoveryService = async ({
   login,
@@ -10,34 +10,34 @@ export const sendEmailRecoveryService = async ({
   try {
     const user = await prisma.user.findUnique({
       where: { login },
-    });
+    })
 
-    if (!user) throw new AppError('User not found', 404);
+    if (!user) throw new AppError('User not found', 404)
 
     if (!user.is_active)
       throw new AppError(
         'No active account found with the given credentials',
         401,
-      );
+      )
 
-    if (!user.email) throw new AppError('no email registered');
+    if (!user.email) throw new AppError('no email registered')
 
-    let token = await prisma.token.findUnique({ where: { user_id: user.id } });
+    let token = await prisma.token.findUnique({ where: { user_id: user.id } })
     if (!token)
       token = await prisma.token.create({
         data: {
           user_id: user.id,
           token: randomBytes(32).toString('hex'),
         },
-      });
+      })
 
-    const link = `${process.env.BASE_URL}/password/${user.id}/${token.token}`;
+    const link = `${env.BASE_URL}/password/${user.id}/${token.token}`
 
-    const arrayUserName = user.name ? user.name.split(' ') : [''];
+    const arrayUserName = user.name ? user.name.split(' ') : ['']
     const emailName =
       arrayUserName.length > 1
         ? arrayUserName[0] + ' ' + arrayUserName[1]
-        : arrayUserName[0];
+        : arrayUserName[0]
 
     const emailContent = {
       body: {
@@ -52,27 +52,26 @@ export const sendEmailRecoveryService = async ({
           button: {
             color: '#006CBE',
             text: 'Redefina sua senha',
-            link: link,
+            link,
           },
         },
 
         outro:
           'Se você não solicitou uma redefinição de senha, nenhuma outra ação será necessária de sua parte.',
       },
-    };
+    }
 
-    const emailBody = mailGenerator.generate(emailContent);
+    const emailBody = mailGenerator.generate(emailContent)
 
-    await sendEmail(user.email, 'Password reset', emailBody);
+    await sendEmail(user.email, 'Password reset', emailBody)
 
-    return 'password reset link sent to your email account';
+    return 'password reset link sent to your email account'
   } catch (err) {
-    if (err instanceof AppError)
-      throw new AppError(err.message, err.statusCode);
+    if (err instanceof AppError) throw new AppError(err.message, err.statusCode)
 
     throw new AppError(
       'Unfortunately, the email could not be sent, we apologize for the inconvenience and ask that you try again later.',
       404,
-    );
+    )
   }
-};
+}

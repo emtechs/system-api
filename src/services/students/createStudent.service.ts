@@ -1,6 +1,6 @@
-import prisma from '../../prisma';
-import { IQuery, IStudentRequest } from '../../interfaces';
-import { AppError } from '../../errors';
+import { prisma } from '../../lib'
+import { IQuery, IStudentRequest } from '../../interfaces'
+import { AppError } from '../../errors'
 
 export const createStudentService = async (
   {
@@ -11,16 +11,16 @@ export const createStudentService = async (
   }: IStudentRequest,
   { key_class, school_id, year_id }: IQuery,
 ) => {
-  let student = await prisma.student.findUnique({ where: { registry } });
+  let student = await prisma.student.findUnique({ where: { registry } })
 
-  if (student) throw new AppError('student already exists', 409);
+  if (student) throw new AppError('student already exists', 409)
 
   student = await prisma.student.create({
     data: {
       name,
       registry,
     },
-  });
+  })
 
   if (key_class) {
     await prisma.classYear.update({
@@ -28,9 +28,9 @@ export const createStudentService = async (
       data: {
         students: { create: { student_id: student.id } },
       },
-    });
+    })
 
-    return student;
+    return student
   }
 
   if (year_id) {
@@ -46,9 +46,9 @@ export const createStudentService = async (
         data: {
           students: { create: { student_id: student.id } },
         },
-      });
+      })
 
-      return student;
+      return student
     }
 
     if (class_id_data && school_id_data) {
@@ -63,11 +63,11 @@ export const createStudentService = async (
         data: {
           students: { create: { student_id: student.id } },
         },
-      });
+      })
 
-      return student;
+      return student
     }
   }
 
-  return student;
-};
+  return student
+}

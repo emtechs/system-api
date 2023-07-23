@@ -1,12 +1,12 @@
-import { IStudentData } from '../../interfaces';
-import prisma from '../../prisma';
+import { IStudentData } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const studentReturn = async (
   studentData: IStudentData,
   year_id: string,
 ) => {
-  const student_id = studentData.id;
-  let student = {};
+  const student_id = studentData.id
+  let student = {}
 
   student = {
     ...student,
@@ -18,7 +18,7 @@ export const studentReturn = async (
       total: 0,
     },
     infrequency: 0,
-  };
+  }
 
   const [data, classData, schoolData] = await Promise.all([
     prisma.studentInfrequency.findFirst({
@@ -44,7 +44,7 @@ export const studentReturn = async (
       },
       select: { id: true, name: true },
     }),
-  ]);
+  ])
 
   if (data)
     student = {
@@ -56,16 +56,16 @@ export const studentReturn = async (
         total: data.frequencies,
       },
       infrequency: data.value,
-    };
+    }
 
   if (classData)
-    student = { ...student, class: { id: classData.id, name: classData.name } };
+    student = { ...student, class: { id: classData.id, name: classData.name } }
 
   if (schoolData)
     student = {
       ...student,
       school: { id: schoolData.id, name: schoolData.name },
-    };
+    }
 
   if (classData && schoolData) {
     const { key } = await prisma.classStudent.findUnique({
@@ -78,24 +78,24 @@ export const studentReturn = async (
         },
       },
       select: { key: true },
-    });
+    })
 
     student = {
       ...student,
       key,
-    };
+    }
   }
 
-  return student;
-};
+  return student
+}
 
 export const studentArrayReturn = async (
   studentsData: IStudentData[],
   year_id: string,
 ) => {
-  const schools = studentsData.map((el) => studentReturn(el, year_id));
+  const schools = studentsData.map((el) => studentReturn(el, year_id))
 
   return Promise.all(schools).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}

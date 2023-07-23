@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
-import { AppError } from '../errors';
-import prisma from '../prisma';
+import { NextFunction, Request, Response } from 'express'
+import { AppError } from '../errors'
+import { prisma } from '../lib'
 
 export const verifyIsPermission = async (
   req: Request,
@@ -14,11 +14,11 @@ export const verifyIsPermission = async (
         server_id: req.user.id,
       },
     },
-  });
+  })
 
   if (server) {
-    return next();
-  } else if (req.user.role === 'ADMIN') return next();
+    return next()
+  } else if (req.user.role === 'ADMIN') return next()
 
-  throw new AppError('Missing permissions', 401);
-};
+  throw new AppError('Missing permissions', 401)
+}

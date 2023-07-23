@@ -1,5 +1,5 @@
-import prisma from '../../prisma';
-import { IClassStudentUpdate } from '../../interfaces';
+import { prisma } from '../../lib'
+import { IClassStudentUpdate } from '../../interfaces'
 
 export const updateClassStudentService = async (
   {
@@ -22,7 +22,7 @@ export const updateClassStudentService = async (
       },
     },
     data: { finished_at, justify_disabled, is_active },
-  });
+  })
 
-  return classStudent;
-};
+  return classStudent
+}

@@ -1,4 +1,4 @@
-import prisma from '../../../prisma';
+import { prisma } from '../../../lib'
 
 export const viewClass = async (
   school_id: string,
@@ -31,19 +31,19 @@ export const viewClass = async (
         class: { name: { contains: name, mode: 'insensitive' } },
       },
     }),
-  ]);
+  ])
 
   const result = data.map((el) => {
-    const { _count, class: class_data, key } = el;
-    const { id, name } = class_data;
+    const { _count, class: class_data, key } = el
+    const { id, name } = class_data
     return {
       id,
       name,
       students: _count.students,
       frequencies: _count.frequencies,
       key,
-    };
-  });
+    }
+  })
 
-  return { total, result };
-};
+  return { total, result }
+}

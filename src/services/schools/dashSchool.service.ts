@@ -1,12 +1,12 @@
-import { ISchoolQuery } from '../../interfaces';
-import prisma from '../../prisma';
+import { ISchoolQuery } from '../../interfaces'
+import { prisma } from '../../lib'
 
 export const dashSchoolService = async (
   school_id: string,
   year_id: string,
   { date }: ISchoolQuery,
 ) => {
-  let dashSchool = {};
+  let dashSchool = {}
 
   const [frequencyOpen, stundents, classTotal] = await Promise.all([
     prisma.frequency.count({
@@ -18,17 +18,17 @@ export const dashSchoolService = async (
     prisma.classYear.count({
       where: { school_id, year_id },
     }),
-  ]);
+  ])
 
-  dashSchool = { ...dashSchool, frequencyOpen, stundents, classTotal };
+  dashSchool = { ...dashSchool, frequencyOpen, stundents, classTotal }
 
-  if (!date) return dashSchool;
+  if (!date) return dashSchool
 
-  const dateData = date.split('/');
-  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`);
+  const dateData = date.split('/')
+  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
 
-  let day_infreq = 0;
-  let school_infreq = 0;
+  let day_infreq = 0
+  let school_infreq = 0
 
   const [frequenciesData, period_ano] = await Promise.all([
     prisma.frequency.findMany({
@@ -51,23 +51,23 @@ export const dashSchoolService = async (
       },
       select: { value: true },
     }),
-  ]);
+  ])
 
-  if (period_ano) school_infreq = period_ano.value;
+  if (period_ano) school_infreq = period_ano.value
 
   frequenciesData.forEach((el) => {
-    day_infreq += el.infrequency;
-  });
+    day_infreq += el.infrequency
+  })
 
-  const frequencies = frequenciesData.length;
+  const frequencies = frequenciesData.length
 
-  dashSchool = { ...dashSchool, frequencies, school_infreq };
+  dashSchool = { ...dashSchool, frequencies, school_infreq }
 
-  if (frequencies === 0) return dashSchool;
+  if (frequencies === 0) return dashSchool
 
-  day_infreq = day_infreq / frequencies;
+  day_infreq = day_infreq / frequencies
 
-  dashSchool = { ...dashSchool, day_infreq };
+  dashSchool = { ...dashSchool, day_infreq }
 
-  return dashSchool;
-};
+  return dashSchool
+}

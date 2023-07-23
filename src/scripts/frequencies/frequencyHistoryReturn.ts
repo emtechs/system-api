@@ -2,22 +2,22 @@ import {
   SortFrequencyHistory,
   StatusFrequencyHistory,
   StatusStudent,
-} from '@prisma/client';
-import prisma from '../../prisma';
+} from '@prisma/client'
+import { prisma } from '../../lib'
 
 export const frequencyHistoryReturn = async (frequencies: {
-  id: string;
-  sort: SortFrequencyHistory;
-  status: StatusFrequencyHistory;
-  status_student: StatusStudent;
-  justification: string;
-  created_at: number;
-  frequency_id: string;
-  user_id: string;
+  id: string
+  sort: SortFrequencyHistory
+  status: StatusFrequencyHistory
+  status_student: StatusStudent
+  justification: string
+  created_at: number
+  frequency_id: string
+  user_id: string
 }) => {
   const freqStu = await prisma.frequencyStudent.findUnique({
     where: { id: frequencies.frequency_id },
-  });
+  })
 
   const [freq, student] = await Promise.all([
     prisma.frequency.findUnique({
@@ -32,7 +32,7 @@ export const frequencyHistoryReturn = async (frequencies: {
       where: { id: freqStu.student_id },
       select: { id: true, name: true, registry: true },
     }),
-  ]);
+  ])
 
   const [classData, school] = await Promise.all([
     prisma.class.findUnique({
@@ -43,7 +43,7 @@ export const frequencyHistoryReturn = async (frequencies: {
       where: { id: freq.school_id },
       select: { id: true, name: true },
     }),
-  ]);
+  ])
 
   return {
     ...frequencies,
@@ -51,24 +51,24 @@ export const frequencyHistoryReturn = async (frequencies: {
     student,
     school,
     class: classData,
-  };
-};
+  }
+}
 
 export const frequencyHistoryArrayReturn = async (
   frequencies: {
-    id: string;
-    sort: SortFrequencyHistory;
-    status: StatusFrequencyHistory;
-    status_student: StatusStudent;
-    justification: string;
-    created_at: number;
-    frequency_id: string;
-    user_id: string;
+    id: string
+    sort: SortFrequencyHistory
+    status: StatusFrequencyHistory
+    status_student: StatusStudent
+    justification: string
+    created_at: number
+    frequency_id: string
+    user_id: string
   }[],
 ) => {
-  const freq = frequencies.map((el) => frequencyHistoryReturn(el));
+  const freq = frequencies.map((el) => frequencyHistoryReturn(el))
 
   return Promise.all(freq).then((school) => {
-    return school;
-  });
-};
+    return school
+  })
+}

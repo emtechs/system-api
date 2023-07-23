@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from 'express'
 import {
   createSchoolClassController,
   createSchoolController,
@@ -12,21 +12,21 @@ import {
   reportSchoolController,
   retrieveSchoolController,
   updateSchoolController,
-} from '../controllers';
+} from '../controllers'
 import {
   validateSchemaMiddleware,
   verifyIsAdmin,
   verifyIsPermission,
   verifyUserIsAuthenticated,
-} from '../middlewares';
+} from '../middlewares'
 import {
   SchoolClassCreateSchema,
   SchoolCreateSchema,
   SchoolServerCreateSchema,
   SchoolUpdateSchema,
-} from '../schemas';
+} from '../schemas'
 
-export const schoolRouter = Router();
+export const schoolRouter = Router()
 
 schoolRouter.post(
   '',
@@ -34,7 +34,7 @@ schoolRouter.post(
   verifyIsAdmin,
   validateSchemaMiddleware(SchoolCreateSchema),
   createSchoolController,
-);
+)
 
 schoolRouter.post(
   '/:server_id',
@@ -42,7 +42,7 @@ schoolRouter.post(
   verifyIsAdmin,
   validateSchemaMiddleware(SchoolServerCreateSchema),
   createSchoolServerController,
-);
+)
 
 schoolRouter.post(
   '/:school_id/:year_id',
@@ -50,37 +50,37 @@ schoolRouter.post(
   verifyIsPermission,
   validateSchemaMiddleware(SchoolClassCreateSchema),
   createSchoolClassController,
-);
+)
 
 schoolRouter.get(
   '',
   verifyUserIsAuthenticated,
   verifyIsAdmin,
   listSchoolController,
-);
+)
 
-schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController);
+schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController)
 
 schoolRouter.get(
   '/:school_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   retrieveSchoolController,
-);
+)
 
 schoolRouter.get(
   '/:school_id/dash/:year_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   dashSchoolController,
-);
+)
 
 schoolRouter.get(
   '/:school_id/report/:year_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   reportSchoolController,
-);
+)
 
 schoolRouter.patch(
   '/:school_id',
@@ -88,25 +88,25 @@ schoolRouter.patch(
   verifyIsPermission,
   validateSchemaMiddleware(SchoolUpdateSchema),
   updateSchoolController,
-);
+)
 
 schoolRouter.delete(
   '/:school_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   deleteSchoolController,
-);
+)
 
 schoolRouter.delete(
   '/:school_id/director',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   deleteDirectorSchoolController,
-);
+)
 
 schoolRouter.delete(
   '/:school_id/server/:server_id',
   verifyUserIsAuthenticated,
   verifyIsPermission,
   deleteSchoolServerController,
-);
+)

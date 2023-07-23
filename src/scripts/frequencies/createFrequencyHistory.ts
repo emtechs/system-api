@@ -1,5 +1,5 @@
-import { IFrequencyHistoryCreate } from '../../interfaces';
-import prisma from '../../prisma';
+import { IFrequencyHistoryCreate } from '../../interfaces'
+import { prisma } from '../../lib'
 
 const verifyFrequencyHistory = async (
   { id, status, justification }: IFrequencyHistoryCreate,
@@ -15,10 +15,10 @@ const verifyFrequencyHistory = async (
       user_id,
       status: 'ACCEPTED',
     },
-  });
+  })
 
-  return frequencyHistory;
-};
+  return frequencyHistory
+}
 
 export const createFrequencyHistory = async (
   students: IFrequencyHistoryCreate[],
@@ -26,9 +26,9 @@ export const createFrequencyHistory = async (
   created_at: number,
 ) => {
   const frequencyHistoryVerifyParse = students.map((el) => {
-    return verifyFrequencyHistory(el, user_id, created_at);
-  });
+    return verifyFrequencyHistory(el, user_id, created_at)
+  })
   return Promise.all(frequencyHistoryVerifyParse).then((frequencyHistory) => {
-    return frequencyHistory;
-  });
-};
+    return frequencyHistory
+  })
+}

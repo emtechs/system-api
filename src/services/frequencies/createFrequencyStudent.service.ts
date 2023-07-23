@@ -1,5 +1,5 @@
-import prisma from '../../prisma';
-import { IFrequencyStudentRequest } from '../../interfaces';
+import { prisma } from '../../lib'
+import { IFrequencyStudentRequest } from '../../interfaces'
 
 export const createFrequencyStudentService = async ({
   frequency_id,
@@ -9,7 +9,7 @@ export const createFrequencyStudentService = async ({
 }: IFrequencyStudentRequest) => {
   const frequencie = await prisma.frequencyStudent.create({
     data: { frequency_id, justification, status, student_id },
-  });
+  })
 
-  return frequencie;
-};
+  return frequencie
+}
