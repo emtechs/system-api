@@ -151,8 +151,8 @@ CREATE TABLE "class_student_history" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "class_id" TEXT,
     "student_id" TEXT NOT NULL,
+    "class_id" TEXT NOT NULL,
 
     CONSTRAINT "class_student_history_pkey" PRIMARY KEY ("id")
 );
@@ -345,10 +345,10 @@ ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_yea
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "class_student"("key") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "class_year"("key") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_period" ADD CONSTRAINT "frequency_period_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;

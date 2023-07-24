@@ -1,3 +1,4 @@
+import { AppError } from '../../errors'
 import { IClassQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 
@@ -8,7 +9,7 @@ export const listClassYearService = async (
   if (view === 'student') {
     const [students, total, classData] = await Promise.all([
       prisma.classStudent.findMany({
-        where: { is_active: true, class_year: { key } },
+        where: { class_year: { key } },
         select: {
           key: true,
           student: {
@@ -18,7 +19,7 @@ export const listClassYearService = async (
         orderBy: { student: { name: 'asc' } },
       }),
       prisma.classStudent.count({
-        where: { is_active: true, class_year: { key } },
+        where: { class_year: { key } },
       }),
       prisma.classYear.findUnique({
         where: { key },
@@ -28,6 +29,8 @@ export const listClassYearService = async (
         },
       }),
     ])
+
+    if (!classData) throw new AppError('')
 
     const result = students.map((el) => {
       const { id, name, registry, created_at } = el.student

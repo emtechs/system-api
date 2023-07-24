@@ -22,9 +22,7 @@ export const dashUserService = async (year_id: string) => {
         AND: { role: { not: { in: ['ADMIN', 'SECRET'] } }, is_active: true },
       },
     }),
-    prisma.student.count({
-      where: { classes: { every: { is_active: false } } },
-    }),
+    prisma.student.count(),
   ])
 
   return {

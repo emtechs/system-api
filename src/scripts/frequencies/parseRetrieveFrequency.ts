@@ -20,12 +20,15 @@ import {
   presentedCount,
   studentFindUnique,
 } from './calculateFrequency'
+import { z } from 'zod'
 
 const parseFrequencyFreq = async (
   id: string,
   frequencyStudent_id: string,
   year_id: string,
 ) => {
+  let returnStudent = {}
+
   const [student, presences, justified, absences, frequency] =
     await Promise.all([
       studentFindUnique(id),
@@ -37,15 +40,23 @@ const parseFrequencyFreq = async (
 
   const frequencies = presences + justified + absences
   const infrequency = frequencies === 0 ? 0 : (absences / frequencies) * 100
-  const { justification, status, updated_at } = frequency
-  const infreq_stu = status === 'MISSED' ? 100 : 0
 
-  return {
+  if (frequency) {
+    const { justification, status, updated_at } = frequency
+    const infreq_stu = status === 'MISSED' ? 100 : 0
+
+    returnStudent = {
+      ...returnStudent,
+      justification,
+      status,
+      updated_at,
+      infreq_stu,
+    }
+  }
+
+  returnStudent = {
+    ...returnStudent,
     ...student,
-    status,
-    justification,
-    updated_at,
-    infreq_stu,
     frequencyStudent_id,
     presences,
     justified,
@@ -53,6 +64,25 @@ const parseFrequencyFreq = async (
     frequencies,
     infrequency: Number(infrequency.toFixed(2)),
   }
+
+  const returnStudentSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    registry: z.string(),
+    created_at: z.date(),
+    frequencyStudent_id: z.string().uuid(),
+    presences: z.number(),
+    justified: z.number(),
+    absences: z.number(),
+    frequencies: z.number(),
+    infrequency: z.number(),
+    justification: z.string().optional(),
+    status: z.string().optional(),
+    updated_at: z.string().optional(),
+    infreq_stu: z.number().default(0),
+  })
+
+  return returnStudentSchema.parse(returnStudent)
 }
 
 const studentsFreqParseFrequency = async (

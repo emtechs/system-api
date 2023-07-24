@@ -28,7 +28,7 @@ export const studentReturn = async (
       where: {
         schools: {
           some: {
-            students: { some: { student_id, year_id, is_active: true } },
+            students: { some: { student_id, year_id } },
           },
         },
       },
@@ -38,7 +38,7 @@ export const studentReturn = async (
       where: {
         classes: {
           some: {
-            students: { some: { student_id, year_id, is_active: true } },
+            students: { some: { student_id, year_id } },
           },
         },
       },
@@ -68,7 +68,7 @@ export const studentReturn = async (
     }
 
   if (classData && schoolData) {
-    const { key } = await prisma.classStudent.findUnique({
+    const classStudent = await prisma.classStudent.findUnique({
       where: {
         class_id_school_id_year_id_student_id: {
           class_id: classData.id,
@@ -80,10 +80,11 @@ export const studentReturn = async (
       select: { key: true },
     })
 
-    student = {
-      ...student,
-      key,
-    }
+    if (classStudent)
+      student = {
+        ...student,
+        key: classStudent.key,
+      }
   }
 
   return student

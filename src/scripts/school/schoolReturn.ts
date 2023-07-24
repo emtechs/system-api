@@ -25,7 +25,7 @@ export const schoolReturn = async (
       }),
       prisma.classYear.count({ where }),
       prisma.classStudent.count({
-        where: { ...where, is_active: true },
+        where: { ...where },
       }),
       prisma.frequency.count({
         where: { ...where, status: 'CLOSED' },

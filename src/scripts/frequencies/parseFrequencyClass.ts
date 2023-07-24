@@ -38,16 +38,16 @@ const studentsClassParseFrequency = async (
 
 const infrequencyClass = (
   students: {
+    class_id: string
     presented: number
     justified: number
     missed: number
     total_frequencies: number
     infrequency: number
-    class_id: string
-    id: string
-    name: string
-    registry: string
-    created_at: Date
+    id?: string | undefined
+    name?: string | undefined
+    registry?: string | undefined
+    created_at?: Date | undefined
   }[],
   class_id: string,
   count_students: number,

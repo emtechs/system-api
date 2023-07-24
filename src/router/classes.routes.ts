@@ -13,7 +13,6 @@ import {
   retrieveClassYearController,
   transferClassStudentController,
   updateClassSchoolController,
-  updateClassStudentController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -26,8 +25,6 @@ import {
   ClassSchoolCreateSchema,
   ClassSchoolUpdateSchema,
   ClassStudentCreateSchema,
-  ClassStudentUpdateSchema,
-  DeleteClassStudentSchema,
   TransferClassStudentSchema,
 } from '../schemas'
 
@@ -106,17 +103,9 @@ classRouter.patch(
   transferClassStudentController,
 )
 
-classRouter.patch(
-  '/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(ClassStudentUpdateSchema),
-  updateClassStudentController,
-)
-
 classRouter.delete(
   '/:key',
   verifyUserIsAuthenticated,
   verifyIsAdmin,
-  validateSchemaMiddleware(DeleteClassStudentSchema),
   deleteClassStudentController,
 )

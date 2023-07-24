@@ -192,33 +192,33 @@ model ClassYear {
   students      ClassStudent[]
   frequencies   Frequency[]
   infrequencies ClassYearInfrequency[]
+  historic      ClassStudentHistory[]
 
   @@id([class_id, school_id, year_id])
   @@map("class_year")
 }
 
 model ClassStudent {
-  key        String                @unique @default(uuid())
-  class_year ClassYear             @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
+  key        String    @unique @default(uuid())
+  class_year ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
   class_id   String
   school_id  String
   year_id    String
-  student    Student               @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student    Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id String
-  historic   ClassStudentHistory[]
 
   @@id([class_id, school_id, year_id, student_id])
   @@map("class_student")
 }
 
 model ClassStudentHistory {
-  id          String        @id @default(uuid())
-  description String        @db.Text
-  created_at  DateTime      @default(now())
-  class       ClassStudent? @relation(fields: [class_id], references: [key], onDelete: Cascade)
-  class_id    String?
-  student     Student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  id          String    @id @default(uuid())
+  description String    @db.Text
+  created_at  DateTime  @default(now())
+  student     Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id  String
+  class       ClassYear @relation(fields: [class_id], references: [key], onDelete: Cascade)
+  class_id    String
 
   @@map("class_student_history")
 }

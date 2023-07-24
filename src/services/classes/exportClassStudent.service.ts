@@ -11,7 +11,6 @@ export const exportClassStudentService = async () => {
       year_id: true,
       student_id: true,
       key: true,
-      is_active: true,
     },
   })
 
@@ -19,14 +18,7 @@ export const exportClassStudentService = async () => {
     const writeStream = fs.createWriteStream('tmp/uploads/turmas.csv')
     const stringifier = stringify({
       header: true,
-      columns: [
-        'class_id',
-        'school_id',
-        'year_id',
-        'student_id',
-        'key',
-        'is_active',
-      ],
+      columns: ['class_id', 'school_id', 'year_id', 'student_id', 'key'],
     })
     classes.forEach((class_data) => {
       stringifier.write(Object.values(class_data))

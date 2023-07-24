@@ -6,7 +6,6 @@ import {
   importClassService,
   listClassService,
   updateClassSchoolService,
-  updateClassStudentService,
   createClassSchoolService,
   dashClassService,
   listClassDashService,
@@ -56,7 +55,7 @@ export const deleteClassStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const classData = await deleteClassStudentService(req.body, req.params.key)
+  const classData = await deleteClassStudentService(req.params.key)
   return res.json(classData)
 }
 
@@ -116,12 +115,4 @@ export const updateClassSchoolController = async (
 ) => {
   const classSchool = await updateClassSchoolService(req.body)
   return res.json(classSchool)
-}
-
-export const updateClassStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const classStudent = await updateClassStudentService(req.body, req.params.id)
-  return res.json(classStudent)
 }

@@ -7,7 +7,7 @@ export const createClassStudentService = async (
 ) => {
   const classStudent = await prisma.classStudent.create({
     data: {
-      class: {
+      class_year: {
         connectOrCreate: {
           where: {
             class_id_school_id_year_id: {

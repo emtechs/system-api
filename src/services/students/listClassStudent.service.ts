@@ -15,7 +15,6 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        is_active: true,
         student: { name: { contains: name, mode: 'insensitive' } },
       },
       select: {
@@ -37,7 +36,6 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        is_active: true,
         student: { name: { contains: name, mode: 'insensitive' } },
       },
     }),
