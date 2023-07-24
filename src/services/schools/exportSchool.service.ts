@@ -8,7 +8,7 @@ export const exportSchoolService = async () => {
     select: { name: true, id: true, director_id: true },
   })
 
-  if (env.NODE_ENV === 'production') {
+  if (env.NODE_ENV === 'dev') {
     const writeStream = fs.createWriteStream('tmp/uploads/escolas.csv')
     const stringifier = stringify({
       header: true,

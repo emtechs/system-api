@@ -142,12 +142,19 @@ CREATE TABLE "class_student" (
     "school_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "justify_disabled" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "class_student_pkey" PRIMARY KEY ("class_id","school_id","year_id","student_id")
+);
+
+-- CreateTable
+CREATE TABLE "class_student_history" (
+    "id" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "class_id" TEXT,
+    "student_id" TEXT NOT NULL,
+
+    CONSTRAINT "class_student_history_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -336,6 +343,12 @@ ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_yea
 
 -- AddForeignKey
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "class_student"("key") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "frequency_period" ADD CONSTRAINT "frequency_period_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;

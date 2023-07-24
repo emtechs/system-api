@@ -13,6 +13,13 @@ export interface IClass {
   name: string
 }
 
+export interface IClassStudent {
+  class_id: string
+  school_id: string
+  year_id: string
+  student_id: string
+}
+
 export type IClassRequest = z.infer<typeof ClassCreateSchema>
 
 export interface IClassSchoolUpdateRequest {
