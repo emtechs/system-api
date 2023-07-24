@@ -1,3 +1,4 @@
+import { AppError } from '../../errors'
 import { prisma } from '../../lib'
 
 export const classYearReturn = async (
@@ -7,7 +8,7 @@ export const classYearReturn = async (
 ) => {
   let infrequency = 0
 
-  const [classData, school, students, frequencies, infreqData, { key }] =
+  const [classData, school, students, frequencies, infreqData, classDataYear] =
     await Promise.all([
       prisma.class.findUnique({
         where: { id: class_id },
@@ -19,7 +20,7 @@ export const classYearReturn = async (
       }),
       prisma.student.count({
         where: {
-          classes: { some: { class_id, school_id, year_id, is_active: true } },
+          classes: { some: { class_id, school_id, year_id } },
         },
       }),
       prisma.frequency.count({
@@ -35,6 +36,8 @@ export const classYearReturn = async (
       }),
     ])
 
+  if (!classData || !classDataYear) throw new AppError('')
+
   if (infreqData) infrequency = infreqData.value
 
   return {
@@ -45,7 +48,7 @@ export const classYearReturn = async (
     frequencies,
     infrequency,
     year_id,
-    key,
+    key: classDataYear.key,
   }
 }
 
