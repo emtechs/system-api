@@ -1,10 +1,6 @@
 import { prisma } from '../../../lib'
 
-export const viewClass = async (
-  school_id: string,
-  year_id: string,
-  name: string,
-) => {
+export const viewClass = async (school_id: string, year_id = '', name = '') => {
   const [data, total] = await Promise.all([
     prisma.classYear.findMany({
       where: {
@@ -15,7 +11,7 @@ export const viewClass = async (
       select: {
         _count: {
           select: {
-            students: { where: { is_active: true } },
+            students: true,
             frequencies: { where: { status: 'CLOSED' } },
           },
         },

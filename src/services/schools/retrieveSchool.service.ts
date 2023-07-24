@@ -1,3 +1,4 @@
+import { AppError } from '../../errors'
 import { ISchoolQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 import { SchoolReturnSchema } from '../../schemas'
@@ -28,6 +29,8 @@ export const retrieveSchoolService = async (
     where: { id },
     select: { id: true },
   })
+
+  if (!schoolData) throw new AppError('')
 
   const schoolSchema = SchoolReturnSchema.parse(
     await schoolReturn(schoolData.id, year_id),

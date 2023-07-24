@@ -1,6 +1,6 @@
 import { prisma } from '../../../lib'
 
-export const viewServer = async (school_id: string, name: string) => {
+export const viewServer = async (school_id: string, name = '') => {
   const [data, total] = await Promise.all([
     prisma.schoolServer.findMany({
       where: {
