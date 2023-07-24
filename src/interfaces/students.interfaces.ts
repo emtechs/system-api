@@ -14,6 +14,12 @@ export interface IStudent {
   year_id: string
 }
 
+export interface IStudentKey {
+  registry: string
+  name: string
+ key:string
+}
+
 export interface IStudentData {
   id: string
   name: string
