@@ -9,7 +9,7 @@ import { env } from '../env'
 
 export const tmpfolder = resolve(__dirname, '..', '..', 'tmp', 'uploads')
 
-if (env.NODE_ENV === 'production') {
+if (env.NODE_ENV === 'dev') {
   if (!fs.existsSync(tmpfolder)) fs.mkdirSync(tmpfolder, { recursive: true })
 }
 
