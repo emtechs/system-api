@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from 'express'
-import { AppError } from '../errors'
+import { AppError } from '../http/error'
 import jwt from 'jsonwebtoken'
 import { env } from '../env'
 import { prisma } from '../lib'

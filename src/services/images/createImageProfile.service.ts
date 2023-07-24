@@ -1,5 +1,5 @@
 import { env } from '../../env'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { prisma } from '../../lib'
 
 export const createImageProfileService = async (

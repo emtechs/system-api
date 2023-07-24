@@ -1,5 +1,5 @@
 import { compareSync, hashSync } from 'bcryptjs'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { IRole, IUserUpdateRequest } from '../../interfaces'
 import { prisma } from '../../lib'
 import { UserReturnSchema } from '../../schemas'

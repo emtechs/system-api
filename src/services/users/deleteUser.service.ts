@@ -1,5 +1,5 @@
 import { prisma } from '../../lib'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 
 export const deleteUserService = async (login: string) => {
   try {

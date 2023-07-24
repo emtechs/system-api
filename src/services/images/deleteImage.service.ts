@@ -3,7 +3,7 @@ import { prisma } from '../../lib'
 import fs from 'node:fs'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { env } from '../../env'
 
 export const deleteImageService = async (id: string) => {

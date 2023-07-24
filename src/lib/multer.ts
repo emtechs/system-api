@@ -9,7 +9,7 @@ import { env } from '../env'
 
 export const tmpfolder = resolve(__dirname, '..', '..', 'tmp', 'uploads')
 
-if (env.NODE_ENV === 'production') {
+if (env.NODE_ENV === 'dev') {
   if (!fs.existsSync(tmpfolder)) fs.mkdirSync(tmpfolder, { recursive: true })
 }
 
@@ -18,19 +18,19 @@ export const fileSize = 2 * 1024 * 1024
 export const storage =
   env.NODE_ENV === 'production'
     ? multer.diskStorage({
-        destination: (req, file, cb) => {
-          cb(null, tmpfolder)
-        },
-        filename: (req, file, cb) => {
-          crypto.randomBytes(16, (err, hash) => {
-            if (err) cb(err, err.message)
+      destination: (req, file, cb) => {
+        cb(null, tmpfolder)
+      },
+      filename: (req, file, cb) => {
+        crypto.randomBytes(16, (err, hash) => {
+          if (err) cb(err, err.message)
 
-            const filename = `${hash.toString('hex')}-${file.originalname}`
+          const filename = `${hash.toString('hex')}-${file.originalname}`
 
-            cb(null, filename)
-          })
-        },
-      })
+          cb(null, filename)
+        })
+      },
+    })
     : new CloudinaryStorage({ cloudinary })
 
 export const fileFilter = (
@@ -57,27 +57,27 @@ export const fileFilter = (
 export const upload =
   env.NODE_ENV === 'production'
     ? multer({
-        dest: tmpfolder,
-        storage,
-        limits: { fileSize },
-        fileFilter,
-      })
+      dest: tmpfolder,
+      storage,
+      limits: { fileSize },
+      fileFilter,
+    })
     : multer({
-        storage,
-        limits: { fileSize },
-        fileFilter,
-      })
+      storage,
+      limits: { fileSize },
+      fileFilter,
+    })
 
 export const uploadCsv =
   env.NODE_ENV === 'production'
     ? multer({
-        dest: tmpfolder,
-        storage,
-        limits: { fileSize },
-        fileFilter,
-      })
+      dest: tmpfolder,
+      storage,
+      limits: { fileSize },
+      fileFilter,
+    })
     : multer({
-        storage: multer.diskStorage({}),
-        limits: { fileSize },
-        fileFilter,
-      })
+      storage: multer.diskStorage({}),
+      limits: { fileSize },
+      fileFilter,
+    })

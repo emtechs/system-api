@@ -1,5 +1,5 @@
 import { hashSync } from 'bcryptjs'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { IPasswordUpdateRequest } from '../../interfaces'
 import { UserReturnSchema } from '../../schemas'
 import { prisma, mailGenerator, sendEmail } from '../../lib'

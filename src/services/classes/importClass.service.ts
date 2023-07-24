@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { importClass, loadClasses } from '../../scripts'
 
 export const importClassService = async (file?: Express.Multer.File) => {

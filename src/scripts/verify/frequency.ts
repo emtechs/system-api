@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { prisma } from '../../lib'
 
 export const verifyFrequency = async (id: string) => {

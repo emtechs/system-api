@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { importStudent, loadStudents } from '../../scripts'
 
 export const importStudentService = async (

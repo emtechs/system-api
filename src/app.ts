@@ -1,42 +1,22 @@
-import 'express-async-errors'
-import express from 'express'
-import { errorHandler } from './errors'
-import {
-  calendarRouter,
-  classRouter,
-  frequencyRouter,
-  importRouter,
-  passwordRouter,
-  schoolRouter,
-  sessionRouter,
-  studentRouter,
-  userRouter,
-  verifyRouter,
-} from './router'
+import fastify from 'fastify'
+import { ZodError } from 'zod'
+import { env } from './env'
+import { AppError } from './http/error'
 
-const app = express()
+export const app = fastify()
 
-app.use(express.json())
+app.setErrorHandler((error, _request, reply) => {
+  if (error instanceof AppError)
+    return reply.status(error.statusCode).send({
+      message: error.message,
+    })
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
+  if (error instanceof ZodError)
+    return reply
+      .status(400)
+      .send({ message: 'Validation error.', issues: error.format() })
 
-  next()
+  if (env.NODE_ENV !== 'production') console.error(error)
+
+  return reply.status(500).send({ message: 'Internal server error.' })
 })
-
-app.use('/users', userRouter)
-app.use('/login', sessionRouter)
-app.use('/password', passwordRouter)
-app.use('/schools', schoolRouter)
-app.use('/classes', classRouter)
-app.use('/students', studentRouter)
-app.use('/frequencies', frequencyRouter)
-app.use('/calendar', calendarRouter)
-app.use('/imports', importRouter)
-app.use('/verify', verifyRouter)
-
-app.use(errorHandler)
-
-export default app

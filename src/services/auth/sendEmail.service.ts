@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { IRecoveryPasswordRequest } from '../../interfaces'
 import { env } from '../../env'
 import { prisma, mailGenerator, sendEmail } from '../../lib'

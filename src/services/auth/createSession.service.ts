@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { compareSync } from 'bcryptjs'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { prisma } from '../../lib'
 import { ISessionRequest } from '../../interfaces'
 import { env } from '../../env'

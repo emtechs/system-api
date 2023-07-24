@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { prisma } from '../../lib'
 
 export const verifyStudent = async (id: string) => {

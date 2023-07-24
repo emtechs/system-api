@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { IAuthQuery, IRequestUser } from '../../interfaces'
 import { prisma } from '../../lib'
 import {

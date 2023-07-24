@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { z } from 'zod'
-import { AppError } from '../errors'
+import { AppError } from '../http/error'
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('production'),

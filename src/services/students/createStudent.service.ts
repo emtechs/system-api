@@ -1,6 +1,6 @@
 import { prisma } from '../../lib'
 import { IQuery, IStudentRequest } from '../../interfaces'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 
 export const createStudentService = async (
   {

@@ -1,7 +1,7 @@
 import { prisma } from '../../lib'
 import { IUserQuery, IUserRequest } from '../../interfaces'
 import { hashSync } from 'bcryptjs'
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { ServerSchema, UserReturnSchema } from '../../schemas'
 import { updateSchoolDirector } from '../../scripts'
 

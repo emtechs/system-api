@@ -1,4 +1,4 @@
-import { AppError } from '../../errors'
+import { AppError } from '../../http/error'
 import { IUserQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 
