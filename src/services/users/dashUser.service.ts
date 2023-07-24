@@ -31,6 +31,6 @@ export const dashUserService = async (year_id: string) => {
     countStudent,
     countFrequency,
     countServer,
-    countNotClass,
+    countNotClass: countNotClass - countStudent,
   }
 }
