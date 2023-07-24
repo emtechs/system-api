@@ -1,25 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
+import { env } from '../../env'
 import { AppError } from './appError'
-import { Request, Response, NextFunction } from 'express'
 
-export const errorHandler = async (
-  error: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
+export const handleError = (
+  error: FastifyError,
+  _request: FastifyRequest,
+  reply: FastifyReply,
 ) => {
   if (error instanceof AppError)
-    return res.status(error.statusCode).json({
+    return reply.status(error.statusCode).send({
       message: error.message,
     })
 
   if (error instanceof ZodError)
-    return res.status(400).json({ message: error.flatten().fieldErrors })
+    return reply
+      .status(400)
+      .send({ message: 'Validation error.', issues: error.format() })
 
-  console.log(error)
+  if (env.NODE_ENV !== 'production') console.error(error)
 
-  return res.status(500).json({
-    message: 'Internal server error',
-  })
+  return reply.status(500).send({ message: 'Internal server error.' })
 }

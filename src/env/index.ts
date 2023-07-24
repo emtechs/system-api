@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import { z } from 'zod'
-import { AppError } from '../http/error'
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('production'),
@@ -14,7 +13,7 @@ const _env = envSchema.safeParse(process.env)
 if (_env.success === false) {
   console.error('❌ Invalid enviroment variables', _env.error.format())
 
-  throw new AppError('Invalid enviroment variables.')
+  throw new Error('Invalid enviroment variables.')
 }
 
 export const env = _env.data
