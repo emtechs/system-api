@@ -38,7 +38,7 @@ const verifyStudent = async ({ name, registry, key }: IStudentKey) => {
   if (classStudent)
     await prisma.classStudent.delete({ where: { key: classStudent.key } })
 
-  let class_data = await prisma.classStudent.findUnique({
+  const class_data = await prisma.classStudent.findUnique({
     where: {
       class_id_school_id_year_id_student_id: {
         class_id,
@@ -49,15 +49,10 @@ const verifyStudent = async ({ name, registry, key }: IStudentKey) => {
     },
   })
 
-  if (!class_data) {
-    class_data = await prisma.classStudent.create({
+  if (!class_data)
+    await prisma.classStudent.create({
       data: { class_id, school_id, student_id, year_id },
     })
-
-    await prisma.classStudentHistory.create({
-      data: { class_id: class_data.key, student_id, description: '2023' },
-    })
-  }
 
   return student
 }
