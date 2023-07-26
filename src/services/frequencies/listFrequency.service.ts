@@ -5,7 +5,6 @@ import { frequencyReturn } from '../../scripts'
 export const listFrequencyService = async ({
   take,
   skip,
-  status,
   date,
   class_id,
   school_id,
@@ -13,6 +12,7 @@ export const listFrequencyService = async ({
   order,
   by,
   user_id,
+  is_active,
 }: IFrequencyQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
@@ -44,7 +44,18 @@ export const listFrequencyService = async ({
     }
   }
 
-  if (status) where = { ...where, status }
+  if (is_active) {
+    switch (is_active) {
+      case 'true':
+        where = { ...where, status: 'CLOSED' }
+        break
+
+      case 'false':
+        where = { ...where, status: 'OPENED' }
+        break
+    }
+  }
+
   if (date) where = { ...where, date }
   if (class_id) where = { ...where, class_id }
   if (school_id) where = { ...where, school_id }
