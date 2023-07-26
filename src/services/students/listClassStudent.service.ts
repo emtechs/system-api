@@ -15,7 +15,10 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        student: { name: { contains: name, mode: 'insensitive' } },
+        student: {
+          name: { contains: name, mode: 'insensitive' },
+          registry: { contains: name, mode: 'insensitive' },
+        },
       },
       select: {
         key: true,
@@ -36,7 +39,10 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        student: { name: { contains: name, mode: 'insensitive' } },
+        student: {
+          name: { contains: name, mode: 'insensitive' },
+          registry: { contains: name, mode: 'insensitive' },
+        },
       },
     }),
   ])
