@@ -8,6 +8,18 @@ export const listClassStudentService = async ({
   year_id,
   class_id,
 }: IStudentQuery) => {
+  let whereName = {}
+
+  if (name)
+    whereName = {
+      student: {
+        OR: [
+          { name: { contains: name, mode: 'insensitive' } },
+          { registry: { contains: name, mode: 'insensitive' } },
+        ],
+      },
+    }
+
   const [data, total] = await Promise.all([
     prisma.classStudent.findMany({
       where: {
@@ -15,12 +27,7 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        student: {
-          OR: [
-            { name: { contains: name, mode: 'insensitive' } },
-            { registry: { contains: name, mode: 'insensitive' } },
-          ],
-        },
+        ...whereName,
       },
       select: {
         key: true,
@@ -41,12 +48,7 @@ export const listClassStudentService = async ({
         school_id,
         year_id,
         class_id,
-        student: {
-          OR: [
-            { name: { contains: name, mode: 'insensitive' } },
-            { registry: { contains: name, mode: 'insensitive' } },
-          ],
-        },
+        ...whereName,
       },
     }),
   ])
