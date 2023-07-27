@@ -5,9 +5,16 @@ export const listClassYearService = async ({
   name,
   school_id,
   year_id,
+  take,
+  skip,
 }: IClassQuery) => {
+  if (take) take = +take
+  if (skip) skip = +skip
+
   const [data, total] = await Promise.all([
     prisma.classYear.findMany({
+      take,
+      skip,
       where: {
         school_id,
         year_id,
