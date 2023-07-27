@@ -2,12 +2,17 @@ import { IStudentQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 
 export const listClassStudentService = async ({
+  take,
+  skip,
   name,
   key_class,
   school_id,
   year_id,
   class_id,
 }: IStudentQuery) => {
+  if (take) take = +take
+  if (skip) skip = +skip
+
   let whereName = {}
 
   if (name)
@@ -22,6 +27,8 @@ export const listClassStudentService = async ({
 
   const [data, total] = await Promise.all([
     prisma.classStudent.findMany({
+      take,
+      skip,
       where: {
         class_year: { key: key_class },
         school_id,
