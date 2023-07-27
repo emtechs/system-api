@@ -5,14 +5,18 @@ export const listStudentService = async ({
   take,
   skip,
   name,
+  year_id,
 }: IStudentQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
 
   let where = {}
 
+  if (year_id) where = { ...where, classes: { none: { year_id } } }
+
   if (name)
     where = {
+      ...where,
       OR: [
         { name: { contains: name, mode: 'insensitive' } },
         { registry: { contains: name, mode: 'insensitive' } },

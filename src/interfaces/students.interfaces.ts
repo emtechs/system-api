@@ -1,9 +1,5 @@
 import { z } from 'zod'
-import {
-  StudentCreateSchema,
-  StudentCreateWithClassSchema,
-  StudentUpdateSchema,
-} from '../schemas'
+import { StudentCreateSchema, StudentUpdateSchema } from '../schemas'
 import { IQuery } from './global.interfaces'
 
 export interface IStudent {
@@ -17,7 +13,7 @@ export interface IStudent {
 export interface IStudentKey {
   registry: string
   name: string
- key:string
+  key: string
 }
 
 export interface IStudentData {
@@ -49,12 +45,7 @@ export interface IStudentUpdateInfrequency {
   periods: { period_id: string }[]
 }
 
-export type IStudentWithClassRequest = z.infer<
-  typeof StudentCreateWithClassSchema
->
-
 export interface IStudentQuery extends IQuery {
-  is_active?: 'true' | 'false'
   is_list?: string
   infreq?: number
 }
