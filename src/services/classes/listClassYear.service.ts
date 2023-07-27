@@ -1,51 +1,54 @@
-import { AppError } from '../../errors'
 import { IClassQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 
-export const listClassYearService = async (
-  key: string,
-  { view }: IClassQuery,
-) => {
-  if (view === 'student') {
-    const [students, total, classData] = await Promise.all([
-      prisma.classStudent.findMany({
-        where: { class_year: { key } },
-        select: {
-          key: true,
-          student: {
-            select: { id: true, name: true, registry: true, created_at: true },
+export const listClassYearService = async ({
+  name,
+  school_id,
+  year_id,
+}: IClassQuery) => {
+  const [data, total] = await Promise.all([
+    prisma.classYear.findMany({
+      where: {
+        school_id,
+        year_id,
+        class: { name: { contains: name, mode: 'insensitive' } },
+      },
+      select: {
+        _count: {
+          select: {
+            students: true,
+            frequencies: { where: { status: 'CLOSED' } },
           },
         },
-        orderBy: { student: { name: 'asc' } },
-      }),
-      prisma.classStudent.count({
-        where: { class_year: { key } },
-      }),
-      prisma.classYear.findUnique({
-        where: { key },
-        include: {
-          class: { select: { id: true, name: true } },
-          school: { select: { id: true, name: true } },
-        },
-      }),
-    ])
+        class: { select: { id: true, name: true } },
+        school: { select: { id: true, name: true } },
+        year_id: true,
+        key: true,
+      },
+      orderBy: { class: { name: 'asc' } },
+    }),
+    prisma.classYear.count({
+      where: {
+        school_id,
+        year_id,
+        class: { name: { contains: name, mode: 'insensitive' } },
+      },
+    }),
+  ])
 
-    if (!classData) throw new AppError('')
+  const result = data.map((el) => {
+    const { _count, class: class_data, key, school, year_id: year_data } = el
+    const { id, name } = class_data
+    return {
+      id,
+      name,
+      students: _count.students,
+      frequencies: _count.frequencies,
+      key,
+      school,
+      year_id: year_data,
+    }
+  })
 
-    const result = students.map((el) => {
-      const { id, name, registry, created_at } = el.student
-      return {
-        id,
-        name,
-        registry,
-        created_at,
-        key: el.key,
-        class: classData.class,
-        school: classData.school,
-        year_id: classData.year_id,
-      }
-    })
-
-    return { total, result }
-  }
+  return { total, result }
 }

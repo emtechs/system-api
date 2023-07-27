@@ -53,11 +53,7 @@ classRouter.post(
 
 classRouter.get('', verifyUserIsAuthenticated, listClassController)
 
-classRouter.get(
-  '/year/:key',
-  verifyUserIsAuthenticated,
-  listClassYearController,
-)
+classRouter.get('/year', verifyUserIsAuthenticated, listClassYearController)
 
 classRouter.get(
   '/year/:key/view',
