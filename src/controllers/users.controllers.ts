@@ -10,6 +10,7 @@ import {
   importUserService,
   dashUserService,
   listWorkSchoolService,
+  profileUserService,
 } from '../services'
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -41,7 +42,7 @@ export const retrieveUserWithCpfController = async (
 }
 
 export const profileUserController = async (req: Request, res: Response) => {
-  const user = await retrieveUserService(req.user.id, req.query)
+  const user = await profileUserService(req.user.id)
   return res.json(user)
 }
 
