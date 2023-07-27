@@ -6,12 +6,15 @@ export const ClassCreateSchema = z.object({
 
 export const ClassSchoolCreateSchema = z.object({
   class_id: z.string().uuid(),
+  school_id: z.string().uuid(),
+  year_id: z.string().uuid(),
 })
 
 export const ClassStudentCreateSchema = z.object({
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),
   student_id: z.string().uuid(),
+  class_id: z.string().uuid(),
 })
 
 export const ClassStudentUpdateSchema = z.object({

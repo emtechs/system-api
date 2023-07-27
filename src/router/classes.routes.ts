@@ -38,15 +38,14 @@ classRouter.post(
 )
 
 classRouter.post(
-  '/:year_id/:school_id',
+  '/school',
   verifyUserIsAuthenticated,
-  verifyIsPermission,
   validateSchemaMiddleware(ClassSchoolCreateSchema),
   createClassSchoolController,
 )
 
 classRouter.post(
-  '/:id',
+  '/student',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassStudentCreateSchema),
   createClassStudentController,

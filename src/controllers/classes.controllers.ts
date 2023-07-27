@@ -25,11 +25,7 @@ export const createClassSchoolController = async (
   req: Request,
   res: Response,
 ) => {
-  const classSchool = await createClassSchoolService(
-    req.body,
-    req.params.year_id,
-    req.params.school_id,
-  )
+  const classSchool = await createClassSchoolService(req.body)
   return res.status(201).json(classSchool)
 }
 
@@ -37,7 +33,7 @@ export const createClassStudentController = async (
   req: Request,
   res: Response,
 ) => {
-  const classStudent = await createClassStudentService(req.body, req.params.id)
+  const classStudent = await createClassStudentService(req.body)
   return res.status(201).json(classStudent)
 }
 

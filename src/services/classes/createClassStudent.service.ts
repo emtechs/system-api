@@ -1,10 +1,12 @@
 import { prisma } from '../../lib'
 import { IClassStudentRequest } from '../../interfaces'
 
-export const createClassStudentService = async (
-  { school_id, year_id, student_id }: IClassStudentRequest,
-  class_id: string,
-) => {
+export const createClassStudentService = async ({
+  school_id,
+  year_id,
+  student_id,
+  class_id,
+}: IClassStudentRequest) => {
   const classStudent = await prisma.classStudent.create({
     data: {
       class_year: {
