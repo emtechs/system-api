@@ -11,18 +11,17 @@ export const dashUserService = async (year_id: string) => {
   ] = await Promise.all([
     prisma.school.count({ where: { is_active: true } }),
     prisma.classYear.count({ where: { year_id } }),
-    prisma.classStudent.count({
-      where: { class_year: { class: { is_active: true } } },
-    }),
+    prisma.student.count(),
     prisma.frequency.count({
-      where: { AND: { year_id, status: 'CLOSED' } },
+      where: { year_id, status: 'CLOSED' },
     }),
     prisma.user.count({
       where: {
-        AND: { role: { not: { in: ['ADMIN', 'SECRET'] } }, is_active: true },
+        role: { not: { in: ['ADMIN', 'SECRET'] } },
+        is_active: true,
       },
     }),
-    prisma.student.count(),
+    prisma.student.count({ where: { classes: { none: { year_id } } } }),
   ])
 
   return {
@@ -31,6 +30,6 @@ export const dashUserService = async (year_id: string) => {
     countStudent,
     countFrequency,
     countServer,
-    countNotClass: countNotClass - countStudent,
+    countNotClass,
   }
 }
