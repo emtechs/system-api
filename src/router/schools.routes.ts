@@ -9,6 +9,7 @@ import {
   deleteSchoolServerController,
   exportSchoolController,
   listSchoolController,
+  listSchoolServerController,
   reportSchoolController,
   retrieveSchoolController,
   updateSchoolController,
@@ -57,6 +58,12 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   verifyIsAdmin,
   listSchoolController,
+)
+
+schoolRouter.get(
+  '/server',
+  verifyUserIsAuthenticated,
+  listSchoolServerController,
 )
 
 schoolRouter.get('/export', verifyUserIsAuthenticated, exportSchoolController)
