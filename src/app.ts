@@ -6,6 +6,7 @@ import {
   classRouter,
   frequencyRouter,
   importRouter,
+  infrequencyRouter,
   passwordRouter,
   schoolRouter,
   sessionRouter,
@@ -33,6 +34,7 @@ app.use('/schools', schoolRouter)
 app.use('/classes', classRouter)
 app.use('/students', studentRouter)
 app.use('/frequencies', frequencyRouter)
+app.use('/infrequencies', infrequencyRouter)
 app.use('/calendar', calendarRouter)
 app.use('/imports', importRouter)
 app.use('/verify', verifyRouter)

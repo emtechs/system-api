@@ -7,9 +7,14 @@ export const listClassYearService = async ({
   year_id,
   take,
   skip,
+  is_report,
 }: IClassQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
+
+  let where_report = {}
+
+  if (is_report) where_report = { infrequencies: { some: { year_id } } }
 
   const [data, total, dataLabel] = await Promise.all([
     prisma.classYear.findMany({
@@ -19,6 +24,7 @@ export const listClassYearService = async ({
         school_id,
         year_id,
         class: { name: { contains: name, mode: 'insensitive' } },
+        ...where_report,
       },
       select: {
         _count: {
@@ -39,12 +45,15 @@ export const listClassYearService = async ({
         school_id,
         year_id,
         class: { name: { contains: name, mode: 'insensitive' } },
+        ...where_report,
       },
     }),
     prisma.classYear.findMany({
       where: {
         school_id,
         year_id,
+        infrequencies: { some: { year_id } },
+        ...where_report,
       },
       select: {
         class: { select: { id: true, name: true } },

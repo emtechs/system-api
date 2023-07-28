@@ -5,11 +5,9 @@ import {
   listFrequencyController,
   listFrequencyHistoryController,
   listFrequencyStudentController,
-  listInfrequencyController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
-  updateInfrequencyController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -31,12 +29,6 @@ frequencyRouter.post(
 )
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController)
-
-frequencyRouter.get(
-  '/infrequency',
-  verifyUserIsAuthenticated,
-  listInfrequencyController,
-)
 
 frequencyRouter.get(
   '/history',
@@ -68,13 +60,6 @@ frequencyRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
-)
-
-frequencyRouter.patch(
-  '/infreq/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(FrequencyUpdateSchema),
-  updateInfrequencyController,
 )
 
 frequencyRouter.delete(

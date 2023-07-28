@@ -6,11 +6,9 @@ import {
   listFrequencyHistoryService,
   listFrequencyService,
   listFrequencyStudentService,
-  listInfrequencyService,
   retrieveFrequencyService,
   updateFrequencyService,
   updateFrequencyStudentService,
-  updateInfrequencyService,
 } from '../services'
 
 export const createFrequencyController = async (
@@ -31,14 +29,6 @@ export const listFrequencyHistoryController = async (
   res: Response,
 ) => {
   const frequencies = await listFrequencyHistoryService(req.query)
-  return res.json(frequencies)
-}
-
-export const listInfrequencyController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequencies = await listInfrequencyService(req.query)
   return res.json(frequencies)
 }
 
@@ -82,14 +72,6 @@ export const updateFrequencyStudentController = async (
   res: Response,
 ) => {
   const frequency = await updateFrequencyStudentService(req.body, req.params.id)
-  return res.json(frequency)
-}
-
-export const updateInfrequencyController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await updateInfrequencyService(req.body, req.params.id)
   return res.json(frequency)
 }
 
