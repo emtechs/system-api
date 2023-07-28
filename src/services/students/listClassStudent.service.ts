@@ -9,11 +9,17 @@ export const listClassStudentService = async ({
   school_id,
   year_id,
   class_id,
+  is_report,
 }: IStudentQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
 
   let whereName = {}
+
+  if (is_report)
+    whereName = {
+      student: { infrequencies: { some: { period: { year_id } } } },
+    }
 
   if (name)
     whereName = {
@@ -74,6 +80,14 @@ export const listClassStudentService = async ({
       key,
     }
   })
+
+  if (is_report)
+    return {
+      total,
+      result: result.map((el) => {
+        return { ...el, label: el.name }
+      }),
+    }
 
   return { total, result }
 }
