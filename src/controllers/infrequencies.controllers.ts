@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import {
   listClassYearInfrequencyService,
   listInfrequencyService,
+  reportClassService,
   updateInfrequencyService,
 } from '../services'
 
@@ -19,6 +20,11 @@ export const listInfrequencyController = async (
 ) => {
   const infrequencies = await listInfrequencyService(req.query)
   return res.json(infrequencies)
+}
+
+export const reportClassController = async (req: Request, res: Response) => {
+  const report = await reportClassService(req.body)
+  return res.json(report)
 }
 
 export const updateInfrequencyController = async (

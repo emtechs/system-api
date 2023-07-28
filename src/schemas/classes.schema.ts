@@ -4,6 +4,11 @@ export const ClassCreateSchema = z.object({
   name: z.string(),
 })
 
+export const ClassReportSchema = z.object({
+  key_class: z.string().uuid(),
+  period_id: z.string().uuid(),
+})
+
 export const ClassSchoolCreateSchema = z.object({
   class_id: z.string().uuid(),
   school_id: z.string().uuid(),

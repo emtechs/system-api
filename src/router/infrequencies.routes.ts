@@ -2,13 +2,14 @@ import { Router } from 'express'
 import {
   listClassYearInfrequencyController,
   listInfrequencyController,
+  reportClassController,
   updateInfrequencyController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
 } from '../middlewares'
-import { FrequencyUpdateSchema } from '../schemas'
+import { ClassReportSchema, FrequencyUpdateSchema } from '../schemas'
 
 export const infrequencyRouter = Router()
 
@@ -18,6 +19,13 @@ infrequencyRouter.get(
   '/class',
   verifyUserIsAuthenticated,
   listClassYearInfrequencyController,
+)
+
+infrequencyRouter.post(
+  '/report/class',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(ClassReportSchema),
+  reportClassController,
 )
 
 infrequencyRouter.patch(

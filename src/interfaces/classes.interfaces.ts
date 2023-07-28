@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import {
   ClassCreateSchema,
+  ClassReportSchema,
   ClassSchoolCreateSchema,
   ClassStudentCreateSchema,
   ClassStudentUpdateSchema,
@@ -51,6 +52,8 @@ export type IDeleteClassStudentRequest = z.infer<
 export type ITransferClassStudentRequest = z.infer<
   typeof TransferClassStudentSchema
 >
+
+export type IClassReportRequest = z.infer<typeof ClassReportSchema>
 
 export interface IClassQuery extends IQuery {
   infreq?: number
