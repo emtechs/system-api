@@ -62,4 +62,5 @@ export interface IClassQuery extends IQuery {
   name?: string
   is_school?: string
   view?: 'studen'
+  is_report?: string
 }

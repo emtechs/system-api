@@ -22,5 +22,4 @@ export interface IQuery {
   frequency_id?: string
   name?: string
   key_class?: string
-  is_report?: string
 }
