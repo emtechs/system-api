@@ -11,7 +11,7 @@ export const listClassYearService = async ({
   if (take) take = +take
   if (skip) skip = +skip
 
-  const [data, total] = await Promise.all([
+  const [data, total, dataLabel] = await Promise.all([
     prisma.classYear.findMany({
       take,
       skip,
@@ -41,6 +41,18 @@ export const listClassYearService = async ({
         class: { name: { contains: name, mode: 'insensitive' } },
       },
     }),
+    prisma.classYear.findMany({
+      where: {
+        school_id,
+        year_id,
+      },
+      select: {
+        class: { select: { id: true, name: true } },
+        year_id: true,
+        key: true,
+      },
+      orderBy: { class: { name: 'asc' } },
+    }),
   ])
 
   const result = data.map((el) => {
@@ -57,5 +69,17 @@ export const listClassYearService = async ({
     }
   })
 
-  return { total, result }
+  const classes = dataLabel.map((el) => {
+    const { class: class_data, key, year_id: year_data } = el
+    const { id, name } = class_data
+    return {
+      id,
+      name,
+      label: name,
+      key,
+      year_id: year_data,
+    }
+  })
+
+  return { total, result, classes }
 }
