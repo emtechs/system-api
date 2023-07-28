@@ -56,7 +56,7 @@ export const listCalendarStudentController = async (
 }
 
 export const listPeriodController = async (req: Request, res: Response) => {
-  const periods = await listPeriodService()
+  const periods = await listPeriodService(req.query)
   return res.json(periods)
 }
 
