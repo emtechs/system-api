@@ -14,7 +14,7 @@ export const listClassYearService = async ({
 
   let where_report = {}
 
-  if (is_report) where_report = { infrequencies: { some: { year_id } } }
+  if (is_report) where_report = { frequencies: { some: { year_id } } }
 
   const [data, total, dataLabel] = await Promise.all([
     prisma.classYear.findMany({
@@ -52,7 +52,6 @@ export const listClassYearService = async ({
       where: {
         school_id,
         year_id,
-        infrequencies: { some: { year_id } },
         ...where_report,
       },
       select: {
