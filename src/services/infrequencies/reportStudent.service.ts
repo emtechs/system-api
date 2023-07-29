@@ -1,67 +1,161 @@
 import { AppError } from '../../errors'
 import { IStudentReportRequest } from '../../interfaces'
 import { prisma } from '../../lib'
+import { statusFrequencyPtBr } from '../../scripts'
 
 export const reportStudentService = async ({
   key_class,
   period_id,
   student_id,
 }: IStudentReportRequest) => {
-  const classData = await prisma.classYear.findUnique({
-    where: { key: key_class },
-    include: {
-      frequencies: {
-        where: { status: 'CLOSED', students: { some: { student_id } } },
-        select: { id: true },
+  let infrequency = 0
+
+  const [
+    studentData,
+    classData,
+    frequencies,
+    period,
+    frequencyData,
+    presences,
+    justified,
+    absences,
+  ] = await Promise.all([
+    prisma.student.findUnique({ where: { id: student_id } }),
+    prisma.classYear.findUnique({
+      where: { key: key_class },
+      include: {
+        class: { select: { id: true, name: true } },
+        school: { select: { id: true, name: true } },
+        year: { select: { id: true, year: true } },
+        frequencies: {
+          where: { status: 'CLOSED', periods: { some: { period_id } } },
+          select: { id: true },
+        },
       },
-      class: { select: { id: true, name: true } },
-      school: { select: { id: true, name: true } },
-      year: { select: { id: true, year: true } },
-    },
-  })
+    }),
+    prisma.frequencyStudent.count({
+      where: {
+        student_id,
+        frequency: {
+          status: 'CLOSED',
+          class: { key: key_class },
+          periods: { some: { period_id } },
+        },
+      },
+    }),
+    prisma.period.findUnique({
+      where: { id: period_id },
+      select: { category: true, id: true, name: true },
+    }),
+    prisma.frequencyStudent.aggregate({
+      _avg: { value: true },
+      where: {
+        student_id,
+        frequency: {
+          status: 'CLOSED',
+          class: { key: key_class },
+          periods: { some: { period_id } },
+        },
+      },
+    }),
+    prisma.frequencyStudent.count({
+      where: {
+        student_id,
+        status: 'PRESENTED',
+        frequency: {
+          status: 'CLOSED',
+          class: { key: key_class },
+          periods: { some: { period_id } },
+        },
+      },
+    }),
+    prisma.frequencyStudent.count({
+      where: {
+        student_id,
+        status: 'JUSTIFIED',
+        frequency: {
+          status: 'CLOSED',
+          class: { key: key_class },
+          periods: { some: { period_id } },
+        },
+      },
+    }),
+    prisma.frequencyStudent.count({
+      where: {
+        student_id,
+        status: 'MISSED',
+        frequency: {
+          status: 'CLOSED',
+          class: { key: key_class },
+          periods: { some: { period_id } },
+        },
+      },
+    }),
+  ])
+
+  if (!studentData) throw new AppError('')
 
   if (!classData) throw new AppError('')
 
-  const { class: class_data, school, year } = classData
+  if (frequencyData._avg.value) infrequency = frequencyData._avg.value
 
-  const data = await prisma.studentInfrequency.findUnique({
-    where: {
-      period_id_student_id: { period_id, student_id },
-    },
-  })
+  const { id, name, registry } = studentData
+
+  const { class: class_data, school, year } = classData
 
   return {
     result: {
-      id: class_data.id,
-      name: class_data.name,
+      id,
+      name,
+      registry,
+      class: class_data,
       school,
       year,
+      frequencies,
+      infrequency,
+      period,
+      presences,
+      justified,
+      absences,
     },
-    classData,
+    frequencies: await frequencyArrayReturn(classData.frequencies, student_id),
   }
 }
 
-const studentArrayReturn = async (
-  students: {
-    student_id: string
+const frequencyArrayReturn = async (
+  frequencies: {
+    id: string
   }[],
-  period_id: string,
+  student_id: string,
 ) => {
-  const studentsData = students.map((el) =>
-    returnStudent(el.student_id, period_id),
+  const frequenciesData = frequencies.map((el) =>
+    returnFrequency(el.id, student_id),
   )
 
-  return Promise.all(studentsData).then((school) => {
+  return Promise.all(frequenciesData).then((school) => {
     return school
   })
 }
 
-const returnStudent = async (student_id: string, period_id: string) => {
-  const [studentData, infreq] = await Promise.all([
-    prisma.student.findUnique({ where: { id: student_id } }),
-    prisma.studentInfrequency.findUnique({
-      where: { period_id_student_id: { period_id, student_id } },
+const returnFrequency = async (id: string, student_id: string) => {
+  const [frequencyData, frequencyStuData] = await Promise.all([
+    prisma.frequency.findUnique({
+      where: { id },
+      select: { id: true, date: true },
+    }),
+    prisma.frequencyStudent.findFirst({
+      where: { frequency_id: id, student_id },
+      select: { status: true, justification: true },
     }),
   ])
-  return { ...studentData, infreq }
+
+  if (!frequencyStuData) throw new AppError('')
+
+  const { justification, status } = frequencyStuData
+
+  return {
+    ...frequencyData,
+    status: statusFrequencyPtBr(status),
+    justification,
+  }
 }
