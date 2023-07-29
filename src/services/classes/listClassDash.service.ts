@@ -83,4 +83,11 @@ const returnClass = async (key: string) => {
   ])
   if (frequencyData._avg.infrequency)
     infrequency = frequencyData._avg.infrequency
+
+  return {
+    id: classData?.class.id,
+    label: classData?.class.id,
+    infrequency,
+    ...classData,
+  }
 }
