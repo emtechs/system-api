@@ -147,17 +147,6 @@ CREATE TABLE "class_student" (
 );
 
 -- CreateTable
-CREATE TABLE "class_student_history" (
-    "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "student_id" TEXT NOT NULL,
-    "class_id" TEXT NOT NULL,
-
-    CONSTRAINT "class_student_history_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "frequency_period" (
     "key" TEXT NOT NULL,
     "period_id" TEXT NOT NULL,
@@ -191,44 +180,6 @@ CREATE TABLE "frequency_history" (
     "user_id" TEXT NOT NULL,
 
     CONSTRAINT "frequency_history_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "school_infrequency" (
-    "key" TEXT NOT NULL,
-    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "frequencies" INTEGER NOT NULL DEFAULT 0,
-    "period_id" TEXT NOT NULL,
-    "school_id" TEXT NOT NULL,
-
-    CONSTRAINT "school_infrequency_pkey" PRIMARY KEY ("period_id","school_id")
-);
-
--- CreateTable
-CREATE TABLE "class_year_infrequency" (
-    "key" TEXT NOT NULL,
-    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "frequencies" INTEGER NOT NULL DEFAULT 0,
-    "period_id" TEXT NOT NULL,
-    "class_id" TEXT NOT NULL,
-    "school_id" TEXT NOT NULL,
-    "year_id" TEXT NOT NULL,
-
-    CONSTRAINT "class_year_infrequency_pkey" PRIMARY KEY ("period_id","class_id","school_id","year_id")
-);
-
--- CreateTable
-CREATE TABLE "student_infrequency" (
-    "key" TEXT NOT NULL,
-    "value" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "presences" INTEGER NOT NULL DEFAULT 0,
-    "justified" INTEGER NOT NULL DEFAULT 0,
-    "absences" INTEGER NOT NULL DEFAULT 0,
-    "frequencies" INTEGER NOT NULL DEFAULT 0,
-    "period_id" TEXT NOT NULL,
-    "student_id" TEXT NOT NULL,
-
-    CONSTRAINT "student_infrequency_pkey" PRIMARY KEY ("period_id","student_id")
 );
 
 -- CreateTable
@@ -291,15 +242,6 @@ CREATE UNIQUE INDEX "class_student_key_key" ON "class_student"("key");
 CREATE UNIQUE INDEX "frequency_period_key_key" ON "frequency_period"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "school_infrequency_key_key" ON "school_infrequency"("key");
-
--- CreateIndex
-CREATE UNIQUE INDEX "class_year_infrequency_key_key" ON "class_year_infrequency"("key");
-
--- CreateIndex
-CREATE UNIQUE INDEX "student_infrequency_key_key" ON "student_infrequency"("key");
-
--- CreateIndex
 CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
 
 -- CreateIndex
@@ -345,12 +287,6 @@ ALTER TABLE "class_student" ADD CONSTRAINT "class_student_class_id_school_id_yea
 ALTER TABLE "class_student" ADD CONSTRAINT "class_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "class_student_history" ADD CONSTRAINT "class_student_history_class_id_fkey" FOREIGN KEY ("class_id") REFERENCES "class_year"("key") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "frequency_period" ADD CONSTRAINT "frequency_period_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -367,24 +303,6 @@ ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_frequency_id_f
 
 -- AddForeignKey
 ALTER TABLE "frequency_history" ADD CONSTRAINT "frequency_history_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "school_infrequency" ADD CONSTRAINT "school_infrequency_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "class_year_infrequency" ADD CONSTRAINT "class_year_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "class_year_infrequency" ADD CONSTRAINT "class_year_infrequency_class_id_school_id_year_id_fkey" FOREIGN KEY ("class_id", "school_id", "year_id") REFERENCES "class_year"("class_id", "school_id", "year_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "student_infrequency" ADD CONSTRAINT "student_infrequency_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "periods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "student_infrequency" ADD CONSTRAINT "student_infrequency_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

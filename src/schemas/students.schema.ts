@@ -7,6 +7,12 @@ export const StudentCreateSchema = z.object({
   school_id: z.string().uuid().optional(),
 })
 
+export const StudentReportSchema = z.object({
+  key_class: z.string().uuid(),
+  period_id: z.string().uuid(),
+  student_id: z.string().uuid(),
+})
+
 export const StudentUpdateSchema = z
   .object({
     name: z.string().optional(),
