@@ -6,11 +6,11 @@ export const createFrequencyService = async (
   { date, name, class_id, school_id, year_id, students }: IFrequencyRequest,
   user_id: string,
 ) => {
-  // const frequencyData = await prisma.frequency.findFirst({
-  //   where: { date, class_id, school_id, year_id },
-  // })
+  const frequencyData = await prisma.frequency.findFirst({
+    where: { date, class_id, school_id, year_id },
+  })
 
-  // if (frequencyData) return FrequencyReturnSchema.parse(frequencyData)
+  if (frequencyData) return FrequencyReturnSchema.parse(frequencyData)
 
   const dateData = date.split('/')
   const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
@@ -21,59 +21,62 @@ export const createFrequencyService = async (
     year_id,
   }
 
+  let period_id_ano = ''
+  let period_id_bim = ''
+  let period_id_sem = ''
+
   const periodData = await prisma.period.findMany({
     where: { ...whereData },
-    select: { id: true },
+    select: { id: true, category: true },
   })
 
-  return periodData
+  periodData.forEach((el) => {
+    const { category, id } = el
+    switch (category) {
+      case 'ANO':
+        period_id_ano = id
+        break
 
-  // const [{ id: period_id_ano }, { id: period_id_bim }, { id: period_id_sem }] =
-  //   await Promise.all([
-  //     prisma.period.findFirst({
-  //       where: { category: 'ANO', ...whereData },
-  //       select: { id: true },
-  //     }),
-  //     prisma.period.findFirst({
-  //       where: { category: 'BIMESTRE', ...whereData },
-  //       select: { id: true },
-  //     }),
-  //     prisma.period.findFirst({
-  //       where: { category: 'SEMESTRE', ...whereData },
-  //       select: { id: true },
-  //     }),
-  //   ])
+      case 'BIMESTRE':
+        period_id_bim = id
+        break
 
-  // const frequency = await prisma.frequency.create({
-  //   data: {
-  //     date,
-  //     date_time,
-  //     month: { connect: { name } },
-  //     user: { connect: { id: user_id } },
-  //     class: {
-  //       connectOrCreate: {
-  //         where: {
-  //           class_id_school_id_year_id: {
-  //             class_id,
-  //             school_id,
-  //             year_id,
-  //           },
-  //         },
-  //         create: { class_id, school_id, year_id },
-  //       },
-  //     },
-  //     students: { createMany: { data: students } },
-  //     periods: {
-  //       createMany: {
-  //         data: [
-  //           { period_id: period_id_ano },
-  //           { period_id: period_id_bim },
-  //           { period_id: period_id_sem },
-  //         ],
-  //       },
-  //     },
-  //   },
-  // })
+      case 'SEMESTRE':
+        period_id_sem = id
+        break
+    }
+  })
 
-  // return FrequencyReturnSchema.parse(frequency)
+  const frequency = await prisma.frequency.create({
+    data: {
+      date,
+      date_time,
+      month: { connect: { name } },
+      user: { connect: { id: user_id } },
+      class: {
+        connectOrCreate: {
+          where: {
+            class_id_school_id_year_id: {
+              class_id,
+              school_id,
+              year_id,
+            },
+          },
+          create: { class_id, school_id, year_id },
+        },
+      },
+      students: { createMany: { data: students } },
+      periods: {
+        createMany: {
+          data: [
+            { period_id: period_id_ano },
+            { period_id: period_id_bim },
+            { period_id: period_id_sem },
+          ],
+        },
+      },
+    },
+  })
+
+  return FrequencyReturnSchema.parse(frequency)
 }
