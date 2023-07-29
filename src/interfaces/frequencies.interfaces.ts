@@ -25,7 +25,7 @@ export interface IFrequencyRequest {
 export interface IFrequencyHistoryCreate {
   id: string
   status: IStatusStudent
-  justification?: string
+  justification?: string | null
 }
 
 export type IFrequencyUpdateRequest = z.infer<typeof FrequencyUpdateSchema>

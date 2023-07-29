@@ -1,25 +1,24 @@
 import { IFrequencyUpdateRequest } from '../../interfaces'
 import { prisma } from '../../lib'
-import {
-  createFrequencyHistory,
-  updateClassSchoolInfreq,
-  updateSchoolInfreq,
-  updateStudentInfreq,
-} from '../../scripts'
+import { createFrequencyHistory } from '../../scripts'
 
 export const updateFrequencyService = async (
   { status, finished_at }: IFrequencyUpdateRequest,
   id: string,
 ) => {
+  let infrequency = 0
+
   const agg = await prisma.frequencyStudent.aggregate({
     _avg: { value: true },
     where: { frequency_id: id },
   })
 
+  if (agg._avg.value) infrequency = agg._avg.value
+
   const [frequency, frequencyData] = await Promise.all([
     prisma.frequency.update({
       where: { id },
-      data: { status, finished_at, infrequency: agg._avg.value },
+      data: { status, finished_at, infrequency },
       select: {
         year_id: true,
         class_id: true,
@@ -38,18 +37,12 @@ export const updateFrequencyService = async (
     }),
   ])
 
-  const { class_id, periods, school_id, students, year_id } = frequency
-
-  await Promise.all([
-    updateSchoolInfreq(school_id, periods),
-    updateClassSchoolInfreq(year_id, class_id, school_id, periods),
-    updateStudentInfreq(students, periods),
-    createFrequencyHistory(
+  if (frequencyData && finished_at)
+    await createFrequencyHistory(
       frequencyData.students,
       frequencyData.user_id,
       finished_at,
-    ),
-  ])
+    )
 
   return frequency
 }

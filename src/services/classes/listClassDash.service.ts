@@ -73,7 +73,12 @@ const returnClass = async (key: string) => {
         students: { select: { student_id: true } },
         school_id: true,
         year_id: true,
-        _count: { select: { students: true, frequencies: true } },
+        _count: {
+          select: {
+            students: true,
+            frequencies: { where: { status: 'CLOSED' } },
+          },
+        },
       },
     }),
     prisma.frequency.aggregate({
