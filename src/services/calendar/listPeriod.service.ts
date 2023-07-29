@@ -11,15 +11,15 @@ const periodSchema = z
   .refine((field) => (field.label = field.name))
   .array()
 
-export const listPeriodService = async ({ key_class, student_id }: IQuery) => {
+export const listPeriodService = async ({ key_class }: IQuery) => {
   let where = {}
 
   if (key_class)
     where = {
-      infrequencies_class: { some: { class_year: { key: key_class } } },
+      frequencies: {
+        some: { frequency: { status: 'CLOSED', class: { key: key_class } } },
+      },
     }
-
-  if (student_id) where = { infrequencies_student: { some: { student_id } } }
 
   const periods = await prisma.period.findMany({
     where,
