@@ -1,5 +1,9 @@
 import { z } from 'zod'
-import { StudentCreateSchema, StudentUpdateSchema } from '../schemas'
+import {
+  StudentCreateSchema,
+  StudentReportSchema,
+  StudentUpdateSchema,
+} from '../schemas'
 import { IQuery } from './global.interfaces'
 
 export interface IStudent {
@@ -26,6 +30,8 @@ export interface IStudentData {
 export type IStudentRequest = z.infer<typeof StudentCreateSchema>
 
 export type IStudentUpdateRequest = z.infer<typeof StudentUpdateSchema>
+
+export type IStudentReportRequest = z.infer<typeof StudentReportSchema>
 
 export interface IStudentUpdate {
   value: number

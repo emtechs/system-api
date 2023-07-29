@@ -4,112 +4,90 @@ import { prisma } from '../../lib'
 export const listClassDashService = async (
   school_id: string,
   year_id: string,
-  { date, take, skip, order, by }: IClassQuery,
+  { date, take, skip }: IClassQuery,
 ) => {
   if (take) take = +take
   if (skip) skip = +skip
 
-  let whereData = {}
-  let whereInfrequencies = {}
-  let orderBy = {}
+  let where = {}
 
-  if (date) {
-    const dateData = date.split('/')
-    const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
-    whereInfrequencies = {
-      period: {
-        category: 'ANO',
-        date_initial: { lte: date_time },
-        date_final: { gte: date_time },
-        year_id,
-      },
-    }
-  }
-
-  if (order) {
-    switch (order) {
-      case 'name':
-        orderBy = { class: { name: by } }
-        break
-
-      case 'infreq':
-        orderBy = { infrequency: by }
-        break
-    }
-  }
-
-  whereData = {
-    ...whereData,
+  where = {
+    ...where,
     class: { is_active: true },
     frequencies: { none: { date, status: 'CLOSED' } },
     school_id,
+    year_id,
   }
 
   const [classesData, total, classesLabel] = await Promise.all([
     prisma.classYear.findMany({
       take,
       skip,
-      where: {
-        ...whereData,
-      },
-      orderBy,
+      where,
+      orderBy: { class: { name: 'asc' } },
       select: {
-        class: { select: { id: true, name: true } },
-        students: { select: { student_id: true } },
-        infrequencies: {
-          where: { ...whereInfrequencies },
-          select: { value: true },
-        },
-        school_id: true,
-        year_id: true,
-        _count: { select: { students: true, frequencies: true } },
+        key: true,
       },
     }),
     prisma.classYear.count({
-      where: {
-        ...whereData,
-      },
+      where,
     }),
     prisma.classYear.findMany({
-      where: {
-        ...whereData,
-      },
+      take,
+      skip,
+      where,
       orderBy: { class: { name: 'asc' } },
       select: {
-        class: { select: { id: true, name: true } },
-        students: { select: { student_id: true } },
-        infrequencies: {
-          where: { ...whereInfrequencies },
-          select: { value: true },
-        },
-        school_id: true,
-        year_id: true,
-        _count: { select: { students: true, frequencies: true } },
+        key: true,
       },
     }),
   ])
 
-  const classes = classesLabel.map((el) => {
-    return {
-      id: el.class.id,
-      label: el.class.name,
-      infrequency: el.infrequencies.length > 0 ? el.infrequencies[0].value : 0,
-      ...el,
-    }
-  })
+  return {
+    classes: await classArrayReturn(classesLabel),
+    total,
+    result: await classArrayReturn(classesData),
+  }
+}
 
-  const result = classesData.map((el) => {
-    return {
-      id: el.class.id,
-      label: el.class.name,
-      infrequency: el.infrequencies.length > 0 ? el.infrequencies[0].value : 0,
-      ...el,
-    }
+const classArrayReturn = async (
+  classes: {
+    key: string
+  }[],
+) => {
+  const classesData = classes.map((el) => returnClass(el.key))
+
+  return Promise.all(classesData).then((school) => {
+    return school
   })
+}
+
+const returnClass = async (key: string) => {
+  let infrequency = 0
+
+  const [classData, frequencyData] = await Promise.all([
+    prisma.classYear.findUnique({
+      where: { key },
+      select: {
+        class: { select: { id: true, name: true } },
+        students: { select: { student_id: true } },
+        school_id: true,
+        year_id: true,
+        _count: { select: { students: true, frequencies: true } },
+      },
+    }),
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
+      where: { class: { key }, status: 'CLOSED' },
+    }),
+  ])
+  if (frequencyData._avg.infrequency)
+    infrequency = frequencyData._avg.infrequency
 
   return {
-    classes,
-    total,
-    result,
+    id: classData?.class.id,
+    label: classData?.class.id,
+    infrequency,
+    ...classData,
   }
 }

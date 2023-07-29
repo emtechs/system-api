@@ -24,50 +24,42 @@ export const dashSchoolService = async (
 
   if (!date) return dashSchool
 
-  const dateData = date.split('/')
-  const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
-
   let day_infreq = 0
   let school_infreq = 0
 
-  const [frequenciesData, period_ano] = await Promise.all([
-    prisma.frequency.findMany({
+  const [frequencyDayData, frequencyData, frequencies] = await Promise.all([
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
       where: {
         status: 'CLOSED',
         date,
         school_id,
       },
-      select: { infrequency: true },
     }),
-    prisma.schoolInfrequency.findFirst({
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
       where: {
+        status: 'CLOSED',
+        year_id,
         school_id,
-        period: {
-          category: 'ANO',
-          date_initial: { lte: date_time },
-          date_final: { gte: date_time },
-          year_id,
-        },
       },
-      select: { value: true },
+    }),
+    prisma.frequency.count({
+      where: {
+        status: 'CLOSED',
+        date,
+        school_id,
+      },
     }),
   ])
 
-  if (period_ano) school_infreq = period_ano.value
+  if (frequencyDayData._avg.infrequency)
+    day_infreq = frequencyDayData._avg.infrequency
 
-  frequenciesData.forEach((el) => {
-    day_infreq += el.infrequency
-  })
+  if (frequencyData._avg.infrequency)
+    school_infreq = frequencyData._avg.infrequency
 
-  const frequencies = frequenciesData.length
-
-  dashSchool = { ...dashSchool, frequencies, school_infreq }
-
-  if (frequencies === 0) return dashSchool
-
-  day_infreq = day_infreq / frequencies
-
-  dashSchool = { ...dashSchool, day_infreq }
+  dashSchool = { ...dashSchool, frequencies, day_infreq, school_infreq }
 
   return dashSchool
 }

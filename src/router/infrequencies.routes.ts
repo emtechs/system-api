@@ -3,13 +3,18 @@ import {
   listClassYearInfrequencyController,
   listInfrequencyController,
   reportClassController,
+  reportStudentController,
   updateInfrequencyController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
   verifyUserIsAuthenticated,
 } from '../middlewares'
-import { ClassReportSchema, FrequencyUpdateSchema } from '../schemas'
+import {
+  ClassReportSchema,
+  FrequencyUpdateSchema,
+  StudentReportSchema,
+} from '../schemas'
 
 export const infrequencyRouter = Router()
 
@@ -26,6 +31,13 @@ infrequencyRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(ClassReportSchema),
   reportClassController,
+)
+
+infrequencyRouter.post(
+  '/report/student',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(StudentReportSchema),
+  reportStudentController,
 )
 
 infrequencyRouter.patch(

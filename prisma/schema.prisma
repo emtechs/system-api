@@ -76,15 +76,14 @@ model User {
 }
 
 model School {
-  id            String              @id @default(uuid())
-  name          String              @unique @db.VarChar(254)
-  is_active     Boolean             @default(true)
-  created_at    DateTime            @default(now())
-  director      User?               @relation(fields: [director_id], references: [id], onDelete: SetNull)
-  director_id   String?
-  servers       SchoolServer[]
-  classes       ClassYear[]
-  infrequencies SchoolInfrequency[]
+  id          String         @id @default(uuid())
+  name        String         @unique @db.VarChar(254)
+  is_active   Boolean        @default(true)
+  created_at  DateTime       @default(now())
+  director    User?          @relation(fields: [director_id], references: [id], onDelete: SetNull)
+  director_id String?
+  servers     SchoolServer[]
+  classes     ClassYear[]
 
   @@map("schools")
 }
@@ -100,14 +99,12 @@ model Class {
 }
 
 model Student {
-  id            String                @id @default(uuid())
-  name          String                @db.VarChar(254)
-  registry      String                @unique @db.VarChar(50)
-  created_at    DateTime              @default(now())
-  classes       ClassStudent[]
-  frequencies   FrequencyStudent[]
-  infrequencies StudentInfrequency[]
-  historic      ClassStudentHistory[]
+  id          String             @id @default(uuid())
+  name        String             @db.VarChar(254)
+  registry    String             @unique @db.VarChar(50)
+  created_at  DateTime           @default(now())
+  classes     ClassStudent[]
+  frequencies FrequencyStudent[]
 
   @@map("students")
 }
@@ -153,17 +150,14 @@ model Month {
 }
 
 model Period {
-  id                    String                 @id @default(uuid())
-  name                  String                 @db.VarChar(50)
-  category              CategoryPeriod
-  date_initial          DateTime               @db.Date
-  date_final            DateTime               @db.Date
-  year                  Year                   @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id               String
-  frequencies           FrequencyPeriod[]
-  infrequencies_school  SchoolInfrequency[]
-  infrequencies_class   ClassYearInfrequency[]
-  infrequencies_student StudentInfrequency[]
+  id           String            @id @default(uuid())
+  name         String            @db.VarChar(50)
+  category     CategoryPeriod
+  date_initial DateTime          @db.Date
+  date_final   DateTime          @db.Date
+  year         Year              @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id      String
+  frequencies  FrequencyPeriod[]
 
   @@map("periods")
 }
@@ -182,17 +176,15 @@ model SchoolServer {
 }
 
 model ClassYear {
-  key           String                 @unique @default(uuid())
-  class         Class                  @relation(fields: [class_id], references: [id], onDelete: Cascade)
-  class_id      String
-  school        School                 @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id     String
-  year          Year                   @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id       String
-  students      ClassStudent[]
-  frequencies   Frequency[]
-  infrequencies ClassYearInfrequency[]
-  historic      ClassStudentHistory[]
+  key         String         @unique @default(uuid())
+  class       Class          @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id    String
+  school      School         @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id   String
+  year        Year           @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id     String
+  students    ClassStudent[]
+  frequencies Frequency[]
 
   @@id([class_id, school_id, year_id])
   @@map("class_year")
@@ -209,18 +201,6 @@ model ClassStudent {
 
   @@id([class_id, school_id, year_id, student_id])
   @@map("class_student")
-}
-
-model ClassStudentHistory {
-  id          String    @id @default(uuid())
-  description String    @db.Text
-  created_at  DateTime  @default(now())
-  student     Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id  String
-  class       ClassYear @relation(fields: [class_id], references: [key], onDelete: Cascade)
-  class_id    String
-
-  @@map("class_student_history")
 }
 
 model FrequencyPeriod {
@@ -262,50 +242,6 @@ model FrequencyHistory {
   user_id        String
 
   @@map("frequency_history")
-}
-
-model SchoolInfrequency {
-  key         String @unique @default(uuid())
-  value       Float  @default(0)
-  frequencies Int    @default(0)
-  period      Period @relation(fields: [period_id], references: [id], onDelete: Cascade)
-  period_id   String
-  school      School @relation(fields: [school_id], references: [id], onDelete: Cascade)
-  school_id   String
-
-  @@id([period_id, school_id])
-  @@map("school_infrequency")
-}
-
-model ClassYearInfrequency {
-  key         String    @unique @default(uuid())
-  value       Float     @default(0)
-  frequencies Int       @default(0)
-  period      Period    @relation(fields: [period_id], references: [id], onDelete: Cascade)
-  period_id   String
-  class_year  ClassYear @relation(fields: [class_id, school_id, year_id], references: [class_id, school_id, year_id], onDelete: Cascade)
-  class_id    String
-  school_id   String
-  year_id     String
-
-  @@id([period_id, class_id, school_id, year_id])
-  @@map("class_year_infrequency")
-}
-
-model StudentInfrequency {
-  key         String  @unique @default(uuid())
-  value       Float   @default(0)
-  presences   Int     @default(0)
-  justified   Int     @default(0)
-  absences    Int     @default(0)
-  frequencies Int     @default(0)
-  period      Period  @relation(fields: [period_id], references: [id], onDelete: Cascade)
-  period_id   String
-  student     Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id  String
-
-  @@id([period_id, student_id])
-  @@map("student_infrequency")
 }
 
 model Image {
