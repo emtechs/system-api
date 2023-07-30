@@ -1,17 +1,13 @@
-import { z } from 'zod'
-import { IQuery } from '../../interfaces'
+import { ICalendarQuery } from '../../interfaces'
 import { prisma } from '../../lib'
+import { PeriodReturnSchema } from '../../schemas'
 
-const periodSchema = z
-  .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    label: z.string().optional(),
-  })
-  .refine((field) => (field.label = field.name))
-  .array()
-
-export const listPeriodService = async ({ key_class, school_id }: IQuery) => {
+export const listPeriodService = async ({
+  key_class,
+  school_id,
+  year_id,
+  category,
+}: ICalendarQuery) => {
   let where = {}
 
   if (key_class)
@@ -24,15 +20,14 @@ export const listPeriodService = async ({ key_class, school_id }: IQuery) => {
   if (school_id)
     where = {
       frequencies: {
-        some: { frequency: { status: 'CLOSED', school_id } },
+        some: { frequency: { status: 'CLOSED', school_id, year_id } },
       },
     }
 
   const periods = await prisma.period.findMany({
-    where,
-    select: { id: true, name: true },
+    where: { category, ...where },
     orderBy: { name: 'asc' },
   })
 
-  return periodSchema.parse(periods)
+  return PeriodReturnSchema.parse(periods)
 }
