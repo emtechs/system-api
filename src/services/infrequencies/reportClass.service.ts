@@ -67,7 +67,7 @@ export const reportClassService = async (
     period,
   }
 
-  if (isResume) return result
+  if (isResume) return { result }
 
   return {
     result,
