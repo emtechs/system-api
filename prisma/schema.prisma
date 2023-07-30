@@ -35,18 +35,6 @@ enum StatusStudent {
   JUSTIFIED
 }
 
-enum SortFrequencyHistory {
-  RELEASED
-  CHANGED
-  APPROVED
-}
-
-enum StatusFrequencyHistory {
-  ACCEPTED
-  IN_ANALYSIS
-  REFUSED
-}
-
 enum CategoryPeriod {
   BIMESTRE
   SEMESTRE
@@ -54,23 +42,22 @@ enum CategoryPeriod {
 }
 
 model User {
-  id                String             @id @default(uuid())
-  name              String             @db.VarChar(254)
-  email             String?            @db.VarChar(254)
-  login             String             @unique @db.VarChar(128)
-  password          String             @db.VarChar(128)
-  cpf               String             @unique @db.VarChar(14)
-  role              Role               @default(SERV)
-  dash              Dash               @default(COMMON)
-  is_active         Boolean            @default(true)
-  is_first_access   Boolean            @default(true)
-  created_at        DateTime           @default(now())
-  profile           Image?
-  token             Token?
-  director_school   School[]
-  work_school       SchoolServer[]
-  frequencies       Frequency[]
-  frequency_history FrequencyHistory[]
+  id              String         @id @default(uuid())
+  name            String         @db.VarChar(254)
+  email           String?        @db.VarChar(254)
+  login           String         @unique @db.VarChar(128)
+  password        String         @db.VarChar(128)
+  cpf             String         @unique @db.VarChar(14)
+  role            Role           @default(SERV)
+  dash            Dash           @default(COMMON)
+  is_active       Boolean        @default(true)
+  is_first_access Boolean        @default(true)
+  created_at      DateTime       @default(now())
+  profile         Image?
+  token           Token?
+  director_school School[]
+  work_school     SchoolServer[]
+  frequencies     Frequency[]
 
   @@map("users")
 }
@@ -215,33 +202,17 @@ model FrequencyPeriod {
 }
 
 model FrequencyStudent {
-  id            String             @id @default(uuid())
-  status        StatusStudent      @default(PRESENTED)
-  value         Int                @default(0)
-  justification String?            @db.Text
-  updated_at    String?            @db.VarChar(200)
-  frequency     Frequency          @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  id            String        @id @default(uuid())
+  status        StatusStudent @default(PRESENTED)
+  value         Int           @default(0)
+  justification String?       @db.Text
+  updated_at    String?       @db.VarChar(200)
+  frequency     Frequency     @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
   frequency_id  String
-  student       Student            @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student       Student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id    String
-  historic      FrequencyHistory[]
 
   @@map("frequency_student")
-}
-
-model FrequencyHistory {
-  id             String                 @id @default(uuid())
-  sort           SortFrequencyHistory   @default(RELEASED)
-  status         StatusFrequencyHistory @default(IN_ANALYSIS)
-  status_student StatusStudent
-  justification  String?                @db.Text
-  created_at     Float                  @default(0)
-  frequency      FrequencyStudent       @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
-  frequency_id   String
-  user           User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id        String
-
-  @@map("frequency_history")
 }
 
 model Image {

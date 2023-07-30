@@ -3,8 +3,8 @@ import {
   createFrequencyController,
   deleteFrequencyController,
   listFrequencyController,
-  listFrequencyHistoryController,
   listFrequencyStudentController,
+  retrieveFrequencyController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
@@ -29,12 +29,6 @@ frequencyRouter.post(
 )
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController)
-
-frequencyRouter.get(
-  '/history',
-  verifyUserIsAuthenticated,
-  listFrequencyHistoryController,
-)
 
 frequencyRouter.get(
   '/:id',
