@@ -25,8 +25,8 @@ export const listPeriodService = async ({
     }
 
   const periods = await prisma.period.findMany({
-    where: { category, ...where },
-    orderBy: { name: 'asc' },
+    where: { category, year_id, ...where },
+    orderBy: [{ category: 'asc' }, { name: 'asc' }],
   })
 
   return PeriodReturnSchema.parse(periods)

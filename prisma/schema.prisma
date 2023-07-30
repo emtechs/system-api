@@ -36,9 +36,9 @@ enum StatusStudent {
 }
 
 enum CategoryPeriod {
+  ANO
   BIMESTRE
   SEMESTRE
-  ANO
 }
 
 model User {
