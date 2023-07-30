@@ -56,6 +56,7 @@ export const reportSchoolService = async ({
     students,
     infrequency,
     classes: schoolData._count.classes,
+    type: model === 'details' ? 'detalhado' : 'resumido',
   }
 
   switch (model) {
