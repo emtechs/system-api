@@ -24,10 +24,15 @@ export const listPeriodService = async ({
       },
     }
 
-  const periods = await prisma.period.findMany({
-    where: { category, year_id, ...where },
-    orderBy: [{ category: 'asc' }, { name: 'asc' }],
-  })
+  const [periods, total] = await Promise.all([
+    prisma.period.findMany({
+      where: { category, year_id, ...where },
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    }),
+    prisma.period.count({
+      where: { category, year_id, ...where },
+    }),
+  ])
 
-  return PeriodReturnSchema.parse(periods)
+  return { result: PeriodReturnSchema.parse(periods), total }
 }
