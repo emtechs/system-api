@@ -7,6 +7,7 @@ export const listPeriodService = async ({
   school_id,
   year_id,
   category,
+  name,
 }: ICalendarQuery) => {
   let where = {}
 
@@ -26,13 +27,23 @@ export const listPeriodService = async ({
 
   const [periods, total] = await Promise.all([
     prisma.period.findMany({
-      where: { category, year_id, ...where },
+      where: {
+        name: { contains: name, mode: 'insensitive' },
+        category,
+        year_id,
+        ...where,
+      },
       orderBy: [{ category: 'asc' }, { name: 'asc' }],
     }),
     prisma.period.count({
-      where: { category, year_id, ...where },
+      where: {
+        name: { contains: name, mode: 'insensitive' },
+        category,
+        year_id,
+        ...where,
+      },
     }),
   ])
 
-  return { result: PeriodReturnSchema.parse(periods), total }
+  return { total, result: PeriodReturnSchema.parse(periods) }
 }
