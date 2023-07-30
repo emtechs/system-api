@@ -30,6 +30,7 @@ export const reportStudentService = async ({
         frequencies: {
           where: { status: 'CLOSED', periods: { some: { period_id } } },
           select: { id: true },
+          orderBy: { date_time: 'asc' },
         },
       },
     }),
@@ -141,7 +142,11 @@ const returnFrequency = async (id: string, student_id: string) => {
   const [frequencyData, frequencyStuData] = await Promise.all([
     prisma.frequency.findUnique({
       where: { id },
-      select: { id: true, date: true },
+      select: {
+        id: true,
+        date: true,
+        user: { select: { id: true, name: true } },
+      },
     }),
     prisma.frequencyStudent.findFirst({
       where: { frequency_id: id, student_id },
