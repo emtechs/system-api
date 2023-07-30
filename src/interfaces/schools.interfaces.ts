@@ -2,6 +2,7 @@ import { z } from 'zod'
 import {
   SchoolClassCreateSchema,
   SchoolCreateSchema,
+  SchoolReportSchema,
   SchoolReturnSchema,
   SchoolServerCreateSchema,
   SchoolServerReturnSchema,
@@ -11,6 +12,8 @@ import { IQuery } from './global.interfaces'
 import { CategoryPeriod } from '@prisma/client'
 
 export type ISchoolRequest = z.infer<typeof SchoolCreateSchema>
+
+export type ISchoolReportRequest = z.infer<typeof SchoolReportSchema>
 
 export type ISchoolData = z.infer<typeof SchoolReturnSchema>
 

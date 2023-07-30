@@ -3,6 +3,7 @@ import {
   listClassYearInfrequencyController,
   listInfrequencyController,
   reportClassController,
+  reportSchoolController,
   reportStudentController,
   updateInfrequencyController,
 } from '../controllers'
@@ -13,6 +14,7 @@ import {
 import {
   ClassReportSchema,
   FrequencyUpdateSchema,
+  SchoolReportSchema,
   StudentReportSchema,
 } from '../schemas'
 
@@ -38,6 +40,13 @@ infrequencyRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentReportSchema),
   reportStudentController,
+)
+
+infrequencyRouter.post(
+  '/report/school',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(SchoolReportSchema),
+  reportSchoolController,
 )
 
 infrequencyRouter.patch(

@@ -4,6 +4,13 @@ export const SchoolCreateSchema = z.object({
   name: z.string(),
 })
 
+export const SchoolReportSchema = z.object({
+  model: z.enum(['resume', 'details']),
+  school_id: z.string().uuid(),
+  period_id: z.string().uuid(),
+  year_id: z.string().uuid(),
+})
+
 export const SchoolServerCreateSchema = z.object({
   schools: z.object({ id: z.string().uuid() }).array(),
 })

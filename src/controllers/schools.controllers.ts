@@ -11,7 +11,6 @@ import {
   importSchoolService,
   listSchoolServerService,
   listSchoolService,
-  reportSchoolService,
   retrieveSchoolService,
   updateSchoolService,
 } from '../services'
@@ -71,14 +70,6 @@ export const listSchoolServerController = async (
 ) => {
   const schools = await listSchoolServerService(req.query)
   return res.json(schools)
-}
-
-export const reportSchoolController = async (req: Request, res: Response) => {
-  const report = await reportSchoolService(
-    req.params.school_id,
-    req.params.year_id,
-  )
-  return res.json(report)
 }
 
 export const retrieveSchoolController = async (req: Request, res: Response) => {

@@ -11,13 +11,20 @@ const periodSchema = z
   .refine((field) => (field.label = field.name))
   .array()
 
-export const listPeriodService = async ({ key_class }: IQuery) => {
+export const listPeriodService = async ({ key_class, school_id }: IQuery) => {
   let where = {}
 
   if (key_class)
     where = {
       frequencies: {
         some: { frequency: { status: 'CLOSED', class: { key: key_class } } },
+      },
+    }
+
+  if (school_id)
+    where = {
+      frequencies: {
+        some: { frequency: { status: 'CLOSED', school_id } },
       },
     }
 

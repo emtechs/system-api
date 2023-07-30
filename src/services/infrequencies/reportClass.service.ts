@@ -2,10 +2,10 @@ import { AppError } from '../../errors'
 import { IClassReportRequest } from '../../interfaces'
 import { prisma } from '../../lib'
 
-export const reportClassService = async ({
-  key_class,
-  period_id,
-}: IClassReportRequest) => {
+export const reportClassService = async (
+  { key_class, period_id }: IClassReportRequest,
+  isResume?: boolean,
+) => {
   let infrequency = 0
 
   const [classData, period, frequencyData] = await Promise.all([
@@ -56,17 +56,21 @@ export const reportClassService = async ({
 
   const { class: class_data, school, year } = classData
 
+  const result = {
+    id: class_data.id,
+    name: class_data.name,
+    school,
+    year,
+    students: classData._count.students,
+    frequencies: classData._count.frequencies,
+    infrequency,
+    period,
+  }
+
+  if (isResume) return result
+
   return {
-    result: {
-      id: class_data.id,
-      name: class_data.name,
-      school,
-      year,
-      students: classData._count.students,
-      frequencies: classData._count.frequencies,
-      infrequency,
-      period,
-    },
+    result,
     students: await studentArrayReturn(classData.students, period_id),
   }
 }

@@ -3,6 +3,7 @@ import {
   listClassYearInfrequencyService,
   listInfrequencyService,
   reportClassService,
+  reportSchoolService,
   reportStudentService,
   updateInfrequencyService,
 } from '../services'
@@ -25,6 +26,11 @@ export const listInfrequencyController = async (
 
 export const reportClassController = async (req: Request, res: Response) => {
   const report = await reportClassService(req.body)
+  return res.json(report)
+}
+
+export const reportSchoolController = async (req: Request, res: Response) => {
+  const report = await reportSchoolService(req.body)
   return res.json(report)
 }
 

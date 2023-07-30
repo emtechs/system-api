@@ -10,7 +10,6 @@ import {
   exportSchoolController,
   listSchoolController,
   listSchoolServerController,
-  reportSchoolController,
   retrieveSchoolController,
   updateSchoolController,
 } from '../controllers'
@@ -80,13 +79,6 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   dashSchoolController,
-)
-
-schoolRouter.get(
-  '/:school_id/report/:year_id',
-  verifyUserIsAuthenticated,
-  verifyIsPermission,
-  reportSchoolController,
 )
 
 schoolRouter.patch(
