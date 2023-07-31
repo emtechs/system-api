@@ -33,6 +33,7 @@ export const listPeriodService = async ({
         year_id,
         ...where,
       },
+      include: { year: true },
       orderBy: [{ category: 'asc' }, { name: 'asc' }],
     }),
     prisma.period.count({
