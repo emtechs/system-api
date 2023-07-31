@@ -6,7 +6,7 @@ export const profileUserService = async (id: string) => {
     prisma.user.findUnique({
       where: { id },
     }),
-    prisma.year.findMany(),
+    prisma.year.findMany({ orderBy: { year: 'desc' } }),
   ])
 
   return { user: UserReturnSchema.parse(userData), years }
