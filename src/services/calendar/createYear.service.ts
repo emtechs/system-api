@@ -19,7 +19,7 @@ export const createYearService = async ({ year }: IYearRequest) => {
         name: year,
         category: 'ANO',
         date_initial: new Date(`${year}-01-01`),
-        date_final: new Date(`${year}-12-13`),
+        date_final: new Date(`${year}-12-31`),
         year_id: yearData.id,
       },
     }),
