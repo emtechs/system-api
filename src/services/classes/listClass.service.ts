@@ -4,7 +4,6 @@ import { ClassArraySchema } from '../../schemas'
 import { classArrayReturn, classYearArrayReturn } from '../../scripts'
 
 export const listClassService = async ({
-  is_active,
   take,
   skip,
   order,
@@ -29,18 +28,6 @@ export const listClassService = async ({
   }
 
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } }
-
-  if (is_active) {
-    switch (is_active) {
-      case 'true':
-        where = { ...where, is_active: true }
-        break
-
-      case 'false':
-        where = { ...where, is_active: false }
-        break
-    }
-  }
 
   where = { ...where, schools: { some: { year_id, school_id } } }
 

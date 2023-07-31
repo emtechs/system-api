@@ -26,7 +26,6 @@ export const ClassStudentUpdateSchema = z.object({
   school_id: z.string().uuid(),
   year_id: z.string().uuid(),
   student_id: z.string().uuid(),
-  is_active: z.boolean().optional(),
   justify_disabled: z.string().optional(),
   finished_at: z.number().optional(),
 })
@@ -56,7 +55,6 @@ export const ClassReturnSchema = z
     id: z.string().uuid(),
     label: z.string().optional(),
     name: z.string(),
-    is_active: z.boolean(),
     schools: z.number().optional(),
     students: z.number().optional(),
     frequencies: z.number().optional(),
