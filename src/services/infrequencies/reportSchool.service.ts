@@ -24,7 +24,7 @@ export const reportSchoolService = async ({
       }),
       prisma.period.findUnique({
         where: { id: period_id },
-        select: { category: true, id: true, name: true, year: true },
+        include: { year: true },
       }),
       prisma.frequency.count({
         where: { status: 'CLOSED', school_id, year_id },
@@ -46,11 +46,8 @@ export const reportSchoolService = async ({
 
   if (!schoolData || !period) throw new AppError('')
 
-  const { year } = period
-
   const result = {
     ...schoolData,
-    year,
     period,
     frequencies,
     students,

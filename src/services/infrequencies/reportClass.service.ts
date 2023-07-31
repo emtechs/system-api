@@ -20,7 +20,6 @@ export const reportClassService = async (
         },
         class: { select: { id: true, name: true } },
         school: { select: { id: true, name: true } },
-        year: { select: { id: true, year: true } },
         _count: {
           select: {
             students: true,
@@ -37,7 +36,7 @@ export const reportClassService = async (
     }),
     prisma.period.findUnique({
       where: { id: period_id },
-      select: { category: true, id: true, name: true },
+      include: { year: true },
     }),
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
@@ -54,13 +53,12 @@ export const reportClassService = async (
   if (frequencyData._avg.infrequency)
     infrequency = frequencyData._avg.infrequency
 
-  const { class: class_data, school, year } = classData
+  const { class: class_data, school } = classData
 
   const result = {
     id: class_data.id,
     name: class_data.name,
     school,
-    year,
     students: classData._count.students,
     frequencies: classData._count.frequencies,
     infrequency,
