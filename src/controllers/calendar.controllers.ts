@@ -14,7 +14,7 @@ import {
 } from '../services'
 
 export const createPeriodController = async (req: Request, res: Response) => {
-  const period = await createPeriodService(req.body)
+  const period = await createPeriodService(req.body, req.params.year_id)
   return res.status(201).json(period)
 }
 

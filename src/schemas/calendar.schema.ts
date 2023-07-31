@@ -9,7 +9,6 @@ export const PeriodCreateSchema = z.object({
   category: z.enum(['BIMESTRE', 'SEMESTRE', 'ANO']),
   initial: z.string(),
   final: z.string(),
-  year_id: z.string().uuid(),
 })
 
 export const PeriodUpdateSchema = z.object({

@@ -25,17 +25,17 @@ import {
 export const calendarRouter = Router()
 
 calendarRouter.post(
-  '/period',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(PeriodCreateSchema),
-  createPeriodController,
-)
-
-calendarRouter.post(
   '/year',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(YearCreateSchema),
   createYearController,
+)
+
+calendarRouter.post(
+  '/:year_id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(PeriodCreateSchema),
+  createPeriodController,
 )
 
 calendarRouter.get(

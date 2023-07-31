@@ -1,13 +1,10 @@
 import { prisma } from '../../lib'
 import { IPeriodRequest } from '../../interfaces'
 
-export const createPeriodService = async ({
-  category,
-  final,
-  initial,
-  name,
-  year_id,
-}: IPeriodRequest) => {
+export const createPeriodService = async (
+  { category, final, initial, name }: IPeriodRequest,
+  year_id: string,
+) => {
   let dateData: string[]
 
   dateData = initial.split('/')
