@@ -4,8 +4,13 @@ import {
   verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
-import { YearCreateSchema } from '../schemas'
 import {
+  PeriodCreateSchema,
+  PeriodUpdateSchema,
+  YearCreateSchema,
+} from '../schemas'
+import {
+  createPeriodController,
   createYearController,
   exportYearController,
   listCalendarController,
@@ -14,9 +19,17 @@ import {
   listPeriodController,
   listYearController,
   retrieveYearController,
+  updatePeriodController,
 } from '../controllers'
 
 export const calendarRouter = Router()
+
+calendarRouter.post(
+  '/period',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(PeriodCreateSchema),
+  createPeriodController,
+)
 
 calendarRouter.post(
   '/year',
@@ -39,6 +52,13 @@ calendarRouter.get(
 )
 
 calendarRouter.get('/period', verifyUserIsAuthenticated, listPeriodController)
+
+calendarRouter.patch(
+  '/period/:period_id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(PeriodUpdateSchema),
+  updatePeriodController,
+)
 
 calendarRouter.get('/year', verifyUserIsAuthenticated, listYearController)
 

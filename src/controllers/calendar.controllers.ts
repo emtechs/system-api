@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import {
+  createPeriodService,
   createYearService,
   exportYearService,
   importMonthService,
@@ -9,7 +10,13 @@ import {
   listPeriodService,
   listYearService,
   retrieveYearService,
+  updatePeriodService,
 } from '../services'
+
+export const createPeriodController = async (req: Request, res: Response) => {
+  const period = await createPeriodService(req.body)
+  return res.status(201).json(period)
+}
 
 export const createYearController = async (req: Request, res: Response) => {
   const year = await createYearService(req.body)
@@ -68,4 +75,9 @@ export const listYearController = async (req: Request, res: Response) => {
 export const retrieveYearController = async (req: Request, res: Response) => {
   const year = await retrieveYearService(req.params.year)
   return res.json(year)
+}
+
+export const updatePeriodController = async (req: Request, res: Response) => {
+  const period = await updatePeriodService(req.body, req.params.period_id)
+  return res.json(period)
 }

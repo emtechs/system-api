@@ -1,9 +1,17 @@
 import { z } from 'zod'
-import { YearCreateSchema } from '../schemas'
+import {
+  PeriodCreateSchema,
+  PeriodUpdateSchema,
+  YearCreateSchema,
+} from '../schemas'
 import { IQuery } from './global.interfaces'
 import { CategoryPeriod } from '@prisma/client'
 
 export type IYearRequest = z.infer<typeof YearCreateSchema>
+
+export type IPeriodRequest = z.infer<typeof PeriodCreateSchema>
+
+export type IPeriodUpdateRequest = z.infer<typeof PeriodUpdateSchema>
 
 export interface IMonth {
   name: string
