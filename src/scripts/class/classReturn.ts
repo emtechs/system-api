@@ -3,7 +3,6 @@ import { prisma } from '../../lib'
 export const classReturn = async (classData: {
   id: string
   name: string
-  is_active: boolean
   created_at: Date
 }) => {
   const class_id = classData.id
@@ -21,7 +20,6 @@ export const classArrayReturn = async (
   classData: {
     id: string
     name: string
-    is_active: boolean
     created_at: Date
   }[],
 ) => {

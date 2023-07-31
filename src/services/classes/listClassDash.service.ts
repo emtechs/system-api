@@ -13,7 +13,6 @@ export const listClassDashService = async (
 
   where = {
     ...where,
-    class: { is_active: true },
     frequencies: { none: { date, status: 'CLOSED' } },
     school_id,
     year_id,

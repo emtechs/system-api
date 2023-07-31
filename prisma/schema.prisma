@@ -78,7 +78,6 @@ model School {
 model Class {
   id         String      @id @default(uuid())
   name       String      @unique @db.VarChar(254)
-  is_active  Boolean     @default(true)
   created_at DateTime    @default(now())
   schools    ClassYear[]
 

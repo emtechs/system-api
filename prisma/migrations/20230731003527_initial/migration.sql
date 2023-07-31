@@ -11,7 +11,7 @@ CREATE TYPE "StatusFrequency" AS ENUM ('OPENED', 'CLOSED');
 CREATE TYPE "StatusStudent" AS ENUM ('PRESENTED', 'MISSED', 'JUSTIFIED');
 
 -- CreateEnum
-CREATE TYPE "CategoryPeriod" AS ENUM ('BIMESTRE', 'SEMESTRE', 'ANO');
+CREATE TYPE "CategoryPeriod" AS ENUM ('ANO', 'BIMESTRE', 'SEMESTRE');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -45,7 +45,6 @@ CREATE TABLE "schools" (
 CREATE TABLE "classes" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(254) NOT NULL,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "classes_pkey" PRIMARY KEY ("id")

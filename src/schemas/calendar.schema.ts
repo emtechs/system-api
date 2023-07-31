@@ -25,7 +25,10 @@ export const PeriodReturnSchema = z
     category: z.enum(['BIMESTRE', 'SEMESTRE', 'ANO']),
     date_initial: z.date(),
     date_final: z.date(),
-    year_id: z.string().uuid(),
+    year: z.object({
+      id: z.string().uuid(),
+      year: z.string(),
+    }),
   })
   .refine((field) => (field.label = field.name))
   .array()
