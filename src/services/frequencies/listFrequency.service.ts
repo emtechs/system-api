@@ -60,7 +60,7 @@ export const listFrequencyService = async ({
       skip,
       where,
       select: { id: true },
-      orderBy: { finished_at: 'desc' },
+      orderBy: [{ finished_at: 'desc' }, { date_time: 'desc' }],
     }),
     prisma.frequency.count({ where }),
     prisma.frequency.findMany({
