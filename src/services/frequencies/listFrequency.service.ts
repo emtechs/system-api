@@ -11,11 +11,28 @@ export const listFrequencyService = async ({
   year_id,
   user_id,
   is_active,
+  name,
 }: IFrequencyQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
 
   let where = {}
+
+  if (name)
+    where = {
+      ...where,
+      OR: [
+        {
+          class: { class: { name: { contains: name, mode: 'insensitive' } } },
+        },
+        {
+          class: {
+            school: { name: { contains: name, mode: 'insensitive' } },
+          },
+        },
+        { user: { name: { contains: name, mode: 'insensitive' } } },
+      ],
+    }
 
   if (is_active) {
     switch (is_active) {
@@ -43,9 +60,7 @@ export const listFrequencyService = async ({
       select: { id: true },
       orderBy: { finished_at: 'desc' },
     }),
-    prisma.frequency.count({
-      where,
-    }),
+    prisma.frequency.count({ where }),
   ])
 
   return {
