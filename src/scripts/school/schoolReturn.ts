@@ -2,9 +2,10 @@ import { prisma } from '../../lib'
 
 export const schoolReturn = async (
   id: string,
-  year_id = '',
-  server_id = '',
-  class_id = '',
+  year_id?: string,
+  server_id?: string,
+  class_id?: string,
+  date?: string,
 ) => {
   const school_id = id
 
@@ -17,42 +18,27 @@ export const schoolReturn = async (
 
   where = { ...where, school_id }
 
-  const [
-    school,
-    classes,
-    students,
-    servers,
-    serverData,
-    frequencyData,
-    frequencies,
-  ] = await Promise.all([
-    prisma.school.findUnique({
-      where: { id },
-      include: { director: { select: { id: true, name: true, cpf: true } } },
-    }),
-    prisma.classYear.count({ where }),
-    prisma.classStudent.count({
-      where: { ...where },
-    }),
-    prisma.schoolServer.count({
-      where: { school_id },
-    }),
-    prisma.schoolServer.findUnique({
-      where: { school_id_server_id: { school_id, server_id } },
-      select: {
-        dash: true,
-        role: true,
-        server: { select: { id: true, name: true, cpf: true } },
-      },
-    }),
-    prisma.frequency.aggregate({
-      _avg: { infrequency: true },
-      where: { ...where, status: 'CLOSED' },
-    }),
-    prisma.frequency.count({
-      where: { ...where, status: 'CLOSED' },
-    }),
-  ])
+  const [school, classes, students, servers, frequencyData, frequencies] =
+    await Promise.all([
+      prisma.school.findUnique({
+        where: { id },
+        include: { director: { select: { id: true, name: true, cpf: true } } },
+      }),
+      prisma.classYear.count({ where }),
+      prisma.classStudent.count({
+        where: { ...where },
+      }),
+      prisma.schoolServer.count({
+        where: { school_id },
+      }),
+      prisma.frequency.aggregate({
+        _avg: { infrequency: true },
+        where: { ...where, status: 'CLOSED', date },
+      }),
+      prisma.frequency.count({
+        where: { ...where, status: 'CLOSED', date },
+      }),
+    ])
 
   if (school) schoolData = { ...schoolData, ...school }
 
@@ -68,12 +54,29 @@ export const schoolReturn = async (
     infrequency,
   }
 
-  if (serverData) {
-    const { dash, role, server } = serverData
+  if (server_id) {
+    const serverData = await prisma.schoolServer.findUnique({
+      where: { school_id_server_id: { school_id, server_id } },
+      select: {
+        dash: true,
+        role: true,
+        server: { select: { id: true, name: true, cpf: true } },
+      },
+    })
 
-    schoolData = {
-      ...schoolData,
-      server: { id: server.id, name: server.name, cpf: server.cpf, dash, role },
+    if (serverData) {
+      const { dash, role, server } = serverData
+
+      schoolData = {
+        ...schoolData,
+        server: {
+          id: server.id,
+          name: server.name,
+          cpf: server.cpf,
+          dash,
+          role,
+        },
+      }
     }
   }
 
@@ -84,12 +87,13 @@ export const schoolArrayReturn = async (
   schools: {
     id: string
   }[],
-  year_id = '',
-  server_id = '',
-  class_id = '',
+  year_id?: string,
+  server_id?: string,
+  class_id?: string,
+  date?: string,
 ) => {
   const verify = schools.map((el) => {
-    return schoolReturn(el.id, year_id, server_id, class_id)
+    return schoolReturn(el.id, year_id, server_id, class_id, date)
   })
 
   return Promise.all(verify).then((school) => {

@@ -43,7 +43,6 @@ export interface ISchoolQuery extends IQuery {
   is_director?: 'true' | 'false'
   infreq?: number
   name?: string
-  date?: string
   director_id?: string
   server_id?: string
   none_server_id?: string

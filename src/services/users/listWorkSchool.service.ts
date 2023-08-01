@@ -5,7 +5,7 @@ import { schoolArrayReturn, schoolServerArrayReturn } from '../../scripts'
 
 export const listWorkSchoolService = async (
   { id: server_id, role }: IRequestUser,
-  { take, skip, year_id, name }: ISchoolQuery,
+  { take, skip, year_id, name, date }: ISchoolQuery,
 ) => {
   if (take) take = +take
   if (skip) skip = +skip
@@ -46,7 +46,7 @@ export const listWorkSchoolService = async (
     ])
 
     const schoolsSchema = SchoolArraySchema.parse(
-      await schoolArrayReturn(schoolsData, year_id),
+      await schoolArrayReturn(schoolsData, year_id, undefined, undefined, date),
     )
 
     const schools = SchoolArraySchema.parse(schoolsLabel)
@@ -93,7 +93,7 @@ export const listWorkSchoolService = async (
   const schools = schoolSchema.map((el) => el.school)
 
   const result = SchoolServerArraySchema.parse(
-    await schoolServerArrayReturn(workSchools, year_id),
+    await schoolServerArrayReturn(workSchools, year_id, date),
   )
 
   return { schools, total, result }

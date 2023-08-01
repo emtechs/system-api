@@ -57,7 +57,6 @@ export type IClassReportRequest = z.infer<typeof ClassReportSchema>
 
 export interface IClassQuery extends IQuery {
   infreq?: number
-  date?: string
   is_infreq?: string
   name?: string
   is_school?: string

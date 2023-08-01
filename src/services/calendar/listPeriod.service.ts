@@ -9,13 +9,26 @@ export const listPeriodService = async ({
   year_id,
   category,
   name,
+  date,
 }: ICalendarQuery) => {
+  let whereDate = {}
+
+  if (date) {
+    const dateData = date.split('/')
+    const date_time = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+    whereDate = {
+      date_initial: { lte: date_time },
+      date_final: { gte: date_time },
+    }
+  }
+
   const [periods, total] = await Promise.all([
     prisma.period.findMany({
       where: {
         name: { contains: name, mode: 'insensitive' },
         category,
         year_id,
+        ...whereDate,
       },
       include: { year: true },
       orderBy: [{ category: 'asc' }, { name: 'asc' }],
@@ -25,6 +38,7 @@ export const listPeriodService = async ({
         name: { contains: name, mode: 'insensitive' },
         category,
         year_id,
+        ...whereDate,
       },
     }),
   ])
@@ -62,9 +76,9 @@ type IPeriod = {
 
 const verifyReturn = async (
   period: IPeriod,
-  key_class: string | undefined,
-  school_id: string | undefined,
-  year_id: string | undefined,
+  key_class?: string,
+  school_id?: string,
+  year_id?: string,
 ) => {
   let where = {}
 
@@ -89,9 +103,9 @@ const verifyReturn = async (
 
 const verifyArrayReturn = async (
   periods: IPeriod[],
-  key_class = '',
-  school_id = '',
-  year_id = '',
+  key_class?: string,
+  school_id?: string,
+  year_id?: string,
 ) => {
   const periodsData = periods.map((el) =>
     verifyReturn(el, key_class, school_id, year_id),
