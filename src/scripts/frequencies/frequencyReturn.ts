@@ -1,39 +1,50 @@
-import { StatusFrequency } from '@prisma/client'
+import { AppError } from '../../errors'
+import { prisma } from '../../lib'
 
-export const frequencyReturn = (
-  frequencies: {
-    id: string
-    date: string
-    status: StatusFrequency
-    infrequency: number
-    class: {
+const frequencyReturn = async (id: string) => {
+  const frequency = await prisma.frequency.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      date: true,
+      date_time: true,
+      status: true,
+      created_at: true,
+      finished_at: true,
+      infrequency: true,
+      _count: { select: { students: true } },
       class: {
-        id: string
-        name: string
-      }
-      school: {
-        id: string
-        name: string
-      }
-    }
-    _count: {
-      students: number
-    }
-  }[],
-) => {
-  const freqDataArr = frequencies.map((el) => {
-    const { id, date, status, infrequency, class: classData, _count } = el
-
-    return {
-      id,
-      date,
-      status,
-      infrequency,
-      total_students: _count.students,
-      school: classData.school,
-      class: classData.class,
-    }
+        select: {
+          class: { select: { id: true, name: true } },
+          school: { select: { id: true, name: true } },
+        },
+      },
+      user: { select: { id: true, name: true } },
+    },
   })
 
-  return freqDataArr
+  if (!frequency) throw new AppError('')
+
+  const { class: classData, _count } = frequency
+
+  return {
+    ...frequency,
+    total_students: _count.students,
+    school: classData.school,
+    class: classData.class,
+  }
+}
+
+export const frequencyArrReturn = async (
+  frequencies: {
+    id: string
+  }[],
+) => {
+  const verify = frequencies.map((el) => {
+    return frequencyReturn(el.id)
+  })
+
+  return Promise.all(verify).then((data) => {
+    return data
+  })
 }
