@@ -8,37 +8,49 @@ export const classYearReturn = async (
 ) => {
   let infrequency = 0
 
-  const [classData, school, students, frequencies, infreqData, classDataYear] =
-    await Promise.all([
-      prisma.class.findUnique({
-        where: { id: class_id },
-        select: { id: true, name: true },
-      }),
-      prisma.school.findUnique({
-        where: { id: school_id },
-        select: { id: true, name: true },
-      }),
-      prisma.student.count({
-        where: {
-          classes: { some: { class_id, school_id, year_id } },
-        },
-      }),
-      prisma.frequency.count({
-        where: { class_id, school_id, year_id, status: 'CLOSED' },
-      }),
-      prisma.classYearInfrequency.findFirst({
-        where: { class_id, school_id, year_id, period: { category: 'ANO' } },
-        select: { value: true },
-      }),
-      prisma.classYear.findUnique({
-        where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
-        select: { key: true },
-      }),
-    ])
+  const [
+    classData,
+    school,
+    students,
+    frequencies,
+    classDataYear,
+    frequencyData,
+  ] = await Promise.all([
+    prisma.class.findUnique({
+      where: { id: class_id },
+      select: { id: true, name: true },
+    }),
+    prisma.school.findUnique({
+      where: { id: school_id },
+      select: { id: true, name: true },
+    }),
+    prisma.student.count({
+      where: {
+        classes: { some: { class_id, school_id, year_id } },
+      },
+    }),
+    prisma.frequency.count({
+      where: { class_id, school_id, year_id, status: 'CLOSED' },
+    }),
+    prisma.classYear.findUnique({
+      where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
+      select: { key: true },
+    }),
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
+      where: {
+        status: 'CLOSED',
+        class_id,
+        school_id,
+        year_id,
+      },
+    }),
+  ])
 
   if (!classData || !classDataYear) throw new AppError('')
 
-  if (infreqData) infrequency = infreqData.value
+  if (frequencyData._avg.infrequency)
+    infrequency = frequencyData._avg.infrequency
 
   return {
     ...classData,
