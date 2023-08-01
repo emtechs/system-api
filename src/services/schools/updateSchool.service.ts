@@ -2,6 +2,7 @@ import { hashSync } from 'bcryptjs'
 import { ISchoolQuery, ISchoolUpdateRequest } from '../../interfaces'
 import { prisma } from '../../lib'
 import { SchoolReturnSchema } from '../../schemas'
+import { AppError } from '../../errors'
 
 export const updateSchoolService = async (
   {
@@ -35,7 +36,7 @@ export const updateSchoolService = async (
           is_active: true,
         },
       })
-    } else {
+    } else if (password && cpf && name_diret) {
       password = hashSync(password, 10)
       user = await prisma.user.create({
         data: { cpf, login, name: name_diret, password },
@@ -48,6 +49,8 @@ export const updateSchoolService = async (
           school_id_server_id: { school_id: id, server_id: director_id },
         },
       })
+
+    if (!user) throw new AppError('')
 
     const school = await prisma.school.update({
       where: { id },

@@ -1,29 +1,38 @@
 import { IQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 import { UserReturnSchema } from '../../schemas'
-import { userReturn } from '../../scripts'
 
 export const retrieveUserService = async (
   id: string,
   { school_id }: IQuery,
 ) => {
-  let where_frequency = {}
   let user = {}
 
-  if (school_id) where_frequency = { ...where_frequency, school_id }
+  const userData = await prisma.user.findUnique({
+    where: { id },
+  })
 
-  where_frequency = { ...where_frequency, user_id: id }
+  user = { ...user, ...userData }
 
-  const [userData, frequencies] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id },
-    }),
-    prisma.frequency.count({
-      where: where_frequency,
-    }),
-  ])
+  if (school_id) {
+    const [work_school, frequencies] = await Promise.all([
+      prisma.schoolServer.findUnique({
+        where: { school_id_server_id: { school_id, server_id: id } },
+        select: {
+          dash: true,
+          role: true,
+          school: { select: { id: true, name: true } },
+        },
+      }),
+      prisma.frequency.count({
+        where: { school_id, user_id: id },
+      }),
+    ])
 
-  user = { ...user, ...userData, frequencies }
+    user = { ...user, frequencies }
 
-  return UserReturnSchema.parse(await userReturn(user, school_id))
+    if (work_school) user = { ...user, work_school }
+  }
+
+  return UserReturnSchema.parse(user)
 }

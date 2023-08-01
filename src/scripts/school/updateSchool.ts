@@ -1,3 +1,4 @@
+import { AppError } from '../../errors'
 import { ISchoolUpdate } from '../../interfaces'
 import { prisma } from '../../lib'
 
@@ -5,6 +6,8 @@ const verifySchoolDirector = async (
   { id }: ISchoolUpdate,
   director_id: string,
 ) => {
+  if (!id) throw new AppError('')
+
   const school = await prisma.school.update({
     where: { id },
     data: {
@@ -37,6 +40,8 @@ export const updateSchoolDirector = async (
 }
 
 const verifySchoolServer = async ({ id }: ISchoolUpdate, server_id: string) => {
+  if (!id) throw new AppError('')
+
   const school = await prisma.schoolServer.upsert({
     where: { school_id_server_id: { school_id: id, server_id } },
     create: { school_id: id, server_id },
@@ -63,6 +68,8 @@ const verifySchoolClass = async (
   school_id: string,
   year_id: string,
 ) => {
+  if (!id) throw new AppError('')
+
   const classData = await prisma.class.update({
     where: { id },
     data: {

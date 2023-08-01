@@ -5,7 +5,6 @@ import {
   exportClassService,
   importClassService,
   listClassService,
-  updateClassSchoolService,
   createClassSchoolService,
   dashClassService,
   listClassDashService,
@@ -103,12 +102,4 @@ export const transferClassStudentController = async (
 ) => {
   const classes = await transferClassStudentService(req.body)
   return res.json(classes)
-}
-
-export const updateClassSchoolController = async (
-  req: Request,
-  res: Response,
-) => {
-  const classSchool = await updateClassSchoolService(req.body)
-  return res.json(classSchool)
 }

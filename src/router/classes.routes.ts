@@ -12,7 +12,6 @@ import {
   retrieveClassController,
   retrieveClassYearController,
   transferClassStudentController,
-  updateClassSchoolController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -23,7 +22,6 @@ import {
 import {
   ClassCreateSchema,
   ClassSchoolCreateSchema,
-  ClassSchoolUpdateSchema,
   ClassStudentCreateSchema,
   TransferClassStudentSchema,
 } from '../schemas'
@@ -81,13 +79,6 @@ classRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   dashClassController,
-)
-
-classRouter.patch(
-  '',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(ClassSchoolUpdateSchema),
-  updateClassSchoolController,
 )
 
 classRouter.patch(

@@ -5,7 +5,6 @@ import {
   listFrequencyController,
   listFrequencyStudentController,
   retrieveFrequencyController,
-  retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
 } from '../controllers'

@@ -10,11 +10,19 @@ export const reportStudentService = async ({
 }: IStudentReportRequest) => {
   let infrequency = 0
 
+  const period = await prisma.period.findUnique({
+    where: { id: period_id },
+    include: { year: true },
+  })
+
+  if (!period) throw new AppError('')
+
+  const { date_initial, date_final } = period
+
   const [
     studentData,
     classData,
     frequencies,
-    period,
     frequencyData,
     presences,
     justified,
@@ -27,7 +35,10 @@ export const reportStudentService = async ({
         class: { select: { id: true, name: true } },
         school: { select: { id: true, name: true } },
         frequencies: {
-          where: { status: 'CLOSED', periods: { some: { period_id } } },
+          where: {
+            status: 'CLOSED',
+            date_time: { lte: date_final, gte: date_initial },
+          },
           select: { id: true },
           orderBy: { date_time: 'asc' },
         },
@@ -38,14 +49,10 @@ export const reportStudentService = async ({
         student_id,
         frequency: {
           status: 'CLOSED',
+          date_time: { lte: date_final, gte: date_initial },
           class: { key: key_class },
-          periods: { some: { period_id } },
         },
       },
-    }),
-    prisma.period.findUnique({
-      where: { id: period_id },
-      include: { year: true },
     }),
     prisma.frequencyStudent.aggregate({
       _avg: { value: true },
@@ -53,8 +60,8 @@ export const reportStudentService = async ({
         student_id,
         frequency: {
           status: 'CLOSED',
+          date_time: { lte: date_final, gte: date_initial },
           class: { key: key_class },
-          periods: { some: { period_id } },
         },
       },
     }),
@@ -64,8 +71,8 @@ export const reportStudentService = async ({
         status: 'PRESENTED',
         frequency: {
           status: 'CLOSED',
+          date_time: { lte: date_final, gte: date_initial },
           class: { key: key_class },
-          periods: { some: { period_id } },
         },
       },
     }),
@@ -75,8 +82,8 @@ export const reportStudentService = async ({
         status: 'JUSTIFIED',
         frequency: {
           status: 'CLOSED',
+          date_time: { lte: date_final, gte: date_initial },
           class: { key: key_class },
-          periods: { some: { period_id } },
         },
       },
     }),
@@ -86,8 +93,8 @@ export const reportStudentService = async ({
         status: 'MISSED',
         frequency: {
           status: 'CLOSED',
+          date_time: { lte: date_final, gte: date_initial },
           class: { key: key_class },
-          periods: { some: { period_id } },
         },
       },
     }),

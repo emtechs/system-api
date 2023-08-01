@@ -3,7 +3,7 @@ import { prisma } from '../../lib'
 
 export const dashStudentService = async (
   student_id: string,
-  year_id: string,
+  _year_id: string,
   { month }: ICalendarQuery,
 ) => {
   let whereData = {}
@@ -20,15 +20,9 @@ export const dashStudentService = async (
     status: 'CLOSED',
   }
 
-  const [frequencies, { value: stundent_infreq }] = await Promise.all([
-    prisma.frequency.count({
-      where: { ...whereData },
-    }),
-    prisma.studentInfrequency.findUnique({
-      where: { year_id_student_id: { student_id, year_id } },
-      select: { value: true },
-    }),
-  ])
+  const frequencies = await prisma.frequency.count({
+    where: { ...whereData },
+  })
 
-  return { frequencies, stundent_infreq }
+  return frequencies
 }

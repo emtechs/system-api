@@ -11,40 +11,56 @@ export const reportSchoolService = async ({
 }: ISchoolReportRequest) => {
   let infrequency = 0
 
-  const [schoolData, period, frequencies, students, frequencyData, classes] =
-    await Promise.all([
-      prisma.school.findUnique({
-        where: { id: school_id },
-        select: {
-          id: true,
-          name: true,
-          director: { select: { id: true, name: true } },
-          _count: { select: { classes: { where: { year_id } } } },
+  const period = await prisma.period.findUnique({
+    where: { id: period_id },
+    include: { year: true },
+  })
+
+  if (!period) throw new AppError('')
+
+  const { date_initial, date_final } = period
+
+  const [schoolData, frequencies, students, frequencyData] = await Promise.all([
+    prisma.school.findUnique({
+      where: { id: school_id },
+      select: {
+        id: true,
+        name: true,
+        director: { select: { id: true, name: true } },
+        classes: {
+          where: { year_id },
+          select: { key: true },
+          orderBy: { class: { name: 'asc' } },
         },
-      }),
-      prisma.period.findUnique({
-        where: { id: period_id },
-        include: { year: true },
-      }),
-      prisma.frequency.count({
-        where: { status: 'CLOSED', school_id, year_id },
-      }),
-      prisma.classStudent.count({ where: { school_id, year_id } }),
-      prisma.frequency.aggregate({
-        _avg: { infrequency: true },
-        where: { status: 'CLOSED', school_id, year_id },
-      }),
-      prisma.classYear.findMany({
-        where: { school_id, year_id },
-        select: { key: true },
-        orderBy: { class: { name: 'asc' } },
-      }),
-    ])
+        _count: { select: { classes: { where: { year_id } } } },
+      },
+    }),
+    prisma.frequency.count({
+      where: {
+        status: 'CLOSED',
+        date_time: { lte: date_final, gte: date_initial },
+        school_id,
+        year_id,
+      },
+    }),
+    prisma.classStudent.count({ where: { school_id, year_id } }),
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
+      where: {
+        status: 'CLOSED',
+        date_time: { lte: date_final, gte: date_initial },
+        school_id,
+        year_id,
+      },
+    }),
+  ])
 
   if (frequencyData._avg.infrequency)
     infrequency = frequencyData._avg.infrequency
 
-  if (!schoolData || !period) throw new AppError('')
+  if (!schoolData) throw new AppError('')
+
+  const { _count, classes } = schoolData
 
   const result = {
     ...schoolData,
@@ -52,7 +68,7 @@ export const reportSchoolService = async ({
     frequencies,
     students,
     infrequency,
-    classes: schoolData._count.classes,
+    classes: _count.classes,
     type: model === 'details' ? 'detalhado' : 'resumido',
   }
 

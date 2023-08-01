@@ -22,7 +22,6 @@ export const updateFrequencyService = async (
       class_id: true,
       school_id: true,
       students: { select: { student_id: true } },
-      periods: { select: { period_id: true } },
     },
   })
 

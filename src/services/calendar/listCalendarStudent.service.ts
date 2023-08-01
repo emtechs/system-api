@@ -70,7 +70,7 @@ export const listCalendarStudentService = async (
   const dates = [...new Set(frequenciesData.map((el) => el.frequency.date))]
 
   dates.forEach((date) => {
-    let status: IStatusStudent
+    let status: IStatusStudent = 'PRESENTED'
 
     frequenciesData.forEach((el) => {
       if (el.frequency.date === date) status = el.status

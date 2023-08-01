@@ -18,15 +18,10 @@ const verifyClass = async ({
     },
   })
   let elem = classData
-  if (!classData) {
+  if (!classData)
     elem = await prisma.classStudent.create({
       data: { class_id, school_id, year_id, student_id },
     })
-
-    await prisma.classStudentHistory.create({
-      data: { description: '2023', class_id: elem.key, student_id },
-    })
-  }
 
   return elem
 }

@@ -20,10 +20,7 @@ export const studentReturn = async (
     infrequency: 0,
   }
 
-  const [data, classData, schoolData] = await Promise.all([
-    prisma.studentInfrequency.findFirst({
-      where: { student_id, period: { year_id, category: 'ANO' } },
-    }),
+  const [classData, schoolData] = await Promise.all([
     prisma.class.findFirst({
       where: {
         schools: {
@@ -46,17 +43,16 @@ export const studentReturn = async (
     }),
   ])
 
-  if (data)
-    student = {
-      ...student,
-      frequencies: {
-        presented: data.presences,
-        justified: data.justified,
-        missed: data.absences,
-        total: data.frequencies,
-      },
-      infrequency: data.value,
-    }
+  student = {
+    ...student,
+    frequencies: {
+      presented: 0,
+      justified: 0,
+      missed: 0,
+      total: 0,
+    },
+    infrequency: 0,
+  }
 
   if (classData)
     student = { ...student, class: { id: classData.id, name: classData.name } }

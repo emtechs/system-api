@@ -2,7 +2,6 @@ import { Router } from 'express'
 import {
   importClassController,
   importMonthController,
-  importMonthController,
   importSchoolController,
   importStudentAllController,
   importStudentController,

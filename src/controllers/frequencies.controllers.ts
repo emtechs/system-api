@@ -7,7 +7,6 @@ import {
   listFrequencyStudentService,
   retrieveFrequencyService,
   updateFrequencyService,
-  updateFrequencyService,
   updateFrequencyStudentService,
 } from '../services'
 
