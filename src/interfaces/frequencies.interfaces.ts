@@ -45,6 +45,7 @@ export interface IFrequencyQuery extends IQuery {
   is_dash?: string
   category?: CategoryPeriod
   name?: string
+  month_id?: string
 }
 
 export interface IFrequencyStudentQuery extends IQuery {

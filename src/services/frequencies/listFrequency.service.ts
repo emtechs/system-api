@@ -12,6 +12,7 @@ export const listFrequencyService = async ({
   user_id,
   is_active,
   name,
+  month_id,
 }: IFrequencyQuery) => {
   if (take) take = +take
   if (skip) skip = +skip
@@ -51,6 +52,7 @@ export const listFrequencyService = async ({
   if (school_id) where = { ...where, school_id }
   if (year_id) where = { ...where, year_id }
   if (user_id) where = { ...where, user_id }
+  if (month_id) where = { ...where, month_id }
 
   const [frequencies, total, monthsData] = await Promise.all([
     prisma.frequency.findMany({
