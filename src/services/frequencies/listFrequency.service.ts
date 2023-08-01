@@ -64,7 +64,7 @@ export const listFrequencyService = async ({
     }),
     prisma.frequency.count({ where }),
     prisma.frequency.findMany({
-      where,
+      where: { year_id },
       distinct: ['month_id'],
       select: { month: true },
       orderBy: { month: { month: 'asc' } },
