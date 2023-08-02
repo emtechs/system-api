@@ -1,3 +1,4 @@
+import { AppError } from '../../errors'
 import { IClassQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 
@@ -11,9 +12,11 @@ export const listClassDashService = async (
 
   let where = {}
 
+  if (date)
+    where = { ...where, frequencies: { none: { date, status: 'CLOSED' } } }
+
   where = {
     ...where,
-    frequencies: { none: { date, status: 'CLOSED' } },
     school_id,
     year_id,
   }
@@ -85,12 +88,15 @@ const returnClass = async (key: string) => {
       where: { class: { key }, status: 'CLOSED' },
     }),
   ])
+
+  if (!classData) throw new AppError('')
+
   if (frequencyData._avg.infrequency)
     infrequency = frequencyData._avg.infrequency
 
   return {
-    id: classData?.class.id,
-    label: classData?.class.id,
+    id: classData.class.id,
+    label: classData.class.id,
     infrequency,
     ...classData,
   }
