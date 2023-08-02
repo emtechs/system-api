@@ -29,12 +29,16 @@ export const listFrequencyStudentService = async (
 
   whereData = { ...whereData, frequency_id }
 
-  const [frequency, frequencies, total] = await Promise.all([
+  const [frequencyData, frequencies, total] = await Promise.all([
     prisma.frequency.findUnique({
       where: { id: frequency_id },
-      select: {
-        date: true,
-        class: { select: { class: { select: { name: true } } } },
+      include: {
+        class: {
+          select: {
+            class: { select: { id: true, name: true } },
+            school: { select: { id: true, name: true } },
+          },
+        },
       },
     }),
     prisma.frequencyStudent.findMany({
@@ -54,6 +58,12 @@ export const listFrequencyStudentService = async (
       where: { ...whereData },
     }),
   ])
+
+  const frequency = {
+    ...frequencyData,
+    class: frequencyData?.class.class,
+    school: frequencyData?.class.school,
+  }
 
   return { total, frequency, result: frequencies }
 }
