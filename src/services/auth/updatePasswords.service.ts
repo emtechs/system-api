@@ -1,8 +1,10 @@
+import jwt from 'jsonwebtoken'
 import { hashSync } from 'bcryptjs'
 import { AppError } from '../../errors'
 import { IPasswordUpdateRequest } from '../../interfaces'
 import { UserReturnSchema } from '../../schemas'
 import { prisma, mailGenerator, sendEmail } from '../../lib'
+import { env } from '../../env'
 
 export const updatePasswordService = async (
   { password }: IPasswordUpdateRequest,
@@ -17,6 +19,10 @@ export const updatePasswordService = async (
   })
   if (!tokenFind || tokenFind.user_id !== id)
     throw new AppError('Invalid link or expired', 400)
+
+  jwt.verify(token, env.SECRET_KEY, (error) => {
+    if (error) throw new AppError(error.message, 400)
+  })
 
   password = hashSync(password, 10)
   const user = await prisma.user.update({

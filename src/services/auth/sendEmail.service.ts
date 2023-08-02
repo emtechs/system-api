@@ -1,8 +1,8 @@
-import { randomBytes } from 'crypto'
+import jwt from 'jsonwebtoken'
 import { AppError } from '../../errors'
 import { IRecoveryPasswordRequest } from '../../interfaces'
-import { env } from '../../env'
 import { prisma, mailGenerator, sendEmail } from '../../lib'
+import { env } from '../../env'
 
 export const sendEmailRecoveryService = async ({
   login,
@@ -23,11 +23,22 @@ export const sendEmailRecoveryService = async ({
     if (!user.email) throw new AppError('no email registered')
 
     let token = await prisma.token.findUnique({ where: { user_id: user.id } })
-    if (!token)
+    if (!token) {
       token = await prisma.token.create({
         data: {
           user_id: user.id,
-          token: randomBytes(32).toString('hex'),
+          token: jwt.sign({}, env.SECRET_KEY, {
+            expiresIn: '1h',
+          }),
+        },
+      })
+    } else
+      token = await prisma.token.update({
+        where: { id: token.id },
+        data: {
+          token: jwt.sign({}, env.SECRET_KEY, {
+            expiresIn: '1h',
+          }),
         },
       })
 
