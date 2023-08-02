@@ -35,8 +35,6 @@ export const listClassDashService = async (
       where,
     }),
     prisma.classYear.findMany({
-      take,
-      skip,
       where,
       orderBy: { class: { name: 'asc' } },
       select: {
