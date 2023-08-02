@@ -6,6 +6,7 @@ import {
   exportUserController,
   listUserController,
   listWorkSchoolController,
+  pageUserController,
   profileUserController,
   retrieveUserController,
   retrieveUserWithCpfController,
@@ -27,6 +28,8 @@ userRouter.post(
 )
 
 userRouter.get('', verifyUserIsAuthenticated, verifyIsAdmin, listUserController)
+
+userRouter.get('/page', verifyUserIsAuthenticated, pageUserController)
 
 userRouter.get('/profile', verifyUserIsAuthenticated, profileUserController)
 

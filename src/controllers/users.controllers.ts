@@ -11,6 +11,7 @@ import {
   dashUserService,
   listWorkSchoolService,
   profileUserService,
+  pageUserService,
 } from '../services'
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -28,6 +29,11 @@ export const listWorkSchoolController = async (req: Request, res: Response) => {
   return res.json(servers)
 }
 
+export const pageUserController = async (req: Request, res: Response) => {
+  const user = await pageUserService(req.user.id, req.query)
+  return res.json(user)
+}
+
 export const retrieveUserController = async (req: Request, res: Response) => {
   const user = await retrieveUserService(req.params.id, req.query)
   return res.json(user)
@@ -42,7 +48,7 @@ export const retrieveUserWithCpfController = async (
 }
 
 export const profileUserController = async (req: Request, res: Response) => {
-  const user = await profileUserService(req.user.id, req.query)
+  const user = await profileUserService(req.user.id)
   return res.json(user)
 }
 
