@@ -96,7 +96,7 @@ const returnClass = async (key: string) => {
 
   return {
     id: classData.class.id,
-    label: classData.class.id,
+    label: classData.class.name,
     infrequency,
     ...classData,
   }
