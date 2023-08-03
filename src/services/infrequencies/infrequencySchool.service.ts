@@ -31,5 +31,13 @@ export const infrequencySchoolService = async (
     return await classArrayPeriodReturn(classes, date_initial, date_final)
   }
 
-  return classes
+  const result = classes.map((el) => {
+    return {
+      id: el.class.id,
+      name: el.class.name,
+      infrequency: 0,
+    }
+  })
+
+  return result
 }
