@@ -2,6 +2,7 @@ import { AppError } from '../../errors'
 import { ICalendarQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 import { classArrayDateReturn, classArrayPeriodReturn } from '../../scripts'
+import { listPeriodService } from '../calendar'
 
 export const infrequencySchoolService = async (
   school_id: string,
@@ -17,7 +18,15 @@ export const infrequencySchoolService = async (
     orderBy: { class: { name: 'asc' } },
   })
 
-  if (date) return await classArrayDateReturn(classes, date)
+  let result = classes.map((el) => {
+    return {
+      id: el.class.id,
+      name: el.class.name,
+      infrequency: 0,
+    }
+  })
+
+  if (date) result = await classArrayDateReturn(classes, date)
 
   if (category) {
     const period = await prisma.period.findFirst({
@@ -28,16 +37,11 @@ export const infrequencySchoolService = async (
 
     const { date_initial, date_final } = period
 
-    return await classArrayPeriodReturn(classes, date_initial, date_final)
+    result = await classArrayPeriodReturn(classes, date_initial, date_final)
   }
 
-  const result = classes.map((el) => {
-    return {
-      id: el.class.id,
-      name: el.class.name,
-      infrequency: 0,
-    }
-  })
-
-  return result
+  return {
+    result,
+    periods: (await listPeriodService({ category, year_id })).result,
+  }
 }
