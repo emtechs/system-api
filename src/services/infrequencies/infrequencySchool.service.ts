@@ -1,0 +1,35 @@
+import { AppError } from '../../errors'
+import { ICalendarQuery } from '../../interfaces'
+import { prisma } from '../../lib'
+import { classArrayDateReturn, classArrayPeriodReturn } from '../../scripts'
+
+export const infrequencySchoolService = async (
+  school_id: string,
+  year_id: string,
+  { category, date, name }: ICalendarQuery,
+) => {
+  const classes = await prisma.classYear.findMany({
+    where: { school_id, year_id },
+    select: {
+      key: true,
+      class: { select: { id: true, name: true } },
+    },
+    orderBy: { class: { name: 'asc' } },
+  })
+
+  if (date) return await classArrayDateReturn(classes, date)
+
+  if (category) {
+    const period = await prisma.period.findFirst({
+      where: { year_id, category, name },
+    })
+
+    if (!period) throw new AppError('')
+
+    const { date_initial, date_final } = period
+
+    return await classArrayPeriodReturn(classes, date_initial, date_final)
+  }
+
+  return classes
+}

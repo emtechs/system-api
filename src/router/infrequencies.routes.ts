@@ -1,11 +1,13 @@
 import { Router } from 'express'
 import {
+  infrequencySchoolController,
   reportClassController,
   reportSchoolController,
   reportStudentController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
+  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
 import {
@@ -15,6 +17,13 @@ import {
 } from '../schemas'
 
 export const infrequencyRouter = Router()
+
+infrequencyRouter.get(
+  '/school/:school_id/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  infrequencySchoolController,
+)
 
 infrequencyRouter.post(
   '/report/class',
