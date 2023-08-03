@@ -15,18 +15,27 @@ const classPeriod = async (
 
   let infrequency = 0
 
-  const frequency = await prisma.frequency.aggregate({
-    _avg: { infrequency: true },
-    where: {
-      status: 'CLOSED',
-      date_time: { lte: date_final, gte: date_initial },
-      class: { key },
-    },
-  })
+  const [frequency, frequencies] = await Promise.all([
+    prisma.frequency.aggregate({
+      _avg: { infrequency: true },
+      where: {
+        status: 'CLOSED',
+        date_time: { lte: date_final, gte: date_initial },
+        class: { key },
+      },
+    }),
+    prisma.frequency.count({
+      where: {
+        status: 'CLOSED',
+        date_time: { lte: date_final, gte: date_initial },
+        class: { key },
+      },
+    }),
+  ])
 
   if (frequency._avg.infrequency) infrequency = frequency._avg.infrequency
 
-  return { ...classData, infrequency }
+  return { ...classData, infrequency, frequencies }
 }
 
 export const classArrayPeriodReturn = async (

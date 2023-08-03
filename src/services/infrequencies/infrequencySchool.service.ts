@@ -22,6 +22,7 @@ export const infrequencySchoolService = async (
       id: el.class.id,
       name: el.class.name,
       infrequency: 0,
+      frequencies: 0,
     }
   })
 

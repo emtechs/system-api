@@ -13,15 +13,19 @@ const classDateReturn = async (
   const { key, class: classData } = classDate
 
   let infrequency = 0
+  let frequencies = 0
 
   const frequency = await prisma.frequency.findFirst({
     where: { status: 'CLOSED', date, class: { key } },
     select: { infrequency: true },
   })
 
-  if (frequency) infrequency = frequency.infrequency
+  if (frequency) {
+    infrequency = frequency.infrequency
+    frequencies = 1
+  }
 
-  return { ...classData, infrequency }
+  return { ...classData, infrequency, frequencies }
 }
 
 export const classArrayDateReturn = async (
