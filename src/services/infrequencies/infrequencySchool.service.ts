@@ -2,7 +2,6 @@ import { AppError } from '../../errors'
 import { ICalendarQuery } from '../../interfaces'
 import { prisma } from '../../lib'
 import { classArrayDateReturn, classArrayPeriodReturn } from '../../scripts'
-import { listPeriodService } from '../calendar'
 
 export const infrequencySchoolService = async (
   school_id: string,
@@ -40,8 +39,5 @@ export const infrequencySchoolService = async (
     result = await classArrayPeriodReturn(classes, date_initial, date_final)
   }
 
-  return {
-    result,
-    periods: (await listPeriodService({ category, year_id })).result,
-  }
+  return result
 }
