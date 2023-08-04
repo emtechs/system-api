@@ -6,7 +6,9 @@ export const ClassCreateSchema = z.object({
 
 export const ClassReportSchema = z.object({
   key_class: z.string().uuid(),
-  period_id: z.string().uuid(),
+  period_id: z.string().uuid().optional(),
+  initial: z.string().optional(),
+  final: z.string().optional(),
 })
 
 export const ClassSchoolCreateSchema = z.object({

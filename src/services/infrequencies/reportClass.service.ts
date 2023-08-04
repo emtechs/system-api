@@ -3,19 +3,47 @@ import { IClassReportRequest } from '../../interfaces'
 import { prisma } from '../../lib'
 
 export const reportClassService = async (
-  { key_class, period_id }: IClassReportRequest,
+  { key_class, final, initial, period_id }: IClassReportRequest,
   isResume?: boolean,
 ) => {
   let infrequency = 0
+  let date_initial_data = new Date()
+  let date_final_data = new Date()
+  let period_data = {}
 
-  const period = await prisma.period.findUnique({
-    where: { id: period_id },
-    include: { year: true },
-  })
+  if (initial && final) {
+    let dateData: string[]
 
-  if (!period) throw new AppError('')
+    dateData = initial.split('/')
+    date_initial_data = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
 
-  const { date_initial, date_final } = period
+    dateData = final.split('/')
+    date_final_data = new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+    period_data = {
+      year: {
+        year: dateData[2],
+      },
+      name: dateData[2],
+      category: 'PERSONALIZADO',
+      date_initial: date_initial_data,
+      date_final: date_final_data,
+    }
+  }
+
+  if (period_id) {
+    const period = await prisma.period.findUnique({
+      where: { id: period_id },
+      include: { year: true },
+    })
+
+    if (!period) throw new AppError('')
+
+    const { date_initial, date_final } = period
+
+    date_initial_data = date_initial
+    date_final_data = date_final
+    period_data = period
+  }
 
   const [classData, students, frequencyData, frequencies] = await Promise.all([
     prisma.classYear.findUnique({
@@ -36,14 +64,14 @@ export const reportClassService = async (
       _avg: { infrequency: true },
       where: {
         status: 'CLOSED',
-        date_time: { lte: date_final, gte: date_initial },
+        date_time: { lte: date_final_data, gte: date_initial_data },
         class: { key: key_class },
       },
     }),
     prisma.frequency.count({
       where: {
         status: 'CLOSED',
-        date_time: { lte: date_final, gte: date_initial },
+        date_time: { lte: date_final_data, gte: date_initial_data },
         class: { key: key_class },
       },
     }),
@@ -63,7 +91,7 @@ export const reportClassService = async (
     students,
     frequencies,
     infrequency,
-    period,
+    period: period_data,
   }
 
   if (isResume) return { result }
@@ -72,8 +100,8 @@ export const reportClassService = async (
     result,
     students: await studentArrayReturn(
       classData.students,
-      date_initial,
-      date_final,
+      date_initial_data,
+      date_final_data,
     ),
   }
 }

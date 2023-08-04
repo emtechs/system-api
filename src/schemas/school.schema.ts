@@ -7,8 +7,10 @@ export const SchoolCreateSchema = z.object({
 export const SchoolReportSchema = z.object({
   model: z.enum(['resume', 'details']),
   school_id: z.string().uuid(),
-  period_id: z.string().uuid(),
   year_id: z.string().uuid(),
+  period_id: z.string().uuid().optional(),
+  initial: z.string().optional(),
+  final: z.string().optional(),
 })
 
 export const SchoolServerCreateSchema = z.object({

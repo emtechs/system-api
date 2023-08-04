@@ -9,8 +9,10 @@ export const StudentCreateSchema = z.object({
 
 export const StudentReportSchema = z.object({
   key_class: z.string().uuid(),
-  period_id: z.string().uuid(),
   student_id: z.string().uuid(),
+  period_id: z.string().uuid().optional(),
+  initial: z.string().optional(),
+  final: z.string().optional(),
 })
 
 export const StudentUpdateSchema = z
