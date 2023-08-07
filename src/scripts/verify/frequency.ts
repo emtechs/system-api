@@ -6,9 +6,10 @@ export const verifyFrequency = async (id: string) => {
     where: { id },
     select: {
       date: true,
+      is_open: true,
       class: {
         select: {
-          school: { select: { name: true } },
+          school: { select: { id: true, name: true } },
           class: { select: { name: true } },
         },
       },
@@ -17,10 +18,18 @@ export const verifyFrequency = async (id: string) => {
 
   if (!frequency) throw new AppError('frequency not found', 404)
 
+  const { class: classData, school } = frequency.class
+
   const select = {
     id,
-    label: `${frequency.date} - ${frequency.class.school.name} - ${frequency.class.class.name}`,
+    label: `${classData.name} - ${frequency.date}`,
+    is_open: frequency.is_open,
   }
 
-  return { select }
+  const select_school = {
+    id: school.id,
+    label: school.name,
+  }
+
+  return { select, school: select_school }
 }
