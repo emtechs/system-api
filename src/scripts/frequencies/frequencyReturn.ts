@@ -8,7 +8,7 @@ const frequencyReturn = async (id: string) => {
       id: true,
       date: true,
       date_time: true,
-      status: true,
+      is_open: true,
       created_at: true,
       finished_at: true,
       infrequency: true,
