@@ -3,48 +3,34 @@ import { IFrequencyStudentQuery } from '../../interfaces'
 
 export const listFrequencyStudentService = async (
   frequency_id: string,
-  { is_alter, isNot_presented, order, by, skip, take }: IFrequencyStudentQuery,
+  { is_alter, isNot_presented, skip, take, name }: IFrequencyStudentQuery,
 ) => {
   if (take) take = +take
   if (skip) skip = +skip
 
-  let whereData = {}
-  let orderBy = {}
+  let where = {}
+  let where_student = {}
 
-  if (order) {
-    switch (order) {
-      case 'name':
-        orderBy = { student: { name: by } }
-        break
-      case 'registry':
-        orderBy = { student: { registry: by } }
-        break
+  if (name)
+    where_student = {
+      ...where_student,
+      OR: [
+        { name: { contains: name, mode: 'insensitive' } },
+        { registry: { contains: name, mode: 'insensitive' } },
+      ],
     }
-  }
 
-  if (is_alter) whereData = { ...whereData, updated_at: { not: null } }
+  if (is_alter) where = { ...where, updated_at: { not: null } }
 
-  if (isNot_presented)
-    whereData = { ...whereData, status: { not: 'PRESENTED' } }
+  if (isNot_presented) where = { ...where, status: { not: 'PRESENTED' } }
 
-  whereData = { ...whereData, frequency_id }
+  where = { ...where, frequency_id, student: { ...where_student } }
 
-  const [frequencyData, frequencies, total] = await Promise.all([
-    prisma.frequency.findUnique({
-      where: { id: frequency_id },
-      include: {
-        class: {
-          select: {
-            class: { select: { id: true, name: true } },
-            school: { select: { id: true, name: true } },
-          },
-        },
-      },
-    }),
+  const [frequencies, total] = await Promise.all([
     prisma.frequencyStudent.findMany({
       take,
       skip,
-      where: { ...whereData },
+      where,
       select: {
         id: true,
         status: true,
@@ -52,18 +38,21 @@ export const listFrequencyStudentService = async (
         justification: true,
         student: { select: { registry: true, name: true } },
       },
-      orderBy,
+      orderBy: { student: { name: 'asc' } },
     }),
     prisma.frequencyStudent.count({
-      where: { ...whereData },
+      where,
     }),
   ])
 
-  const frequency = {
-    ...frequencyData,
-    class: frequencyData?.class.class,
-    school: frequencyData?.class.school,
-  }
+  const result = frequencies.map((el) => {
+    const { name, registry } = el.student
+    return {
+      ...el,
+      name,
+      registry,
+    }
+  })
 
-  return { total, frequency, result: frequencies }
+  return { total, result }
 }
