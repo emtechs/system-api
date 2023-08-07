@@ -67,7 +67,7 @@ export const reportSchoolService = async ({
     }),
     prisma.frequency.count({
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final_data, gte: date_initial_data },
         school_id,
         year_id,
@@ -77,7 +77,7 @@ export const reportSchoolService = async ({
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final_data, gte: date_initial_data },
         school_id,
         year_id,

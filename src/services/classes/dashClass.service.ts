@@ -17,7 +17,7 @@ export const dashClassService = async (
 
   whereData = {
     ...whereData,
-    status: 'CLOSED',
+    is_open: false,
     year_id,
     class_id,
     school_id,
@@ -31,7 +31,7 @@ export const dashClassService = async (
     }),
 
     prisma.frequency.count({
-      where: { school_id, class_id, year_id, status: 'OPENED' },
+      where: { school_id, class_id, year_id, is_open: true },
     }),
     prisma.classStudent.count({
       where: { school_id, year_id, class_id },

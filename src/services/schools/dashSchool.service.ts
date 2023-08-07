@@ -10,7 +10,7 @@ export const dashSchoolService = async (
 
   const [frequencyOpen, stundents, classTotal] = await Promise.all([
     prisma.frequency.count({
-      where: { school_id, status: 'OPENED' },
+      where: { school_id, is_open: true },
     }),
     prisma.classStudent.count({
       where: { school_id, year_id },
@@ -31,7 +31,7 @@ export const dashSchoolService = async (
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date,
         school_id,
       },
@@ -39,14 +39,14 @@ export const dashSchoolService = async (
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         year_id,
         school_id,
       },
     }),
     prisma.frequency.count({
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date,
         school_id,
       },

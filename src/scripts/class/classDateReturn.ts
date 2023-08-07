@@ -16,7 +16,7 @@ const classDateReturn = async (
   let frequencies = 0
 
   const frequency = await prisma.frequency.findFirst({
-    where: { status: 'CLOSED', date, class: { key } },
+    where: { is_open: false, date, class: { key } },
     select: { infrequency: true },
   })
 

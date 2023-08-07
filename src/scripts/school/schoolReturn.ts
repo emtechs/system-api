@@ -33,10 +33,10 @@ export const schoolReturn = async (
       }),
       prisma.frequency.aggregate({
         _avg: { infrequency: true },
-        where: { ...where, status: 'CLOSED', date },
+        where: { ...where, is_open: false, date },
       }),
       prisma.frequency.count({
-        where: { ...where, status: 'CLOSED', date },
+        where: { ...where, is_open: false, date },
       }),
     ])
 

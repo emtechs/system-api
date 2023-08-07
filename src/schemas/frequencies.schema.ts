@@ -11,9 +11,8 @@ export const FrequencyCreateSchema = z.object({
 
 export const FrequencyUpdateSchema = z
   .object({
-    status: z.enum(['OPENED', 'CLOSED']).optional(),
+    is_open: z.boolean(),
     finished_at: z.number(),
-    infrequency: z.number(),
   })
   .partial()
 
@@ -47,7 +46,7 @@ const StudentFrequencySchema = z.object({
 export const FrequencyReturnSchema = z.object({
   id: z.string(),
   date: z.string(),
-  status: z.string(),
+  is_open: z.boolean(),
   created_at: z.date(),
   finished_at: z.number(),
   infrequency: z.number(),

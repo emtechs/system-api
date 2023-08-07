@@ -30,7 +30,7 @@ export const classYearReturn = async (
       },
     }),
     prisma.frequency.count({
-      where: { class_id, school_id, year_id, status: 'CLOSED' },
+      where: { class_id, school_id, year_id, is_open: false },
     }),
     prisma.classYear.findUnique({
       where: { class_id_school_id_year_id: { class_id, school_id, year_id } },
@@ -39,7 +39,7 @@ export const classYearReturn = async (
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         class_id,
         school_id,
         year_id,

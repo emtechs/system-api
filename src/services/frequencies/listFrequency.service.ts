@@ -38,11 +38,11 @@ export const listFrequencyService = async ({
   if (is_active) {
     switch (is_active) {
       case 'true':
-        where = { ...where, status: 'CLOSED' }
+        where = { ...where, is_open: false }
         break
 
       case 'false':
-        where = { ...where, status: 'OPENED' }
+        where = { ...where, is_open: true }
         break
     }
   }

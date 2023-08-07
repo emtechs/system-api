@@ -90,7 +90,7 @@ const verifyReturn = async (
 
   where = {
     ...where,
-    status: 'CLOSED',
+    is_open: false,
     date_time: { lte: date_final, gte: date_initial },
   }
 

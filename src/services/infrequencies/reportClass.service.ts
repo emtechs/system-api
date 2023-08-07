@@ -63,14 +63,14 @@ export const reportClassService = async (
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final_data, gte: date_initial_data },
         class: { key: key_class },
       },
     }),
     prisma.frequency.count({
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final_data, gte: date_initial_data },
         class: { key: key_class },
       },
@@ -136,7 +136,7 @@ const returnStudent = async (
         where: {
           student_id,
           frequency: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final, gte: date_initial },
           },
         },
@@ -146,7 +146,7 @@ const returnStudent = async (
           student_id,
           status: 'PRESENTED',
           frequency: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final, gte: date_initial },
           },
         },
@@ -156,7 +156,7 @@ const returnStudent = async (
           student_id,
           status: 'JUSTIFIED',
           frequency: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final, gte: date_initial },
           },
         },
@@ -166,7 +166,7 @@ const returnStudent = async (
           student_id,
           status: 'MISSED',
           frequency: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final, gte: date_initial },
           },
         },
@@ -175,7 +175,7 @@ const returnStudent = async (
         where: {
           student_id,
           frequency: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final, gte: date_initial },
           },
         },

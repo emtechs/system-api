@@ -17,7 +17,7 @@ export const dashStudentService = async (
   whereData = {
     ...whereData,
     students: { every: { student_id } },
-    status: 'CLOSED',
+    is_open: false,
   }
 
   const frequencies = await prisma.frequency.count({

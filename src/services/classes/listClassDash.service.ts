@@ -13,7 +13,7 @@ export const listClassDashService = async (
   let where = {}
 
   if (date)
-    where = { ...where, frequencies: { none: { date, status: 'CLOSED' } } }
+    where = { ...where, frequencies: { none: { date, is_open: false } } }
 
   where = {
     ...where,
@@ -76,14 +76,14 @@ const returnClass = async (key: string) => {
         _count: {
           select: {
             students: true,
-            frequencies: { where: { status: 'CLOSED' } },
+            frequencies: { where: { is_open: false } },
           },
         },
       },
     }),
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
-      where: { class: { key }, status: 'CLOSED' },
+      where: { class: { key }, is_open: false },
     }),
   ])
 

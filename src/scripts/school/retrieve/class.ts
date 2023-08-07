@@ -12,7 +12,7 @@ export const viewClass = async (school_id: string, year_id = '', name = '') => {
         _count: {
           select: {
             students: true,
-            frequencies: { where: { status: 'CLOSED' } },
+            frequencies: { where: { is_open: false } },
           },
         },
         key: true,

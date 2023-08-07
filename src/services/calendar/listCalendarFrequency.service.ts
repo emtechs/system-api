@@ -25,7 +25,7 @@ export const listCalendarFrequencyService = async (
 
   whereData = {
     ...whereData,
-    status: 'CLOSED',
+    is_open: false,
     year_id,
     class_id,
     school_id,

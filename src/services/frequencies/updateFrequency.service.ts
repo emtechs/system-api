@@ -2,7 +2,7 @@ import { IFrequencyUpdateRequest } from '../../interfaces'
 import { prisma } from '../../lib'
 
 export const updateFrequencyService = async (
-  { status, finished_at }: IFrequencyUpdateRequest,
+  { is_open, finished_at }: IFrequencyUpdateRequest,
   id: string,
 ) => {
   let infrequency = 0
@@ -16,7 +16,7 @@ export const updateFrequencyService = async (
 
   const frequency = await prisma.frequency.update({
     where: { id },
-    data: { status, finished_at, infrequency },
+    data: { is_open, finished_at, infrequency },
     select: {
       year_id: true,
       class_id: true,

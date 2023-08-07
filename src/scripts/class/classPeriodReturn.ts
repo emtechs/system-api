@@ -19,14 +19,14 @@ const classPeriod = async (
     prisma.frequency.aggregate({
       _avg: { infrequency: true },
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final, gte: date_initial },
         class: { key },
       },
     }),
     prisma.frequency.count({
       where: {
-        status: 'CLOSED',
+        is_open: false,
         date_time: { lte: date_final, gte: date_initial },
         class: { key },
       },

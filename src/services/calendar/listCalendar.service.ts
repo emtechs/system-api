@@ -29,7 +29,7 @@ export const listCalendarService = async (
     })
   }
 
-  whereData = { ...whereData, status: 'CLOSED', year_id }
+  whereData = { ...whereData, is_open: false, year_id }
 
   const frequenciesData = await prisma.frequency.findMany({
     where: {

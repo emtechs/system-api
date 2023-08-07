@@ -5,9 +5,6 @@ CREATE TYPE "Role" AS ENUM ('SERV', 'DIRET', 'SECRET', 'ADMIN');
 CREATE TYPE "Dash" AS ENUM ('COMMON', 'SCHOOL', 'ORGAN', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "StatusFrequency" AS ENUM ('OPENED', 'CLOSED');
-
--- CreateEnum
 CREATE TYPE "StatusStudent" AS ENUM ('PRESENTED', 'MISSED', 'JUSTIFIED');
 
 -- CreateEnum
@@ -65,7 +62,7 @@ CREATE TABLE "frequencies" (
     "id" TEXT NOT NULL,
     "date" VARCHAR(50) NOT NULL,
     "date_time" DATE NOT NULL,
-    "status" "StatusFrequency" NOT NULL DEFAULT 'OPENED',
+    "is_open" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "finished_at" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "infrequency" DOUBLE PRECISION NOT NULL DEFAULT 0,
@@ -105,6 +102,19 @@ CREATE TABLE "periods" (
     "year_id" TEXT NOT NULL,
 
     CONSTRAINT "periods_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "requests" (
+    "id" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "is_open" BOOLEAN NOT NULL DEFAULT true,
+    "is_read" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "month_id" TEXT NOT NULL,
+    "year_id" TEXT NOT NULL,
+
+    CONSTRAINT "requests_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -150,6 +160,17 @@ CREATE TABLE "frequency_student" (
     "student_id" TEXT NOT NULL,
 
     CONSTRAINT "frequency_student_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "request_frequency" (
+    "key" TEXT NOT NULL,
+    "request_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "frequency_id" TEXT,
+    "student_id" TEXT,
+
+    CONSTRAINT "request_frequency_pkey" PRIMARY KEY ("request_id","user_id")
 );
 
 -- CreateTable
@@ -209,6 +230,9 @@ CREATE UNIQUE INDEX "class_year_key_key" ON "class_year"("key");
 CREATE UNIQUE INDEX "class_student_key_key" ON "class_student"("key");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "request_frequency_key_key" ON "request_frequency"("key");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
 
 -- CreateIndex
@@ -231,6 +255,12 @@ ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_user_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "periods" ADD CONSTRAINT "periods_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "requests" ADD CONSTRAINT "requests_month_id_fkey" FOREIGN KEY ("month_id") REFERENCES "months"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "requests" ADD CONSTRAINT "requests_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -258,6 +288,18 @@ ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_f
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_request_id_fkey" FOREIGN KEY ("request_id") REFERENCES "requests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "frequency_student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

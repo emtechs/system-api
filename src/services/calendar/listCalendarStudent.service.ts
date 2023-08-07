@@ -42,7 +42,7 @@ export const listCalendarStudentService = async (
 
   whereFrequency = {
     ...whereFrequency,
-    status: 'CLOSED',
+    is_open: false,
   }
 
   whereData = {

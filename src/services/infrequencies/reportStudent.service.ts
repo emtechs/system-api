@@ -66,7 +66,7 @@ export const reportStudentService = async ({
         school: { select: { id: true, name: true } },
         frequencies: {
           where: {
-            status: 'CLOSED',
+            is_open: false,
             date_time: { lte: date_final_data, gte: date_initial_data },
           },
           select: { id: true },
@@ -78,7 +78,7 @@ export const reportStudentService = async ({
       where: {
         student_id,
         frequency: {
-          status: 'CLOSED',
+          is_open: false,
           date_time: { lte: date_final_data, gte: date_initial_data },
           class: { key: key_class },
         },
@@ -89,7 +89,7 @@ export const reportStudentService = async ({
       where: {
         student_id,
         frequency: {
-          status: 'CLOSED',
+          is_open: false,
           date_time: { lte: date_final_data, gte: date_initial_data },
           class: { key: key_class },
         },
@@ -100,7 +100,7 @@ export const reportStudentService = async ({
         student_id,
         status: 'PRESENTED',
         frequency: {
-          status: 'CLOSED',
+          is_open: false,
           date_time: { lte: date_final_data, gte: date_initial_data },
           class: { key: key_class },
         },
@@ -111,7 +111,7 @@ export const reportStudentService = async ({
         student_id,
         status: 'JUSTIFIED',
         frequency: {
-          status: 'CLOSED',
+          is_open: false,
           date_time: { lte: date_final_data, gte: date_initial_data },
           class: { key: key_class },
         },
@@ -122,7 +122,7 @@ export const reportStudentService = async ({
         student_id,
         status: 'MISSED',
         frequency: {
-          status: 'CLOSED',
+          is_open: false,
           date_time: { lte: date_final_data, gte: date_initial_data },
           class: { key: key_class },
         },
