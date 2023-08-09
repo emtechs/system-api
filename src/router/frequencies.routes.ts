@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   createFrequencyController,
+  createRequestController,
   deleteFrequencyController,
   listFrequencyController,
   listFrequencyStudentController,
@@ -16,6 +17,7 @@ import {
   FrequencyCreateSchema,
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
+  RequestCreateSchema,
 } from '../schemas'
 
 export const frequencyRouter = Router()
@@ -25,6 +27,13 @@ frequencyRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyCreateSchema),
   createFrequencyController,
+)
+
+frequencyRouter.post(
+  '/request',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(RequestCreateSchema),
+  createRequestController,
 )
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController)

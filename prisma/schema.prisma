@@ -37,23 +37,23 @@ enum CategoryPeriod {
 }
 
 model User {
-  id              String             @id @default(uuid())
-  name            String             @db.VarChar(254)
-  email           String?            @db.VarChar(254)
-  login           String             @unique @db.VarChar(128)
-  password        String             @db.VarChar(128)
-  cpf             String             @unique @db.VarChar(14)
-  role            Role               @default(SERV)
-  dash            Dash               @default(COMMON)
-  is_active       Boolean            @default(true)
-  is_first_access Boolean            @default(true)
-  created_at      DateTime           @default(now())
+  id              String         @id @default(uuid())
+  name            String         @db.VarChar(254)
+  email           String?        @db.VarChar(254)
+  login           String         @unique @db.VarChar(128)
+  password        String         @db.VarChar(128)
+  cpf             String         @unique @db.VarChar(14)
+  role            Role           @default(SERV)
+  dash            Dash           @default(COMMON)
+  is_active       Boolean        @default(true)
+  is_first_access Boolean        @default(true)
+  created_at      DateTime       @default(now())
   profile         Image?
   token           Token?
   director_school School[]
   work_school     SchoolServer[]
   frequencies     Frequency[]
-  requests        RequestFrequency[]
+  requests        RequestUser[]
 
   @@map("users")
 }
@@ -107,8 +107,8 @@ model Frequency {
   year_id     String
   user        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id     String
+  request     Request?
   students    FrequencyStudent[]
-  requests    RequestFrequency[]
 
   @@map("frequencies")
 }
@@ -146,16 +146,20 @@ model Period {
 }
 
 model Request {
-  id          String             @id @default(uuid())
-  description String             @db.Text
-  is_open     Boolean            @default(true)
-  is_read     Boolean            @default(false)
-  created_at  DateTime           @default(now())
-  month       Month              @relation(fields: [month_id], references: [id], onDelete: Cascade)
-  month_id    String
-  year        Year               @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id     String
-  orders      RequestFrequency[]
+  id           String            @id @default(uuid())
+  description  String            @db.Text
+  is_open      Boolean           @default(true)
+  is_read      Boolean           @default(false)
+  created_at   DateTime          @default(now())
+  month        Month             @relation(fields: [month_id], references: [id], onDelete: Cascade)
+  month_id     String
+  year         Year              @relation(fields: [year_id], references: [id], onDelete: Cascade)
+  year_id      String
+  frequency    Frequency?        @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  frequency_id String?           @unique
+  student      FrequencyStudent? @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id   String?           @unique
+  orders       RequestUser[]
 
   @@map("requests")
 }
@@ -202,33 +206,29 @@ model ClassStudent {
 }
 
 model FrequencyStudent {
-  id            String             @id @default(uuid())
-  status        StatusStudent      @default(PRESENTED)
-  value         Int                @default(0)
-  justification String?            @db.Text
-  updated_at    String?            @db.VarChar(200)
-  frequency     Frequency          @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
+  id            String        @id @default(uuid())
+  status        StatusStudent @default(PRESENTED)
+  value         Int           @default(0)
+  justification String?       @db.Text
+  updated_at    String?       @db.VarChar(200)
+  frequency     Frequency     @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
   frequency_id  String
-  student       Student            @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student       Student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id    String
-  requests      RequestFrequency[]
+  request       Request?
 
   @@map("frequency_student")
 }
 
-model RequestFrequency {
-  key          String            @unique @default(uuid())
-  request      Request           @relation(fields: [request_id], references: [id], onDelete: Cascade)
-  request_id   String
-  user         User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id      String
-  frequency    Frequency?        @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
-  frequency_id String?
-  student      FrequencyStudent? @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id   String?
+model RequestUser {
+  key        String  @unique @default(uuid())
+  request    Request @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  request_id String
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    String
 
   @@id([request_id, user_id])
-  @@map("request_frequency")
+  @@map("request_user")
 }
 
 model Image {

@@ -1,5 +1,13 @@
 import { z } from 'zod'
 
+export const RequestCreateSchema = z.object({
+  description: z.string(),
+  name: z.string(),
+  year_id: z.string().uuid(),
+  frequency_id: z.string().uuid().optional(),
+  student_id: z.string().uuid().optional(),
+})
+
 export const FrequencyCreateSchema = z.object({
   date: z.string(),
   name: z.string(),

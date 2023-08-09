@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import {
   createFrequencyService,
   createFrequencyStudentService,
+  createRequestService,
   deleteFrequencyService,
   listFrequencyService,
   listFrequencyStudentService,
@@ -16,6 +17,11 @@ export const createFrequencyController = async (
 ) => {
   const frequency = await createFrequencyService(req.body, req.user.id)
   return res.status(201).json(frequency)
+}
+
+export const createRequestController = async (req: Request, res: Response) => {
+  const reqst = await createRequestService(req.body, req.user.id)
+  return res.status(201).json(reqst)
 }
 
 export const listFrequencyController = async (req: Request, res: Response) => {

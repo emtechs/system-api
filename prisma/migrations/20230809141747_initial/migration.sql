@@ -113,6 +113,8 @@ CREATE TABLE "requests" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "month_id" TEXT NOT NULL,
     "year_id" TEXT NOT NULL,
+    "frequency_id" TEXT,
+    "student_id" TEXT,
 
     CONSTRAINT "requests_pkey" PRIMARY KEY ("id")
 );
@@ -163,14 +165,12 @@ CREATE TABLE "frequency_student" (
 );
 
 -- CreateTable
-CREATE TABLE "request_frequency" (
+CREATE TABLE "request_user" (
     "key" TEXT NOT NULL,
     "request_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
-    "frequency_id" TEXT,
-    "student_id" TEXT,
 
-    CONSTRAINT "request_frequency_pkey" PRIMARY KEY ("request_id","user_id")
+    CONSTRAINT "request_user_pkey" PRIMARY KEY ("request_id","user_id")
 );
 
 -- CreateTable
@@ -221,6 +221,12 @@ CREATE UNIQUE INDEX "months_name_key" ON "months"("name");
 CREATE UNIQUE INDEX "months_month_key" ON "months"("month");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "requests_frequency_id_key" ON "requests"("frequency_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "requests_student_id_key" ON "requests"("student_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "school_server_key_key" ON "school_server"("key");
 
 -- CreateIndex
@@ -230,7 +236,7 @@ CREATE UNIQUE INDEX "class_year_key_key" ON "class_year"("key");
 CREATE UNIQUE INDEX "class_student_key_key" ON "class_student"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "request_frequency_key_key" ON "request_frequency"("key");
+CREATE UNIQUE INDEX "request_user_key_key" ON "request_user"("key");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
@@ -263,6 +269,12 @@ ALTER TABLE "requests" ADD CONSTRAINT "requests_month_id_fkey" FOREIGN KEY ("mon
 ALTER TABLE "requests" ADD CONSTRAINT "requests_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "requests" ADD CONSTRAINT "requests_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "requests" ADD CONSTRAINT "requests_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "frequency_student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -290,16 +302,10 @@ ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_frequency_id_f
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_request_id_fkey" FOREIGN KEY ("request_id") REFERENCES "requests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "request_user" ADD CONSTRAINT "request_user_request_id_fkey" FOREIGN KEY ("request_id") REFERENCES "requests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_frequency_id_fkey" FOREIGN KEY ("frequency_id") REFERENCES "frequencies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "request_frequency" ADD CONSTRAINT "request_frequency_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "frequency_student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "request_user" ADD CONSTRAINT "request_user_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
