@@ -107,7 +107,6 @@ CREATE TABLE "periods" (
 -- CreateTable
 CREATE TABLE "requests" (
     "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "is_open" BOOLEAN NOT NULL DEFAULT true,
     "is_read" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -156,7 +155,7 @@ CREATE TABLE "frequency_student" (
     "id" TEXT NOT NULL,
     "status" "StatusStudent" NOT NULL DEFAULT 'PRESENTED',
     "value" INTEGER NOT NULL DEFAULT 0,
-    "justification" TEXT,
+    "justification" VARCHAR(200),
     "updated_at" VARCHAR(200),
     "frequency_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
@@ -178,7 +177,7 @@ CREATE TABLE "images" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(200) NOT NULL,
     "size" INTEGER NOT NULL,
-    "url" TEXT NOT NULL,
+    "url" VARCHAR(200) NOT NULL,
     "key" VARCHAR(200) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" TEXT NOT NULL,

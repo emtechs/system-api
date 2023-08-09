@@ -8,6 +8,7 @@ import {
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
+  updateRequestController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -18,6 +19,7 @@ import {
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   RequestCreateSchema,
+  RequestUpdateSchema,
 } from '../schemas'
 
 export const frequencyRouter = Router()
@@ -55,6 +57,13 @@ frequencyRouter.patch(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyUpdateSchema),
   updateFrequencyController,
+)
+
+frequencyRouter.patch(
+  'request/:id',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(RequestUpdateSchema),
+  updateRequestController,
 )
 
 frequencyRouter.patch(

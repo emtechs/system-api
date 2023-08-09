@@ -4,6 +4,7 @@ import {
   FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   RequestCreateSchema,
+  RequestUpdateSchema,
 } from '../schemas'
 import { IQuery } from './global.interfaces'
 import { CategoryPeriod } from '@prisma/client'
@@ -30,6 +31,8 @@ export interface IFrequencyHistoryCreate {
 }
 
 export type IRequestCreate = z.infer<typeof RequestCreateSchema>
+
+export type IRequestUpdate = z.infer<typeof RequestUpdateSchema>
 
 export type IFrequencyUpdateRequest = z.infer<typeof FrequencyUpdateSchema>
 

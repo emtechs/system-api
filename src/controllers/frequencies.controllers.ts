@@ -9,6 +9,7 @@ import {
   retrieveFrequencyService,
   updateFrequencyService,
   updateFrequencyStudentService,
+  updateRequestService,
 } from '../services'
 
 export const createFrequencyController = async (
@@ -70,6 +71,11 @@ export const updateFrequencyStudentController = async (
 ) => {
   const frequency = await updateFrequencyStudentService(req.body, req.params.id)
   return res.json(frequency)
+}
+
+export const updateRequestController = async (req: Request, res: Response) => {
+  const reqst = await updateRequestService(req.body, req.params.id)
+  return res.json(reqst)
 }
 
 export const deleteFrequencyController = async (

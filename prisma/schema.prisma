@@ -147,7 +147,6 @@ model Period {
 
 model Request {
   id           String            @id @default(uuid())
-  description  String            @db.Text
   is_open      Boolean           @default(true)
   is_read      Boolean           @default(false)
   created_at   DateTime          @default(now())
@@ -209,7 +208,7 @@ model FrequencyStudent {
   id            String        @id @default(uuid())
   status        StatusStudent @default(PRESENTED)
   value         Int           @default(0)
-  justification String?       @db.Text
+  justification String?       @db.VarChar(200)
   updated_at    String?       @db.VarChar(200)
   frequency     Frequency     @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
   frequency_id  String
@@ -235,7 +234,7 @@ model Image {
   id         String   @id @default(uuid())
   name       String   @db.VarChar(200)
   size       Int      @db.Integer()
-  url        String   @db.Text()
+  url        String   @db.VarChar(200)
   key        String   @unique @db.VarChar(200)
   created_at DateTime @default(now())
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
