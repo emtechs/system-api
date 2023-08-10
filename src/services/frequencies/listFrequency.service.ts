@@ -54,6 +54,8 @@ export const listFrequencyService = async ({
   if (user_id) where = { ...where, user_id }
   if (month_id) where = { ...where, month_id }
 
+  where = { ...where, request_id: { equals: null } }
+
   const [frequencies, total, monthsData] = await Promise.all([
     prisma.frequency.findMany({
       take,
@@ -64,7 +66,7 @@ export const listFrequencyService = async ({
     }),
     prisma.frequency.count({ where }),
     prisma.frequency.findMany({
-      where: { year_id },
+      where: { year_id, request_id: { equals: null } },
       distinct: ['month_id'],
       select: { month: true },
       orderBy: { month: { month: 'asc' } },

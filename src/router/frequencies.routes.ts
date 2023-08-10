@@ -6,6 +6,7 @@ import {
   deleteRequestController,
   listFrequencyController,
   listFrequencyStudentController,
+  listRequestController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
@@ -39,6 +40,12 @@ frequencyRouter.post(
 )
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController)
+
+frequencyRouter.get(
+  '/request',
+  verifyUserIsAuthenticated,
+  listRequestController,
+)
 
 frequencyRouter.get(
   '/:id',

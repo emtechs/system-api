@@ -6,7 +6,7 @@ export const createRequestService = async (
   user_id: string,
 ) => {
   const request = await prisma.request.create({
-    data: { justification, orders: { create: { user_id } } },
+    data: { justification, user: { connect: { id: user_id } } },
   })
 
   const request_id = request.id

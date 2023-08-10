@@ -7,6 +7,7 @@ import {
   deleteRequestService,
   listFrequencyService,
   listFrequencyStudentService,
+  listRequestService,
   retrieveFrequencyService,
   updateFrequencyService,
   updateFrequencyStudentService,
@@ -28,6 +29,11 @@ export const createRequestController = async (req: Request, res: Response) => {
 export const listFrequencyController = async (req: Request, res: Response) => {
   const frequencies = await listFrequencyService(req.query)
   return res.json(frequencies)
+}
+
+export const listRequestController = async (req: Request, res: Response) => {
+  const reqst = await listRequestService()
+  return res.json(reqst)
 }
 
 export const updateFrequencyController = async (

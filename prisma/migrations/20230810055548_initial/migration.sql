@@ -110,6 +110,7 @@ CREATE TABLE "requests" (
     "id" TEXT NOT NULL,
     "justification" VARCHAR(200) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "requests_pkey" PRIMARY KEY ("id")
 );
@@ -158,15 +159,6 @@ CREATE TABLE "frequency_student" (
     "request_id" TEXT,
 
     CONSTRAINT "frequency_student_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "request_user" (
-    "key" TEXT NOT NULL,
-    "request_id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-
-    CONSTRAINT "request_user_pkey" PRIMARY KEY ("request_id","user_id")
 );
 
 -- CreateTable
@@ -232,9 +224,6 @@ CREATE UNIQUE INDEX "class_student_key_key" ON "class_student"("key");
 CREATE UNIQUE INDEX "frequency_student_request_id_key" ON "frequency_student"("request_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "request_user_key_key" ON "request_user"("key");
-
--- CreateIndex
 CREATE UNIQUE INDEX "images_key_key" ON "images"("key");
 
 -- CreateIndex
@@ -260,6 +249,9 @@ ALTER TABLE "frequencies" ADD CONSTRAINT "frequencies_request_id_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "periods" ADD CONSTRAINT "periods_year_id_fkey" FOREIGN KEY ("year_id") REFERENCES "years"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "requests" ADD CONSTRAINT "requests_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "school_server" ADD CONSTRAINT "school_server_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -290,12 +282,6 @@ ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_student_id_fke
 
 -- AddForeignKey
 ALTER TABLE "frequency_student" ADD CONSTRAINT "frequency_student_request_id_fkey" FOREIGN KEY ("request_id") REFERENCES "requests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "request_user" ADD CONSTRAINT "request_user_request_id_fkey" FOREIGN KEY ("request_id") REFERENCES "requests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "request_user" ADD CONSTRAINT "request_user_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

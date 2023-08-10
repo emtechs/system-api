@@ -53,7 +53,7 @@ model User {
   director_school School[]
   work_school     SchoolServer[]
   frequencies     Frequency[]
-  requests        RequestUser[]
+  requests        Request[]
 
   @@map("users")
 }
@@ -148,9 +148,10 @@ model Request {
   id            String            @id @default(uuid())
   justification String            @db.VarChar(200)
   created_at    DateTime          @default(now())
+  user          User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
   frequency     Frequency?
   student       FrequencyStudent?
-  orders        RequestUser[]
 
   @@map("requests")
 }
@@ -210,17 +211,6 @@ model FrequencyStudent {
   request_id    String?       @unique
 
   @@map("frequency_student")
-}
-
-model RequestUser {
-  key        String  @unique @default(uuid())
-  request    Request @relation(fields: [request_id], references: [id], onDelete: Cascade)
-  request_id String
-  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id    String
-
-  @@id([request_id, user_id])
-  @@map("request_user")
 }
 
 model Image {
