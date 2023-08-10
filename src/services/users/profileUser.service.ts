@@ -1,6 +1,9 @@
+import { IRequestUser } from '../../interfaces'
 import { prisma } from '../../lib'
 
-export const profileUserService = async (id: string) => {
+export const profileUserService = async ({ id, role }: IRequestUser) => {
+  let requests = 0
+
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -12,5 +15,7 @@ export const profileUserService = async (id: string) => {
     },
   })
 
-  return user
+  if (role === 'ADMIN') requests = await prisma.request.count()
+
+  return { ...user, requests }
 }
