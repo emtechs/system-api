@@ -7,7 +7,8 @@ export const RequestCreateSchema = z.object({
 })
 
 export const RequestUpdateSchema = z.object({
-  requests: z.object({ id: z.string().uuid() }).array(),
+  status: z.enum(['ACCEPTED', 'REFUSED']),
+  requests: z.string().uuid().array(),
 })
 
 export const FrequencyCreateSchema = z.object({
