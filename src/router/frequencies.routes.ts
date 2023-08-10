@@ -74,7 +74,7 @@ frequencyRouter.patch(
 )
 
 frequencyRouter.delete(
-  'request',
+  '/request',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(RequestUpdateSchema),
   deleteRequestController,
