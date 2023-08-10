@@ -31,7 +31,7 @@ const verifyRequest = async (id: string, status: 'ACCEPTED' | 'REFUSED') => {
     if (request.frequency)
       await prisma.frequency.update({
         where: { id: request.frequency.id },
-        data: { is_open: true },
+        data: { is_open: true, finished_at: 0 },
       })
 
     if (request.student)
