@@ -1,5 +1,6 @@
 import { prisma } from '../../lib'
 import { IFrequencyStudentQuery } from '../../interfaces'
+import { retrieveFrequencyService } from './retrieveFrequency.service'
 
 export const listFrequencyStudentService = async (
   frequency_id: string,
@@ -26,7 +27,7 @@ export const listFrequencyStudentService = async (
 
   where = { ...where, frequency_id, student: { ...where_student } }
 
-  const [frequencies, total] = await Promise.all([
+  const [frequencies, total, frequency] = await Promise.all([
     prisma.frequencyStudent.findMany({
       take,
       skip,
@@ -43,6 +44,7 @@ export const listFrequencyStudentService = async (
     prisma.frequencyStudent.count({
       where,
     }),
+    retrieveFrequencyService(frequency_id),
   ])
 
   const result = frequencies.map((el) => {
@@ -54,5 +56,5 @@ export const listFrequencyStudentService = async (
     }
   })
 
-  return { total, result }
+  return { total, result, frequency }
 }

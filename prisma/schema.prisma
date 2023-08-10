@@ -107,18 +107,18 @@ model Frequency {
   year_id     String
   user        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id     String
-  request     Request?
+  request     Request?           @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  request_id  String?            @unique
   students    FrequencyStudent[]
 
   @@map("frequencies")
 }
 
 model Year {
-  id       String      @id @default(uuid())
-  year     String      @unique @db.VarChar(10)
-  periods  Period[]
-  classes  ClassYear[]
-  requests Request[]
+  id      String      @id @default(uuid())
+  year    String      @unique @db.VarChar(10)
+  periods Period[]
+  classes ClassYear[]
 
   @@map("years")
 }
@@ -128,7 +128,6 @@ model Month {
   name        String      @unique @db.VarChar(30)
   month       Int         @unique @db.Integer
   frequencies Frequency[]
-  requests    Request[]
 
   @@map("months")
 }
@@ -146,19 +145,12 @@ model Period {
 }
 
 model Request {
-  id           String            @id @default(uuid())
-  is_open      Boolean           @default(true)
-  is_read      Boolean           @default(false)
-  created_at   DateTime          @default(now())
-  month        Month             @relation(fields: [month_id], references: [id], onDelete: Cascade)
-  month_id     String
-  year         Year              @relation(fields: [year_id], references: [id], onDelete: Cascade)
-  year_id      String
-  frequency    Frequency?        @relation(fields: [frequency_id], references: [id], onDelete: Cascade)
-  frequency_id String?           @unique
-  student      FrequencyStudent? @relation(fields: [student_id], references: [id], onDelete: Cascade)
-  student_id   String?           @unique
-  orders       RequestUser[]
+  id            String            @id @default(uuid())
+  justification String            @db.VarChar(200)
+  created_at    DateTime          @default(now())
+  frequency     Frequency?
+  student       FrequencyStudent?
+  orders        RequestUser[]
 
   @@map("requests")
 }
@@ -214,7 +206,8 @@ model FrequencyStudent {
   frequency_id  String
   student       Student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id    String
-  request       Request?
+  request       Request?      @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  request_id    String?       @unique
 
   @@map("frequency_student")
 }

@@ -1,15 +1,13 @@
 import { z } from 'zod'
 
 export const RequestCreateSchema = z.object({
-  name: z.string(),
-  year_id: z.string().uuid(),
+  justification: z.string(),
   frequency_id: z.string().uuid().optional(),
   student_id: z.string().uuid().optional(),
 })
 
 export const RequestUpdateSchema = z.object({
-  is_open: z.boolean().optional(),
-  is_read: z.boolean().optional(),
+  requests: z.object({ id: z.string().uuid() }).array(),
 })
 
 export const FrequencyCreateSchema = z.object({

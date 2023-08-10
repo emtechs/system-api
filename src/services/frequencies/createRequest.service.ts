@@ -2,27 +2,25 @@ import { prisma } from '../../lib'
 import { IRequestCreate } from '../../interfaces'
 
 export const createRequestService = async (
-  { name, year_id, frequency_id, student_id }: IRequestCreate,
+  { justification, frequency_id, student_id }: IRequestCreate,
   user_id: string,
 ) => {
   const request = await prisma.request.create({
-    data: {
-      month: { connect: { name } },
-      year: { connect: { id: year_id } },
-      orders: { create: { user_id } },
-    },
+    data: { justification, orders: { create: { user_id } } },
   })
+
+  const request_id = request.id
 
   if (frequency_id)
     await prisma.frequency.update({
       where: { id: frequency_id },
-      data: { request: { connect: { id: request.id } } },
+      data: { request_id },
     })
 
   if (student_id)
     await prisma.frequencyStudent.update({
       where: { id: student_id },
-      data: { request: { connect: { id: request.id } } },
+      data: { request_id },
     })
 
   return request

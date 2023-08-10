@@ -3,12 +3,12 @@ import {
   createFrequencyController,
   createRequestController,
   deleteFrequencyController,
+  deleteRequestController,
   listFrequencyController,
   listFrequencyStudentController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
-  updateRequestController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -60,17 +60,17 @@ frequencyRouter.patch(
 )
 
 frequencyRouter.patch(
-  'request/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(RequestUpdateSchema),
-  updateRequestController,
-)
-
-frequencyRouter.patch(
   '/student/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyStudentUpdateSchema),
   updateFrequencyStudentController,
+)
+
+frequencyRouter.delete(
+  'request',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(RequestUpdateSchema),
+  deleteRequestController,
 )
 
 frequencyRouter.delete(
