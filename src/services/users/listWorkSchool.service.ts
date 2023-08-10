@@ -39,7 +39,6 @@ export const listWorkSchoolService = async (
         where,
       }),
       prisma.school.findMany({
-        where,
         select: { id: true, name: true },
         orderBy: { name: 'asc' },
       }),
@@ -78,7 +77,6 @@ export const listWorkSchoolService = async (
       where,
     }),
     prisma.schoolServer.findMany({
-      where,
       select: {
         school: {
           select: { id: true, name: true },
