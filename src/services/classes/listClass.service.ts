@@ -6,8 +6,6 @@ import { classArrayReturn, classYearArrayReturn } from '../../scripts'
 export const listClassService = async ({
   take,
   skip,
-  order,
-  by,
   school_id,
   year_id,
   name,
@@ -17,15 +15,6 @@ export const listClassService = async ({
   if (skip) skip = +skip
 
   let where = {}
-  let orderBy = {}
-
-  if (order) {
-    switch (order) {
-      case 'name':
-        orderBy = { name: by }
-        break
-    }
-  }
 
   if (name) where = { ...where, name: { contains: name, mode: 'insensitive' } }
 
@@ -41,7 +30,7 @@ export const listClassService = async ({
       take,
       skip,
       where,
-      orderBy,
+      orderBy: { name: 'asc' },
     }),
     prisma.class.count({ where }),
     prisma.class.findMany({
@@ -61,7 +50,7 @@ export const listClassService = async ({
 
   const years = yearsData.map((el) => el.year)
 
-  returnResult = { classes, total, years }
+  returnResult = { total, classes, years }
 
   if (!is_school && school_id && year_id) {
     const classYear = classesData.map((el) => {
