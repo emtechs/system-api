@@ -4,6 +4,7 @@ import {
   exportStudentController,
   listClassStudentController,
   listStudentController,
+  resumeStudentController,
   retrieveStudentController,
   updateStudentController,
 } from '../controllers'
@@ -29,6 +30,8 @@ studentRouter.get(
   verifyUserIsAuthenticated,
   listClassStudentController,
 )
+
+studentRouter.get('/resume', verifyUserIsAuthenticated, resumeStudentController)
 
 studentRouter.get('/export', verifyUserIsAuthenticated, exportStudentController)
 

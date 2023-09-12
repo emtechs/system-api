@@ -192,6 +192,7 @@ model ClassStudent {
   year_id    String
   student    Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
   student_id String
+  abstract   Abstract?
 
   @@id([class_id, school_id, year_id, student_id])
   @@map("class_student")
@@ -234,4 +235,19 @@ model Token {
   created_at DateTime @default(now())
 
   @@map("token")
+}
+
+model Abstract {
+  key           String       @unique @default(uuid())
+  class_student ClassStudent @relation(fields: [class_id, school_id, year_id, student_id], references: [class_id, school_id, year_id, student_id], onDelete: Cascade)
+  class_id      String
+  school_id     String
+  year_id       String
+  student_id    String
+  frequencies   Int          @default(0)
+  absences      Int          @default(0)
+  infrequency   Float        @default(0)
+
+  @@id([class_id, school_id, year_id, student_id])
+  @@map("abstracts")
 }
