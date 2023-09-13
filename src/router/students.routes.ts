@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import {
+  createResumeStudentController,
   createStudentController,
   exportStudentController,
   listClassStudentController,
@@ -21,6 +22,12 @@ studentRouter.post(
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(StudentCreateSchema),
   createStudentController,
+)
+
+studentRouter.post(
+  '/resume',
+  verifyUserIsAuthenticated,
+  createResumeStudentController,
 )
 
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController)

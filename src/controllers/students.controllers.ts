@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import {
+  createResumeStudentService,
   createStudentService,
   exportStudentService,
   importStudentAllService,
@@ -10,6 +11,14 @@ import {
   retrieveStudentService,
   updateStudentService,
 } from '../services'
+
+export const createResumeStudentController = async (
+  req: Request,
+  res: Response,
+) => {
+  const student = await createResumeStudentService()
+  return res.status(201).json(student)
+}
 
 export const createStudentController = async (req: Request, res: Response) => {
   const student = await createStudentService(req.body, req.query)

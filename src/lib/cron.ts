@@ -1,7 +1,7 @@
 import { CronJob } from 'cron'
 import { createResume } from '../scripts'
 
-export const job = new CronJob('* * */4 * * 1-5', async () => {
+export const job = new CronJob('* * */6 * * 1-5', async () => {
   try {
     await createResume()
     console.log('Resumo criado com sucesso')
