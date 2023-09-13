@@ -5,18 +5,27 @@ export const resumeStudentService = async (
   school_id: string,
   year_id: string,
 ) => {
-  const students = await prisma.classStudent.findMany({
-    where: { school_id, year_id },
-    select: { class_id: true, student_id: true },
-    orderBy: { student: { name: 'asc' } },
-  })
+  const [students, total] = await Promise.all([
+    prisma.classStudent.findMany({
+      where: { school_id, year_id },
+      select: { class_id: true, student_id: true },
+      orderBy: { student: { name: 'asc' } },
+    }),
+    prisma.classStudent.count({
+      where: { school_id, year_id },
+    }),
+  ])
 
   const result = await studentArrayResume(students, school_id, year_id)
 
-  return sortArray(result, {
-    by: 'infrequency',
-    order: 'desc',
-  })
+  return {
+    total,
+    created_at: Date.now(),
+    result: sortArray(result, {
+      by: 'infrequency',
+      order: 'desc',
+    }),
+  }
 }
 
 const studentArrayResume = async (
