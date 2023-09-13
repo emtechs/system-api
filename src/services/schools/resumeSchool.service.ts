@@ -1,31 +1,22 @@
 import sortArray from 'sort-array'
 import { prisma } from '../../lib'
 
-export const resumeStudentService = async (
+export const resumeSchoolService = async (
   school_id: string,
   year_id: string,
 ) => {
-  const [students, total] = await Promise.all([
-    prisma.classStudent.findMany({
-      where: { school_id, year_id },
-      select: { class_id: true, student_id: true },
-      orderBy: { student: { name: 'asc' } },
-    }),
-    prisma.classStudent.count({
-      where: { school_id, year_id },
-    }),
-  ])
+  const students = await prisma.classStudent.findMany({
+    where: { school_id, year_id },
+    select: { class_id: true, student_id: true },
+    orderBy: { student: { name: 'asc' } },
+  })
 
   const result = await studentArrayResume(students, school_id, year_id)
 
-  return {
-    total,
-    created_at: Date.now(),
-    result: sortArray(result, {
-      by: 'infrequency',
-      order: 'desc',
-    }),
-  }
+  return sortArray(result, {
+    by: 'infrequency',
+    order: 'desc',
+  })
 }
 
 const studentArrayResume = async (

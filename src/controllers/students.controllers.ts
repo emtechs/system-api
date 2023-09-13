@@ -6,7 +6,6 @@ import {
   importStudentService,
   listClassStudentService,
   listStudentService,
-  resumeStudentService,
   retrieveStudentService,
   updateStudentService,
 } from '../services'
@@ -50,14 +49,6 @@ export const listClassStudentController = async (
 export const listStudentController = async (req: Request, res: Response) => {
   const students = await listStudentService(req.query)
   return res.json(students)
-}
-
-export const resumeStudentController = async (req: Request, res: Response) => {
-  const student = await resumeStudentService(
-    req.params.school_id,
-    req.params.year_id,
-  )
-  return res.json(student)
 }
 
 export const retrieveStudentController = async (

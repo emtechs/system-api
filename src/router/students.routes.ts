@@ -4,13 +4,11 @@ import {
   exportStudentController,
   listClassStudentController,
   listStudentController,
-  resumeStudentController,
   retrieveStudentController,
   updateStudentController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
-  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
 import { StudentCreateSchema, StudentUpdateSchema } from '../schemas'
@@ -30,13 +28,6 @@ studentRouter.get(
   '/class',
   verifyUserIsAuthenticated,
   listClassStudentController,
-)
-
-studentRouter.get(
-  '/resume/:school_id/:year_id',
-  verifyUserIsAuthenticated,
-  verifyIsPermission,
-  resumeStudentController,
 )
 
 studentRouter.get('/export', verifyUserIsAuthenticated, exportStudentController)

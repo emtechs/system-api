@@ -10,6 +10,7 @@ import {
   exportSchoolController,
   listSchoolController,
   listSchoolServerController,
+  resumeSchoolController,
   retrieveSchoolController,
   updateSchoolController,
 } from '../controllers'
@@ -72,6 +73,13 @@ schoolRouter.get(
   verifyUserIsAuthenticated,
   verifyIsPermission,
   retrieveSchoolController,
+)
+
+schoolRouter.get(
+  '/:school_id/resume/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  resumeSchoolController,
 )
 
 schoolRouter.get(
