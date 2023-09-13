@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import {
-  createResumeStudentController,
   createStudentController,
   exportStudentController,
   listClassStudentController,
@@ -11,6 +10,7 @@ import {
 } from '../controllers'
 import {
   validateSchemaMiddleware,
+  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
 import { StudentCreateSchema, StudentUpdateSchema } from '../schemas'
@@ -24,12 +24,6 @@ studentRouter.post(
   createStudentController,
 )
 
-studentRouter.post(
-  '/resume',
-  verifyUserIsAuthenticated,
-  createResumeStudentController,
-)
-
 studentRouter.get('', verifyUserIsAuthenticated, listStudentController)
 
 studentRouter.get(
@@ -38,7 +32,12 @@ studentRouter.get(
   listClassStudentController,
 )
 
-studentRouter.get('/resume', verifyUserIsAuthenticated, resumeStudentController)
+studentRouter.get(
+  '/resume/:school_id/:year_id',
+  verifyUserIsAuthenticated,
+  verifyIsPermission,
+  resumeStudentController,
+)
 
 studentRouter.get('/export', verifyUserIsAuthenticated, exportStudentController)
 

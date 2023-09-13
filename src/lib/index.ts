@@ -1,4 +1,3 @@
-export * from './cron'
 export * from './mailgen'
 export * from './multer'
 export * from './nodemailer'
