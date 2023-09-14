@@ -77,6 +77,7 @@ export const resumeSchoolController = async (req: Request, res: Response) => {
   const student = await resumeSchoolService(
     req.params.school_id,
     req.params.year_id,
+    req.query,
   )
   return res.json(student)
 }

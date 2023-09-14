@@ -1,12 +1,29 @@
 import sortArray from 'sort-array'
 import { prisma } from '../../lib'
+import { IQuery } from '../../interfaces'
 
 export const resumeSchoolService = async (
   school_id: string,
   year_id: string,
+  { name }: IQuery,
 ) => {
+  let where = {}
+
+  if (name)
+    where = {
+      ...where,
+      student: {
+        OR: [
+          { name: { contains: name, mode: 'insensitive' } },
+          { registry: { contains: name, mode: 'insensitive' } },
+        ],
+      },
+    }
+
+  where = { ...where, school_id, year_id }
+
   const students = await prisma.classStudent.findMany({
-    where: { school_id, year_id },
+    where,
     select: { class_id: true, student_id: true },
     orderBy: { student: { name: 'asc' } },
   })
