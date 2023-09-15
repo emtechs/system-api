@@ -33,4 +33,5 @@ export interface IUserQuery extends IQuery {
   allNotServ?: 'true' | 'false'
   director?: 'true' | 'false'
   name?: string
+  is_server?: 'true' | 'false'
 }

@@ -1,13 +1,13 @@
+import { hashSync } from 'bcryptjs'
 import { prisma } from '../../lib'
 import { IUserQuery, IUserRequest } from '../../interfaces'
-import { hashSync } from 'bcryptjs'
 import { AppError } from '../../errors'
 import { ServerSchema, UserReturnSchema } from '../../schemas'
-import { updateSchoolDirector } from '../../scripts'
+import { updateSchoolDirector, updateSchoolServer } from '../../scripts'
 
 export const createUserService = async (
   { login, name, password, cpf, role, dash, schools }: IUserRequest,
-  { allNotServ, school_id }: IUserQuery,
+  { allNotServ, school_id, is_server }: IUserQuery,
 ) => {
   let user = await prisma.user.findUnique({
     where: { login },
@@ -31,7 +31,9 @@ export const createUserService = async (
       })
     }
 
-    await updateSchoolDirector(schools, user.id)
+    if (is_server) {
+      await updateSchoolServer(schools, user.id)
+    } else await updateSchoolDirector(schools, user.id)
 
     return UserReturnSchema.parse(user)
   }
