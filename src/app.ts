@@ -5,6 +5,7 @@ import {
   calendarRouter,
   classRouter,
   frequencyRouter,
+  imageRouter,
   importRouter,
   infrequencyRouter,
   passwordRouter,
@@ -38,6 +39,7 @@ app.use('/infrequencies', infrequencyRouter)
 app.use('/calendar', calendarRouter)
 app.use('/imports', importRouter)
 app.use('/verify', verifyRouter)
+app.use('/images', imageRouter)
 
 app.use(errorHandler)
 
