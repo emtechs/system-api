@@ -16,7 +16,7 @@ if (env.NODE_ENV === 'dev') {
 export const fileSize = 2 * 1024 * 1024
 
 export const storage =
-  env.NODE_ENV === 'production'
+  env.NODE_ENV === 'dev'
     ? multer.diskStorage({
         destination: (req, file, cb) => {
           cb(null, tmpfolder)
@@ -55,7 +55,7 @@ export const fileFilter = (
 }
 
 export const upload =
-  env.NODE_ENV === 'production'
+  env.NODE_ENV === 'dev'
     ? multer({
         dest: tmpfolder,
         storage,
@@ -69,7 +69,7 @@ export const upload =
       })
 
 export const uploadCsv =
-  env.NODE_ENV === 'production'
+  env.NODE_ENV === 'dev'
     ? multer({
         dest: tmpfolder,
         storage,
