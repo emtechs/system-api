@@ -10,6 +10,7 @@ export const retrieveUserService = async (
 
   const userData = await prisma.user.findUnique({
     where: { id },
+    include: { profile: { select: { url: true } } },
   })
 
   user = { ...user, ...userData }

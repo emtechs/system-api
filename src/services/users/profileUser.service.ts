@@ -12,6 +12,7 @@ export const profileUserService = async ({ id, role }: IRequestUser) => {
       dash: true,
       role: true,
       is_first_access: true,
+      profile: { select: { url: true } },
     },
   })
 
