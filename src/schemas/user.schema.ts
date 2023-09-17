@@ -25,7 +25,7 @@ export const UserReturnSchema = UserCreateSchema.extend({
   dash: z.enum(['COMMON', 'SCHOOL', 'ORGAN', 'ADMIN']),
   frequencies: z.number().optional(),
   work_school: WorkSchoolSchema.optional(),
-  profile: z.object({ url: z.string().url() }).nullable(),
+  profile: z.object({ url: z.string().url() }).nullable().optional(),
 }).omit({ password: true, schools: true })
 
 export const UserUpdateRequestSchema = UserCreateSchema.extend({
