@@ -19,6 +19,6 @@ export const deleteImageService = async (id: string) => {
       )
     }
   } catch {
-    throw new AppError('user not found', 404)
+    throw new AppError('image not found', 404)
   }
 }

@@ -1,6 +1,10 @@
-import { env } from '../../env'
-import { AppError } from '../../errors'
+import { v2 as cloudinary } from 'cloudinary'
 import { prisma } from '../../lib'
+import fs from 'node:fs'
+import { resolve } from 'node:path'
+import { promisify } from 'node:util'
+import { AppError } from '../../errors'
+import { env } from '../../env'
 
 export const createImageProfileService = async (
   user_id: string,
@@ -10,8 +14,25 @@ export const createImageProfileService = async (
 
   const { originalname: name, path, size, filename: key } = file
 
-  let image = await prisma.image.findFirst({ where: { user_id } })
-  if (image) throw new AppError('image profile already exists', 409)
+  const image = await prisma.image.findUnique({
+    where: { user_id },
+  })
+
+  if (image) {
+    const { id, key: keyData } = image
+
+    await prisma.image.delete({
+      where: { id },
+    })
+
+    if (env.NODE_ENV === 'production') {
+      await cloudinary.uploader.destroy(keyData)
+    } else {
+      promisify(fs.unlink)(
+        resolve(__dirname, '..', '..', '..', 'tmp', 'uploads', keyData),
+      )
+    }
+  }
 
   const data = {
     name,
@@ -21,19 +42,15 @@ export const createImageProfileService = async (
     user_id,
   }
 
-  if (env.NODE_ENV === 'production') {
-    image = await prisma.image.create({
+  if (env.NODE_ENV === 'production')
+    return await prisma.image.create({
       data,
     })
-    return image
-  }
 
   const url = `http://localhost:${env.PORT}/files/${key}`
   data.url = url
 
-  image = await prisma.image.create({
+  return await prisma.image.create({
     data,
   })
-
-  return image
 }
