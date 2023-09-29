@@ -7,6 +7,8 @@ import {
   listFrequencyController,
   listFrequencyStudentController,
   listRequestController,
+  resumeFrequencyClassController,
+  resumeFrequencySchoolController,
   retrieveFrequencyController,
   updateFrequencyController,
   updateFrequencyStudentController,
@@ -45,6 +47,18 @@ frequencyRouter.get(
   '/request',
   verifyUserIsAuthenticated,
   listRequestController,
+)
+
+frequencyRouter.get(
+  '/resume/:year_id/school',
+  verifyUserIsAuthenticated,
+  resumeFrequencySchoolController,
+)
+
+frequencyRouter.get(
+  '/resume/:year_id/class',
+  verifyUserIsAuthenticated,
+  resumeFrequencyClassController,
 )
 
 frequencyRouter.get(
