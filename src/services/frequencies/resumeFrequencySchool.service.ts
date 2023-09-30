@@ -16,6 +16,7 @@ export const resumeFrequencySchoolService = async (
         class: { name: { contains: name, mode: 'insensitive' } },
       },
       select: { class_id: true, school_id: true },
+      orderBy: { class: { name: 'asc' } },
     }),
     prisma.classYear.count({
       where: {

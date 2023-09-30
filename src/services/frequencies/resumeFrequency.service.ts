@@ -15,6 +15,7 @@ export const resumeFrequencyService = async (
       },
       distinct: 'school_id',
       select: { school_id: true },
+      orderBy: { school: { name: 'asc' } },
     }),
     frequencyMedSchool(year_id),
   ])
