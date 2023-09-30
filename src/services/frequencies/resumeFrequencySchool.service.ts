@@ -1,31 +1,36 @@
 import sortArray from 'sort-array'
 import { IQuery } from '../../interfaces'
 import { prisma } from '../../lib'
-import { frequencyTotalSchool } from '../../scripts'
+import { frequencyMedSchool } from '../../scripts'
 
 export const resumeFrequencySchoolService = async (
   year_id: string,
+  school_id: string,
   { name }: IQuery,
 ) => {
-  const schools = await prisma.classYear.findMany({
-    where: {
-      year_id,
-      school: { name: { contains: name, mode: 'insensitive' } },
-    },
-    distinct: 'school_id',
-    select: { school_id: true },
-  })
+  const [classes, total, med] = await Promise.all([
+    prisma.classYear.findMany({
+      where: {
+        year_id,
+        school_id,
+        class: { name: { contains: name, mode: 'insensitive' } },
+      },
+      select: { class_id: true, school_id: true },
+    }),
+    prisma.classYear.count({
+      where: {
+        year_id,
+        school_id,
+        class: { name: { contains: name, mode: 'insensitive' } },
+      },
+    }),
+    frequencyMedSchool(year_id),
+  ])
 
-  const total = await frequencyTotalArrayResume(schools, year_id)
-
-  const sum = total.reduce((ac, el) => ac + el, 0)
-
-  const med = sum / total.length
-
-  const result = await frequencyArrayResume(schools, year_id, med)
+  const result = await frequencyArrayResume(classes, year_id, med)
 
   return {
-    total: total.length,
+    total,
     result: sortArray(result, {
       by: 'prc',
       order: 'asc',
@@ -33,30 +38,16 @@ export const resumeFrequencySchoolService = async (
   }
 }
 
-const frequencyTotalArrayResume = async (
-  schools: {
-    school_id: string
-  }[],
-  year_id: string,
-) => {
-  const frequencyData = schools.map((el) =>
-    frequencyTotalSchool(el.school_id, year_id),
-  )
-
-  return Promise.all(frequencyData).then((freq) => {
-    return freq
-  })
-}
-
 const frequencyArrayResume = async (
-  schools: {
+  classes: {
+    class_id: string
     school_id: string
   }[],
   year_id: string,
   med: number,
 ) => {
-  const frequencyData = schools.map((el) =>
-    frequencyResume(el.school_id, year_id, med),
+  const frequencyData = classes.map((el) =>
+    frequencyResume(el.class_id, el.school_id, year_id, med),
   )
 
   return Promise.all(frequencyData).then((freq) => {
@@ -65,18 +56,25 @@ const frequencyArrayResume = async (
 }
 
 const frequencyResume = async (
+  class_id: string,
   school_id: string,
   year_id: string,
   med: number,
 ) => {
   let prc = 0
 
-  const [schoolData, total] = await Promise.all([
+  const [classData, schoolData, total] = await Promise.all([
+    prisma.class.findUnique({
+      where: { id: class_id },
+      select: { id: true, name: true },
+    }),
     prisma.school.findUnique({
       where: { id: school_id },
       select: { id: true, name: true },
     }),
-    frequencyTotalSchool(school_id, year_id),
+    prisma.frequency.count({
+      where: { school_id, year_id, class_id, is_open: false },
+    }),
   ])
 
   if (total > med) {
@@ -85,5 +83,5 @@ const frequencyResume = async (
     prc = (total / med) * 100
   }
 
-  return { ...schoolData, prc }
+  return { ...classData, school: schoolData, prc }
 }

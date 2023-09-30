@@ -1,13 +1,13 @@
 import sortArray from 'sort-array'
 import { IQuery } from '../../interfaces'
 import { prisma } from '../../lib'
-import { frequencyTotalSchool } from '../../scripts'
+import { frequencyMedSchool, frequencyTotalSchool } from '../../scripts'
 
-export const resumeFrequencyClassService = async (
+export const resumeFrequencyService = async (
   year_id: string,
   { name }: IQuery,
 ) => {
-  const [schools, classes] = await Promise.all([
+  const [schools, med] = await Promise.all([
     prisma.classYear.findMany({
       where: {
         year_id,
@@ -16,49 +16,18 @@ export const resumeFrequencyClassService = async (
       distinct: 'school_id',
       select: { school_id: true },
     }),
-    prisma.classYear.findMany({
-      where: {
-        year_id,
-        OR: [
-          { school: { name: { contains: name, mode: 'insensitive' } } },
-          { class: { name: { contains: name, mode: 'insensitive' } } },
-        ],
-      },
-      select: { class_id: true },
-    }),
+    frequencyMedSchool(year_id),
   ])
-
-  const total = await frequencyTotalArrayResume(schools, year_id)
-
-  const sum = total.reduce((ac, el) => ac + el, 0)
-
-  const med = sum / total.length
 
   const result = await frequencyArrayResume(schools, year_id, med)
 
   return {
-    total: total.length,
+    total: schools.length,
     result: sortArray(result, {
       by: 'prc',
       order: 'asc',
     }),
-    classes,
   }
-}
-
-const frequencyTotalArrayResume = async (
-  schools: {
-    school_id: string
-  }[],
-  year_id: string,
-) => {
-  const frequencyData = schools.map((el) =>
-    frequencyTotalSchool(el.school_id, year_id),
-  )
-
-  return Promise.all(frequencyData).then((freq) => {
-    return freq
-  })
 }
 
 const frequencyArrayResume = async (

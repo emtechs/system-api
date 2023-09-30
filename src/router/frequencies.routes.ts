@@ -7,7 +7,7 @@ import {
   listFrequencyController,
   listFrequencyStudentController,
   listRequestController,
-  resumeFrequencyClassController,
+  resumeFrequencyController,
   resumeFrequencySchoolController,
   retrieveFrequencyController,
   updateFrequencyController,
@@ -15,6 +15,7 @@ import {
 } from '../controllers'
 import {
   validateSchemaMiddleware,
+  verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
 import {
@@ -50,15 +51,16 @@ frequencyRouter.get(
 )
 
 frequencyRouter.get(
-  '/resume/:year_id/school',
+  '/resume/:year_id',
   verifyUserIsAuthenticated,
-  resumeFrequencySchoolController,
+  resumeFrequencyController,
 )
 
 frequencyRouter.get(
-  '/resume/:year_id/class',
+  '/resume/:year_id/:school_id',
   verifyUserIsAuthenticated,
-  resumeFrequencyClassController,
+  verifyIsPermission,
+  resumeFrequencySchoolController,
 )
 
 frequencyRouter.get(
