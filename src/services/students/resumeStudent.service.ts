@@ -73,20 +73,28 @@ const studentArrayResume = async (
 
 const studentResume = async (student_id: string, year_id: string) => {
   let infrequency = 0
-  const [classStu, studentData] = await Promise.all([
+  const [classStudent, studentData] = await Promise.all([
     prisma.classStudent.findFirst({
       where: { year_id, student_id },
-      select: { class_id: true, school_id: true },
+      select: {
+        class_id: true,
+        school_id: true,
+        class_year: {
+          select: {
+            school: { select: { id: true, name: true } },
+            class: { select: { id: true, name: true } },
+          },
+        },
+      },
     }),
     prisma.student.findUnique({ where: { id: student_id } }),
   ])
 
-  if (!classStu) throw new AppError('')
+  if (!classStudent) throw new AppError('')
 
-  const { class_id, school_id } = classStu
+  const { class_id, school_id } = classStudent
 
-  const [classData, frequencies, frequencyData, absences] = await Promise.all([
-    prisma.class.findUnique({ where: { id: class_id } }),
+  const [frequencies, frequencyData, absences] = await Promise.all([
     prisma.frequencyStudent.count({
       where: {
         student_id,
@@ -128,7 +136,8 @@ const studentResume = async (student_id: string, year_id: string) => {
 
   return {
     ...studentData,
-    class: classData,
+    school: classStudent.class_year.school,
+    class: classStudent.class_year.class,
     frequencies,
     infrequency,
     absences,
