@@ -1,3 +1,4 @@
+import sortArray from 'sort-array'
 import { prisma } from '../../lib'
 import { IQuery } from '../../interfaces'
 import { AppError } from '../../errors'
@@ -50,9 +51,14 @@ export const resumeStudentService = async (
     }),
   ])
 
+  const result = await studentArrayResume(students, year_id)
+
   return {
     total: total.length,
-    result: await studentArrayResume(students, year_id),
+    result: sortArray(result, {
+      by: 'infrequency',
+      order: 'desc',
+    }),
   }
 }
 
