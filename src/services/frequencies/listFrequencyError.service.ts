@@ -1,5 +1,6 @@
 import sortArray from 'sort-array'
 import { prisma } from '../../lib'
+import { env } from '../../env'
 
 export const listFrequencyErrorService = async () => {
   const frequenciesData = await prisma.frequency.groupBy({
@@ -74,5 +75,6 @@ const frequencyError = async (frequency: {
     date,
     date_time,
     _count: _count._all,
+    link: `${env.BASE_URL}/${schoolData?.id}/frequency?year_id=day&date=${date}`,
   }
 }
