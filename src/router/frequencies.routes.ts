@@ -5,6 +5,7 @@ import {
   deleteFrequencyController,
   deleteRequestController,
   listFrequencyController,
+  listFrequencyErrorController,
   listFrequencyStudentController,
   listRequestController,
   resumeFrequencyController,
@@ -15,6 +16,7 @@ import {
 } from '../controllers'
 import {
   validateSchemaMiddleware,
+  verifyIsAdmin,
   verifyIsPermission,
   verifyUserIsAuthenticated,
 } from '../middlewares'
@@ -43,6 +45,13 @@ frequencyRouter.post(
 )
 
 frequencyRouter.get('', verifyUserIsAuthenticated, listFrequencyController)
+
+frequencyRouter.get(
+  '/error',
+  verifyUserIsAuthenticated,
+  verifyIsAdmin,
+  listFrequencyErrorController,
+)
 
 frequencyRouter.get(
   '/request',
