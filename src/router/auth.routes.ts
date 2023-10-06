@@ -8,6 +8,7 @@ import {
   sendEmailToRecovery,
   updatePasswordController,
   verifyController,
+  verifyPasswordController,
 } from '../controllers'
 import {
   PasswordUpdateSchema,
@@ -38,5 +39,12 @@ passwordRouter.post(
 )
 
 export const verifyRouter = Router()
+
+verifyRouter.post(
+  '/password',
+  verifyUserIsAuthenticated,
+  validateSchemaMiddleware(PasswordUpdateSchema),
+  verifyPasswordController,
+)
 
 verifyRouter.get('', verifyUserIsAuthenticated, verifyController)

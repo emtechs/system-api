@@ -45,6 +45,7 @@ model User {
   cpf             String         @unique @db.VarChar(14)
   role            Role           @default(SERV)
   dash            Dash           @default(COMMON)
+  is_super        Boolean        @default(false)
   is_active       Boolean        @default(true)
   is_first_access Boolean        @default(true)
   created_at      DateTime       @default(now())

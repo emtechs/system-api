@@ -4,6 +4,7 @@ import {
   sendEmailRecoveryService,
   createSessionService,
   verifyService,
+  verifyPasswordService,
 } from '../services'
 
 export const createSessionController = async (req: Request, res: Response) => {
@@ -32,4 +33,10 @@ export const verifyController = async (req: Request, res: Response) => {
   const verify = await verifyService(req.user, req.query)
 
   return res.json(verify)
+}
+
+export const verifyPasswordController = async (req: Request, res: Response) => {
+  await verifyPasswordService(req.body, req.user.id)
+
+  return res.json({})
 }
