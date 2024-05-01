@@ -9,6 +9,7 @@ export const profileUserService = async ({ id, role }: IRequestUser) => {
     select: {
       id: true,
       name: true,
+      email: true,
       dash: true,
       role: true,
       is_super: true,

@@ -1,10 +1,7 @@
-import { v2 as cloudinary } from 'cloudinary'
 import { prisma } from '../../lib'
-import fs from 'node:fs'
-import { resolve } from 'node:path'
-import { promisify } from 'node:util'
 import { AppError } from '../../errors'
 import { env } from '../../env'
+import { deleteImageService } from './deleteImage.service'
 
 export const createImageProfileService = async (
   user_id: string,
@@ -18,21 +15,7 @@ export const createImageProfileService = async (
     where: { user_id },
   })
 
-  if (image) {
-    const { id, key: keyData } = image
-
-    await prisma.image.delete({
-      where: { id },
-    })
-
-    if (env.NODE_ENV === 'production') {
-      await cloudinary.uploader.destroy(keyData)
-    } else {
-      promisify(fs.unlink)(
-        resolve(__dirname, '..', '..', '..', 'tmp', 'uploads', keyData),
-      )
-    }
-  }
+  if (image) await deleteImageService(image.id)
 
   const data = {
     name,
