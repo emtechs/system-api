@@ -6,13 +6,11 @@ import {
   deleteRequestController,
   listFrequencyController,
   listFrequencyErrorController,
-  listFrequencyStudentController,
   listRequestController,
   resumeFrequencyController,
   resumeFrequencySchoolController,
   retrieveFrequencyController,
   updateFrequencyController,
-  updateFrequencyStudentController,
 } from '../controllers'
 import {
   validateSchemaMiddleware,
@@ -22,7 +20,6 @@ import {
 } from '../middlewares'
 import {
   FrequencyCreateSchema,
-  FrequencyStudentUpdateSchema,
   FrequencyUpdateSchema,
   RequestCreateSchema,
   RequestUpdateSchema,
@@ -78,24 +75,11 @@ frequencyRouter.get(
   retrieveFrequencyController,
 )
 
-frequencyRouter.get(
-  '/:id/student',
-  verifyUserIsAuthenticated,
-  listFrequencyStudentController,
-)
-
 frequencyRouter.patch(
   '/:id',
   verifyUserIsAuthenticated,
   validateSchemaMiddleware(FrequencyUpdateSchema),
   updateFrequencyController,
-)
-
-frequencyRouter.patch(
-  '/student/:id',
-  verifyUserIsAuthenticated,
-  validateSchemaMiddleware(FrequencyStudentUpdateSchema),
-  updateFrequencyStudentController,
 )
 
 frequencyRouter.delete(

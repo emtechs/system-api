@@ -7,13 +7,11 @@ import {
   deleteRequestService,
   listFrequencyErrorService,
   listFrequencyService,
-  listFrequencyStudentService,
   listRequestService,
   resumeFrequencySchoolService,
   resumeFrequencyService,
   retrieveFrequencyService,
   updateFrequencyService,
-  updateFrequencyStudentService,
 } from '../services'
 
 export const createFrequencyController = async (
@@ -89,25 +87,6 @@ export const createFrequencyStudentController = async (
 ) => {
   const frequency = await createFrequencyStudentService(req.body)
   return res.status(201).json(frequency)
-}
-
-export const listFrequencyStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequencies = await listFrequencyStudentService(
-    req.params.id,
-    req.query,
-  )
-  return res.json(frequencies)
-}
-
-export const updateFrequencyStudentController = async (
-  req: Request,
-  res: Response,
-) => {
-  const frequency = await updateFrequencyStudentService(req.body, req.params.id)
-  return res.json(frequency)
 }
 
 export const deleteRequestController = async (req: Request, res: Response) => {
